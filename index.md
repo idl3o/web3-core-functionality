@@ -1,11 +1,17 @@
-### [index.md](file:///c%3A/Users/Sam/gh/web3-crypto-streaming-service/index.md)
-
-````markdown
 ---
 layout: default
 title: Web3 Crypto Streaming Service
 description: Revolutionary decentralized content streaming platform powered by blockchain technology
+image: /assets/images/homepage-banner.jpg
+permalink: /
+seo:
+  type: Organization
+  links:
+    - https://twitter.com/web3streaming
+    - https://github.com/username/web3-crypto-streaming-service
 ---
+
+{% include header.html %}
 
 # Web3 Crypto Streaming Service
 
@@ -15,27 +21,31 @@ Web3 Crypto Streaming Service is pioneering the next generation of digital conte
 
 **Our mission:** To democratize content distribution by removing intermediaries and returning control to creators and their communities.
 
-[Join Beta Program](#beta-signup) | [View Whitepaper](#) | [For Creators](#creator-tools) | [For Viewers](#viewer-features)
+{% include cta-buttons.html %}
 
 ---
 
 ## Latest Updates & Blog
 
-[**Announcing Web3 Crypto Streaming Service**](./_posts/2023-10-15-announcing-web3-crypto-streaming-service.html) - October 15, 2023  
-Our official launch announcement detailing our vision, technology stack, and roadmap.
+{% for post in site.posts limit:1 %}
+  <div class="featured-post">
+    <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a> - {{ post.date | date: "%B %d, %Y" }}</h3>
+    <p>{{ post.excerpt | strip_html | truncatewords: 50 }}</p>
+    <a href="{{ post.url | relative_url }}" class="read-more">Read More →</a>
+  </div>
+{% endfor %}
 
 ### Recent News
 
-#### October 2023: Beta Testing Phase Launched
-We're excited to announce that our beta testing phase has officially begun! Early adopters can now test our streaming capabilities and provide valuable feedback.
+{% assign updates = site.data.updates | sort: 'date' | reverse %}
+{% for update in updates limit:3 %}
+  <div class="update">
+    <h4>{{ update.date | date: "%B %Y" }}: {{ update.title }}</h4>
+    <p>{{ update.description }}</p>
+  </div>
+{% endfor %}
 
-#### September 2023: Smart Contract Audit Completed
-Our payment and subscription smart contracts have successfully passed a comprehensive security audit by ChainSecurity. The contracts achieved a security score of 95/100.
-
-#### August 2023: Token Economics White Paper
-We've published our token economics white paper detailing how our native token (STREAM) will function within the ecosystem.
-
-[View All Updates](#news-archive)
+<a href="{{ '/news' | relative_url }}" class="button">View All Updates</a>
 
 ---
 
@@ -74,6 +84,8 @@ We've published our token economics white paper detailing how our native token (
 
 Our platform leverages cutting-edge technologies across the web3 and streaming ecosystems:
 
+{% include tech-overview.html %}
+
 ### Streaming Infrastructure
 - **Protocol:** WebRTC with custom P2P overlay network
 - **Quality:** Adaptive bitrate up to 4K at 60fps
@@ -95,92 +107,64 @@ Our platform leverages cutting-edge technologies across the web3 and streaming e
 
 ## Features
 
-### Creator Tools
-- **Direct Monetization**
-  - Subscription models with flexible pricing
-  - Pay-per-view options for premium content
-  - Tipping and donations with minimal fees
-  - NFT creation and sales integration
+{% assign features = site.data.features %}
 
-- **Content Management**
-  - Custom channel branding
-  - Analytics dashboard with real-time metrics
-  - Audience engagement tools
-  - Content scheduling and library management
+<div class="features-container">
+  <div class="creator-features">
+    <h3 id="creator-tools">Creator Tools</h3>
+    {% for feature in features.creator %}
+      <div class="feature-card">
+        <h4>{{ feature.name }}</h4>
+        <ul>
+          {% for item in feature.items %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
 
-- **Community Building**
-  - Token-gated access to exclusive content
-  - Community governance options
-  - Custom token creation for super-fans
-
-### Viewer Features
-- **Enhanced Viewing Experience**
-  - High-quality, buffer-free streaming
-  - Cross-platform compatibility
-  - Personalized recommendations without privacy invasion
-  - Offline viewing options
-
-- **Flexible Support Options**
-  - One-click subscriptions
-  - Micro-tipping during live streams
-  - Community funding pools for projects
-  - Token staking for premium features
-
-- **User Control**
-  - Self-sovereign identity options
-  - Content preference management
-  - Data privacy controls
-  - Cross-platform content portability
+  <div class="viewer-features">
+    <h3 id="viewer-features">Viewer Features</h3>
+    {% for feature in features.viewer %}
+      <div class="feature-card">
+        <h4>{{ feature.name }}</h4>
+        <ul>
+          {% for item in feature.items %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+</div>
 
 ---
 
 ## Use Cases
 
-### Independent Filmmakers
-Release films directly to your audience, set your own pricing, and receive immediate compensation without distributors taking a cut.
-
-### Educational Content Creators
-Create token-gated courses with verifiable credentials for students who complete your programs.
-
-### Live Event Streamers
-Host pay-per-view events with transparent revenue sharing for all contributors and instant settlements.
-
-### Gaming Streamers
-Monetize streams with microtransactions, create exclusive NFTs for fans, and build community-owned gaming channels.
+{% for use_case in site.use_cases %}
+  <div class="use-case">
+    <h3>{{ use_case.title }}</h3>
+    {{ use_case.content }}
+  </div>
+{% endfor %}
 
 ---
 
 ## Detailed Roadmap
 
-### Q4 2023: Public Beta
-- Core streaming functionality
-- Basic wallet integration
-- Creator onboarding tools
-- Early adopter incentive program
-
-### Q1 2024: Token Launch
-- STREAM token public sale
-- Staking mechanisms activated
-- Governance portal launch
-- Enhanced creator analytics
-
-### Q2 2024: Mobile Experience
-- iOS and Android applications
-- Mobile wallet integration
-- Push notifications
-- Offline viewing functionality
-
-### Q3 2024: Full Platform Launch
-- DAO governance implementation
-- Cross-chain bridging support
-- Advanced recommendation engine
-- Expanded API for developers
-
-### 2025 and Beyond
-- Layer 2 dedicated scaling solution
-- AI-enhanced content discovery
-- VR/AR streaming capabilities
-- Industry partnership program
+{% assign roadmap = site.data.roadmap | sort: 'order' %}
+{% for phase in roadmap %}
+  <div class="roadmap-phase {% if phase.current %}current-phase{% endif %}">
+    <h3>{{ phase.title }}</h3>
+    <ul>
+      {% for item in phase.items %}
+        <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endfor %}
 
 ---
 
@@ -188,92 +172,62 @@ Monetize streams with microtransactions, create exclusive NFTs for fans, and bui
 
 Our team combines expertise in blockchain development, video streaming technology, and content creator ecosystems.
 
-### Leadership
-- **Jane Chen** - CEO & Co-founder (Former VP Engineering at StreamTech)
-- **Miguel Rodriguez** - CTO & Co-founder (Blockchain Architect, contributor to Ethereum)
-- **Sarah Johnson** - Head of Creator Relations (Former Content Strategist at CreatorPlatform)
-- **David Kim** - Head of Product (Previously led product at DecentralizedApps)
-
-[Meet the Full Team](#team-page)
+{% include team-section.html %}
 
 ---
 
 ## Frequently Asked Questions
 
-<details>
-  <summary><strong>How is content stored and delivered?</strong></summary>
-  <p>Content metadata is stored on IPFS while the streaming content is delivered through our decentralized node network. This hybrid approach ensures both censorship resistance and high-quality streaming performance.</p>
-</details>
+<div class="faq-container">
+  {% for faq in site.faqs %}
+    <details>
+      <summary><strong>{{ faq.question }}</strong></summary>
+      <div class="faq-answer">
+        {{ faq.content }}
+      </div>
+    </details>
+  {% endfor %}
+</div>
 
-<details>
-  <summary><strong>What cryptocurrencies are supported for payments?</strong></summary>
-  <p>Our native STREAM token provides the best experience with lowest fees, but we also support ETH, MATIC, USDC, and DAI for payments. More tokens will be added based on community demand.</p>
-</details>
-
-<details>
-  <summary><strong>How do creators get paid?</strong></summary>
-  <p>Creators receive payments directly to their wallet addresses as subscriptions or tips occur, with only a minimal platform fee deducted. Payments are typically settled within minutes, not days or weeks.</p>
-</details>
-
-<details>
-  <summary><strong>Is my content protected from piracy?</strong></summary>
-  <p>We employ a multi-layered DRM approach combined with blockchain-verified watermarking to protect creator content while maintaining the benefits of decentralization.</p>
-</details>
-
-<details>
-  <summary><strong>How is this different from other web3 streaming platforms?</strong></summary>
-  <p>Our platform focuses on mainstream-ready performance while maintaining decentralization principles. Many other projects sacrifice user experience for ideological purity, or vice versa. We believe both are essential.</p>
-</details>
-
-[View All FAQs](#faq-page)
+<a href="{{ '/faq' | relative_url }}" class="button">View All FAQs</a>
 
 ---
 
 ## Partners & Integrations
 
-<div class="partner-logos">
-  <!-- Partner logo placeholders -->
-  [Ethereum Foundation] [Polygon] [IPFS] [Chainlink] [Livepeer]
-</div>
+{% include partners-carousel.html %}
 
 ---
 
 ## Get Involved
 
-### For Developers
-- [GitHub Repository](https://github.com/username/web3-crypto-streaming-service)
-- [API Documentation](./docs/api)
-- [Developer Grants Program](#developer-grants)
-- [Plugin Architecture](#plugins)
-
-### For Content Creators
-- [Creator Onboarding Guide](./creators)
-- [Monetization Calculator](./calculator)
-- [Early Access Program](#creator-early-access)
-
-### For Community
-- [Community Forum](#forum)
-- [Discord Server](#discord)
-- [Governance Portal](#governance)
-- [Ambassador Program](#ambassadors)
+<div class="involvement-grid">
+  {% for category in site.data.involvement %}
+    <div class="involvement-category">
+      <h3>For {{ category.type }}</h3>
+      <ul>
+        {% for link in category.links %}
+          <li><a href="{{ link.url | relative_url }}">{{ link.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+</div>
 
 ---
 
 ## Contact
 
-- **General Inquiries:** contact@web3streaming.example
-- **Creator Support:** creators@web3streaming.example
-- **Technical Support:** support@web3streaming.example
-- **Press:** press@web3streaming.example
+{% include contact-info.html %}
 
 ---
 
 <div id="beta-signup">
   <h3>Join Our Beta Program</h3>
   <p>Be among the first to experience the future of content streaming.</p>
-  <!-- Signup form would go here -->
+  {% include beta-signup-form.html %}
 </div>
 
 ---
 
-&copy; 2023 Web3 Crypto Streaming Service | [Privacy Policy](#) | [Terms of Service](#) | [Whitepaper](#) | [Token Economics](#)
+{% include footer.html %}
