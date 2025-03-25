@@ -425,3 +425,4 @@ I've made the following changes to fix the null object sorting issue:
    ```liquid
    {% if site.data.features and site.data.features.creator %}
    ```
+{% endif %}
