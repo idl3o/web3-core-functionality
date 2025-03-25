@@ -425,4 +425,21 @@ I've made the following changes to fix the null object sorting issue:
    ```liquid
    {% if site.data.features and site.data.features.creator %}
    ```
+{% if site.data.updates %}
+  {% assign updates = site.data.updates | sort: 'date' | reverse %}
+  {% for update in updates limit:3 %}
+    <div class="update-item">
+      <h4>{{ update.date | date: "%B %Y" }}: {{ update.title }}</h4>
+      <p>{{ update.description }}</p>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="update-item">
+    <h4>October 2023: Beta Testing Phase Launched</h4>
+    <p>We're excited to announce that our beta testing phase has officially begun! Early adopters can now test our streaming capabilities and provide valuable feedback.</p>
+  </div>
+  <div class="update-item">
+    <h4>September 2023: Smart Contract Audit Completed</h4>
+    <p>Our payment and subscription smart contracts have successfully passed a comprehensive security audit.</p>
+  </div>
 {% endif %}
