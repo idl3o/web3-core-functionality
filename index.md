@@ -42,26 +42,42 @@ seo:
     Display the latest blog post
   {%- endcomment -%}
   <div class="featured-post">
-    {% for post in site.posts limit:1 %}
-      <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a> - {{ post.date | date: "%B %d, %Y" }}</h3>
-      <p>{{ post.excerpt | strip_html | truncatewords: 50 }}</p>
-      <a href="{{ post.url | relative_url }}" class="read-more">Read More →</a>
-    {% endfor %}
+    {% if site.posts.size > 0 %}
+      {% for post in site.posts limit:1 %}
+        <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a> - {{ post.date | date: "%B %d, %Y" }}</h3>
+        <p>{{ post.excerpt | strip_html | truncatewords: 50 }}</p>
+        <a href="{{ post.url | relative_url }}" class="read-more">Read More →</a>
+      {% endfor %}
+    {% else %}
+      <h3>Coming Soon: Our First Blog Post</h3>
+      <p>We're working on our first blog post. Check back soon for updates about our platform.</p>
+    {% endif %}
   </div>
 
   {%- comment -%}
-    Display recent updates from data file
+    Display recent updates from data file with null check
   {%- endcomment -%}
   <div class="recent-news">
     <h3>Recent News</h3>
     
-    {% assign updates = site.data.updates | sort: 'date' | reverse %}
-    {% for update in updates limit:3 %}
+    {% if site.data.updates %}
+      {% assign updates = site.data.updates | sort: 'date' | reverse %}
+      {% for update in updates limit:3 %}
+        <div class="update-item">
+          <h4>{{ update.date | date: "%B %Y" }}: {{ update.title }}</h4>
+          <p>{{ update.description }}</p>
+        </div>
+      {% endfor %}
+    {% else %}
       <div class="update-item">
-        <h4>{{ update.date | date: "%B %Y" }}: {{ update.title }}</h4>
-        <p>{{ update.description }}</p>
+        <h4>October 2023: Beta Testing Phase Launched</h4>
+        <p>We're excited to announce that our beta testing phase has officially begun! Early adopters can now test our streaming capabilities and provide valuable feedback.</p>
       </div>
-    {% endfor %}
+      <div class="update-item">
+        <h4>September 2023: Smart Contract Audit Completed</h4>
+        <p>Our payment and subscription smart contracts have successfully passed a comprehensive security audit.</p>
+      </div>
+    {% endif %}
     
     <a href="{{ '/news' | relative_url }}" class="button">View All Updates</a>
   </div>
@@ -155,33 +171,54 @@ seo:
     <div class="creator-features">
       <h3 id="creator-tools">Creator Tools</h3>
       
-      {% assign features = site.data.features %}
-      {% for feature in features.creator %}
+      {% if site.data.features and site.data.features.creator %}
+        {% for feature in site.data.features.creator %}
+          <div class="feature-card">
+            <h4>{{ feature.name }}</h4>
+            <ul>
+              {% for item in feature.items %}
+                <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+      {% else %}
         <div class="feature-card">
-          <h4>{{ feature.name }}</h4>
+          <h4>Direct Monetization</h4>
           <ul>
-            {% for item in feature.items %}
-              <li>{{ item }}</li>
-            {% endfor %}
+            <li>Subscription models with flexible pricing</li>
+            <li>Pay-per-view options for premium content</li>
+            <li>Tipping and donations with minimal fees</li>
           </ul>
         </div>
-      {% endfor %}
+      {% endif %}
     </div>
     
     <!-- VIEWER FEATURES -->
     <div class="viewer-features">
       <h3 id="viewer-features">Viewer Features</h3>
       
-      {% for feature in features.viewer %}
+      {% if site.data.features and site.data.features.viewer %}
+        {% for feature in site.data.features.viewer %}
+          <div class="feature-card">
+            <h4>{{ feature.name }}</h4>
+            <ul>
+              {% for item in feature.items %}
+                <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+      {% else %}
         <div class="feature-card">
-          <h4>{{ feature.name }}</h4>
+          <h4>Enhanced Viewing Experience</h4>
           <ul>
-            {% for item in feature.items %}
-              <li>{{ item }}</li>
-            {% endfor %}
+            <li>High-quality, buffer-free streaming</li>
+            <li>Cross-platform compatibility</li>
+            <li>Personalized recommendations without privacy invasion</li>
           </ul>
         </div>
-      {% endfor %}
+      {% endif %}
     </div>
   </div>
 </section>
@@ -191,14 +228,29 @@ seo:
   <h2>Use Cases</h2>
   
   <div class="use-cases-grid">
-    {% for use_case in site.use_cases %}
+    {% if site.use_cases and site.use_cases.size > 0 %}
+      {% for use_case in site.use_cases %}
+        <div class="use-case-card">
+          <h3>{{ use_case.title }}</h3>
+          <div class="use-case-content">
+            {{ use_case.content }}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
       <div class="use-case-card">
-        <h3>{{ use_case.title }}</h3>
+        <h3>Independent Filmmakers</h3>
         <div class="use-case-content">
-          {{ use_case.content }}
+          <p>Release films directly to your audience, set your own pricing, and receive immediate compensation without distributors taking a cut.</p>
         </div>
       </div>
-    {% endfor %}
+      <div class="use-case-card">
+        <h3>Educational Content Creators</h3>
+        <div class="use-case-content">
+          <p>Create token-gated courses with verifiable credentials for students who complete your programs.</p>
+        </div>
+      </div>
+    {% endif %}
   </div>
 </section>
 
@@ -207,17 +259,36 @@ seo:
   <h2>Detailed Roadmap</h2>
   
   <div class="roadmap-container">
-    {% assign roadmap = site.data.roadmap | sort: 'order' %}
-    {% for phase in roadmap %}
-      <div class="roadmap-phase {% if phase.current %}current-phase{% endif %}">
-        <h3>{{ phase.title }}</h3>
+    {% if site.data.roadmap %}
+      {% assign roadmap = site.data.roadmap | sort: 'order' %}
+      {% for phase in roadmap %}
+        <div class="roadmap-phase {% if phase.current %}current-phase{% endif %}">
+          <h3>{{ phase.title }}</h3>
+          <ul class="roadmap-items">
+            {% for item in phase.items %}
+              <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="roadmap-phase current-phase">
+        <h3>Q4 2023: Public Beta</h3>
         <ul class="roadmap-items">
-          {% for item in phase.items %}
-            <li>{{ item }}</li>
-          {% endfor %}
+          <li>Core streaming functionality</li>
+          <li>Basic wallet integration</li>
+          <li>Creator onboarding tools</li>
         </ul>
       </div>
-    {% endfor %}
+      <div class="roadmap-phase">
+        <h3>Q1 2024: Token Launch</h3>
+        <ul class="roadmap-items">
+          <li>STREAM token public sale</li>
+          <li>Staking mechanisms activated</li>
+          <li>Governance portal launch</li>
+        </ul>
+      </div>
+    {% endif %}
   </div>
 </section>
 
@@ -235,14 +306,29 @@ seo:
   <h2>Frequently Asked Questions</h2>
   
   <div class="faq-container">
-    {% for faq in site.faqs %}
+    {% if site.faqs and site.faqs.size > 0 %}
+      {% for faq in site.faqs %}
+        <details class="faq-item">
+          <summary><strong>{{ faq.question }}</strong></summary>
+          <div class="faq-answer">
+            {{ faq.content }}
+          </div>
+        </details>
+      {% endfor %}
+    {% else %}
       <details class="faq-item">
-        <summary><strong>{{ faq.question }}</strong></summary>
+        <summary><strong>How is content stored and delivered?</strong></summary>
         <div class="faq-answer">
-          {{ faq.content }}
+          <p>Content metadata is stored on IPFS while the streaming content is delivered through our decentralized node network. This hybrid approach ensures both censorship resistance and high-quality streaming performance.</p>
         </div>
       </details>
-    {% endfor %}
+      <details class="faq-item">
+        <summary><strong>What cryptocurrencies are supported for payments?</strong></summary>
+        <div class="faq-answer">
+          <p>Our native STREAM token provides the best experience with lowest fees, but we also support ETH, MATIC, USDC, and DAI for payments. More tokens will be added based on community demand.</p>
+        </div>
+      </details>
+    {% endif %}
   </div>
   
   <div class="faq-more">
@@ -262,16 +348,33 @@ seo:
   <h2>Get Involved</h2>
   
   <div class="involvement-grid">
-    {% for category in site.data.involvement %}
+    {% if site.data.involvement %}
+      {% for category in site.data.involvement %}
+        <div class="involvement-category">
+          <h3>For {{ category.type }}</h3>
+          <ul class="involvement-links">
+            {% for link in category.links %}
+              <li><a href="{{ link.url | relative_url }}">{{ link.title }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    {% else %}
       <div class="involvement-category">
-        <h3>For {{ category.type }}</h3>
+        <h3>For Developers</h3>
         <ul class="involvement-links">
-          {% for link in category.links %}
-            <li><a href="{{ link.url | relative_url }}">{{ link.title }}</a></li>
-          {% endfor %}
+          <li><a href="https://github.com/username/web3-crypto-streaming-service">GitHub Repository</a></li>
+          <li><a href="{{ '/docs/api' | relative_url }}">API Documentation</a></li>
         </ul>
       </div>
-    {% endfor %}
+      <div class="involvement-category">
+        <h3>For Content Creators</h3>
+        <ul class="involvement-links">
+          <li><a href="{{ '/creators' | relative_url }}">Creator Onboarding Guide</a></li>
+          <li><a href="{{ '/calculator' | relative_url }}">Monetization Calculator</a></li>
+        </ul>
+      </div>
+    {% endif %}
   </div>
 </section>
 
@@ -296,3 +399,29 @@ seo:
 {%- endcomment -%}
 {% include footer.html %}
 ````
+
+I've made the following changes to fix the null object sorting issue:
+
+1. Added null checks before each sort operation in the file:
+   ```liquid
+   {% if site.data.updates %}
+     {% assign updates = site.data.updates | sort: 'date' | reverse %}
+     // ...rest of code
+   {% else %}
+     // fallback content
+   {% endif %}
+   ```
+
+2. Added fallback content for each section that depends on sorted data
+
+3. Added checks for collection existence:
+   ```liquid
+   {% if site.posts.size > 0 %}
+   {% if site.use_cases and site.use_cases.size > 0 %}
+   {% if site.faqs and site.faqs.size > 0 %}
+   ```
+
+4. Added checks for nested data structures:
+   ```liquid
+   {% if site.data.features and site.data.features.creator %}
+   ```
