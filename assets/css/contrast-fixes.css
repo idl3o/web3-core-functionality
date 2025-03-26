@@ -1,6 +1,7 @@
 :root {
   /* Enhanced contrast color palette */
   --dark: #121218;
+  --darker: #0a0a10;
   --light: #f0f0ff;
   --primary: #6e45e2;
   --primary-light: #8f70f0;
@@ -10,6 +11,7 @@
   --secondary-dark: #00a8c7;
   --accent: #ff5722;
   --gray-dark: #2a2a35;
+  --gray-darker: #1e1e28;
   --gray-medium: #9090a7;
   --gray-light: #d0d0e0;
   
@@ -19,15 +21,36 @@
   --text-on-light: #151520;
   --link-color: #70adff;
   --link-hover: #99c2ff;
+  
+  /* Shadow values for depth */
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-hard: 0 12px 36px rgba(0, 0, 0, 0.25);
 }
 
-/* Improved header contrast */
-.site-header {
+/* General body darkening */
+body {
+  background-color: var(--dark);
+  color: var(--text-on-dark);
+}
+
+/* Section background alternation for visual separation */
+section:nth-of-type(even) {
+  background-color: var(--darker);
+}
+
+section:nth-of-type(odd) {
   background-color: var(--dark);
 }
 
+/* Improved header contrast with shadow */
+.site-header {
+  background-color: var(--darker);
+  box-shadow: var(--shadow-medium);
+}
+
 .site-header.scrolled {
-  background-color: rgba(18, 18, 24, 0.97);
+  background-color: rgba(10, 10, 16, 0.97);
   backdrop-filter: blur(10px);
 }
 
@@ -73,9 +96,23 @@
 .tech-card, 
 .benefit-card, 
 .team-member, 
-.contributor-role {
-  background-color: var(--gray-dark);
+.contributor-role,
+.feature-card,
+.involvement-card {
+  background-color: var(--gray-darker);
   border-top-color: var(--primary-light);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tech-card:hover, 
+.benefit-card:hover, 
+.team-member:hover, 
+.contributor-role:hover,
+.feature-card:hover,
+.involvement-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-medium);
 }
 
 .tech-card p, 
@@ -85,9 +122,33 @@
   color: var(--text-muted-on-dark);
 }
 
+/* Hero section darkening overlay for better text contrast */
+.hero-section {
+  position: relative;
+  color: var(--text-on-dark);
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(10, 10, 16, 0.7), rgba(10, 10, 16, 0.9));
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
 /* Enhanced footer contrast */
 .site-footer {
-  background-color: var(--dark);
+  background-color: var(--darker);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
 }
 
 .footer-section h3 {
@@ -101,6 +162,54 @@
 
 .footer-section a:hover {
   color: var(--secondary-light);
+}
+
+/* Improved table contrast */
+.comparison-table {
+  background-color: var(--gray-darker);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+}
+
+.comparison-table thead {
+  background-color: var(--primary-dark);
+  color: var(--text-on-dark);
+}
+
+.comparison-table th,
+.comparison-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+}
+
+.comparison-table tbody tr:nth-child(odd) {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* FAQ items with subtle darkening */
+.faq-item {
+  background-color: var(--gray-darker);
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.faq-item summary {
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.faq-item[open] summary {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.faq-answer {
+  padding: 1.5rem;
+  background-color: var(--gray-darker);
 }
 
 /* Link styling improvements */
@@ -128,14 +237,85 @@ select:focus {
 /* Enhanced form elements for better visibility */
 input, 
 textarea, 
-select {
-  background-color: var(--gray-dark);
-  border: 1px solid var(--gray-medium);
+select,
+.form-control {
+  background-color: var(--gray-darker);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-on-dark);
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input:focus, 
+textarea:focus, 
+select:focus,
+.form-control:focus {
+  background-color: var(--gray-dark);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(110, 69, 226, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  outline: none;
 }
 
 /* Better contrast for statistics */
 .stat-number {
   color: var(--secondary-light);
   text-shadow: 0 0 10px rgba(0, 216, 255, 0.3);
+}
+
+/* Add vignette effect to section containers for depth */
+.container {
+  position: relative;
+}
+
+.section-header {
+  position: relative;
+  z-index: 2;
+}
+
+/* Modal and popup darkening */
+.modal,
+.popup {
+  background-color: var(--gray-darker);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-hard);
+}
+
+.modal-header,
+.popup-header {
+  background-color: var(--primary-dark);
+  color: var(--text-on-dark);
+}
+
+/* Tab container darkening */
+.tab-container {
+  background-color: var(--gray-darker);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+}
+
+.tab-buttons {
+  background-color: var(--darker);
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-button {
+  padding: 1rem 1.5rem;
+  background-color: transparent;
+  border: none;
+  color: var(--text-muted-on-dark);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  color: var(--text-on-dark);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-bottom: 2px solid var(--secondary);
+}
+
+.tab-pane {
+  padding: 2rem;
 }
