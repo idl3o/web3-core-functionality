@@ -55,6 +55,12 @@
             </form>
         </div>
         
+        <div class="footer-contribute">
+            <h3>Contribute to Our Project</h3>
+            <p>Help us build the future of decentralized streaming. Visit our GitHub repository to contribute:</p>
+            <a href="https://github.com/username/gh-pages/contribute" target="_blank" rel="noopener" class="button primary">Contribute on GitHub</a>
+        </div>
+        
         <div class="copyright">
             <p>&copy; {{ site.time | date: '%Y' }} Web3 Crypto Streaming Service. All rights reserved.</p>
         </div>
@@ -100,6 +106,38 @@
     .social-links a:focus {
         background-color: var(--secondary);
         transform: translateY(-3px);
+    }
+
+    .footer-contribute {
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    .footer-contribute h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--light-color);
+    }
+
+    .footer-contribute p {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: var(--text-muted);
+    }
+
+    .footer-contribute .button.primary {
+        background: var(--gradient-primary);
+        color: var(--light-color);
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .footer-contribute .button.primary:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
     }
 </style>
 
