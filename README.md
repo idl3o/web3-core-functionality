@@ -39,6 +39,17 @@ The platform leverages:
 
 Browse through the site to learn more about the platform's whitepaper, technology overview, and creator guides. This GitHub Pages implementation serves as both a project showcase and an educational resource for decentralized applications.
 
+## Running the Project Locally
+
+To view the project locally, you can use the **Live Server** extension in Visual Studio Code:
+
+1. Install the [Live Server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) if not already installed.
+2. Open the project folder in Visual Studio Code.
+3. Right-click on the `index.html` file and select **Open with Live Server**.
+4. Alternatively, use the keyboard shortcut `Alt+L Alt+O` to start the server.
+
+This will launch a development server with live reload capability, allowing you to preview changes in real-time.
+
 <!--
   <<< Author notes: Finish >>>
   Review what we learned, ask for feedback, provide next steps.
