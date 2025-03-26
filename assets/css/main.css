@@ -4,6 +4,50 @@
   --transition-speed: 0.3s;
 }
 
+/* Global section spacing */
+section {
+  padding: 4rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+  color: var(--text-on-dark);
+}
+
+.section-header h2:after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--gradient-primary, var(--secondary));
+}
+
+.section-header p {
+  color: var(--text-muted-on-dark);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
 /* Hero section with darkening overlay */
 .hero-section {
   position: relative;
@@ -70,14 +114,83 @@
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
+/* Benefits section */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.benefit-card {
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  transition: transform 0.3s ease;
+}
+
+.benefit-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+/* Updates section */
+.updates-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.featured-post, .recent-news {
+  background-color: var(--gray-darker);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  height: 100%;
+}
+
+.update-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.update-item:last-child {
+  border-bottom: none;
+}
+
+.update-date {
+  font-size: 0.85rem;
+  color: var(--secondary);
+  margin-bottom: 0.5rem;
+}
+
+/* Text utilities */
+.text-center {
+  text-align: center;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
+  section {
+    padding: 3rem 0;
+  }
+  
   .hero-section h1 {
     font-size: 2.5rem;
   }
+  
   .hero-section h2 {
     font-size: 1.5rem;
   }
+  
   .hero-section p {
     font-size: 1rem;
+  }
+  
+  .updates-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .section-header h2 {
+    font-size: 2rem;
   }
 }
