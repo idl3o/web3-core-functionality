@@ -47,6 +47,15 @@ body {
 body {
     background-color: var(--dark);
     color: var(--light);
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    font-size: 16px; /* Comfortable base font size */
+    color: #333; /* Slightly softer than black */
+    background-color: #fff;
+}
+
+p {
+    margin-bottom: 1.5em; /* Add breathing room between paragraphs */
 }
 
 h1,
@@ -59,6 +68,10 @@ h6 {
     line-height: 1.2;
     color: var(--dark-color);
     margin-bottom: 0.75rem;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.2;
+    font-family: 'Montserrat', sans-serif;
 }
 
 h1,
@@ -72,12 +85,25 @@ h1 {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     color: transparent;
+    font-size: 2.2em;
+}
+
+h2 {
+    font-size: 1.8em;
+}
+
+h3 {
+    font-size: 1.5em;
 }
 
 a {
     color: var(--primary-color);
     text-decoration: none;
     transition: color 0.3s ease;
+    color: #0066cc;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
 }
 
 a {
@@ -88,6 +114,7 @@ a {
 
 a:hover {
     color: var(--secondary-color);
+    border-bottom-color: currentColor;
 }
 
 a:hover {
@@ -99,6 +126,9 @@ a:hover {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
+    max-width: 760px; /* Optimal reading width */
+    padding: 0 20px;
+    margin: 0 auto;
 }
 
 /* Header styles */
@@ -425,4 +455,10 @@ footer {
     display: inline-block;
     color: var(--secondary);
     font-weight: 500;
+}
+
+@media screen and (max-width: 600px) {
+    body {
+        font-size: 15px;
+    }
 }
