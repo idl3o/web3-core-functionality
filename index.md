@@ -13,11 +13,6 @@ seo:
 
 <link rel="stylesheet" type="text/css" href="main.css">
 
-{% comment %}
-  Main header with navigation
-{% endcomment %}
-{% include header.html %}
-
 <!-- HERO SECTION -->
 <section class="hero-section">
   <div class="hero-content">
