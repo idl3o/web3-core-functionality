@@ -1,6 +1,35 @@
 /* Base styles */
 :root {
+  /* Color Palette */
+  --primary-color: #6e45e2; /* Main brand color */
+  --secondary-color: #00d8ff; /* Complementary color */
+  --accent-color: #4285F4; /* Chrome blue */
+  --dark-color: #121212; /* Background color */
+  --light-color: #f7f7f7; /* Text on dark */
+  --text-muted: #a0a0a0; /* Muted text */
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary-color), #8c5cf6);
+  --gradient-secondary: linear-gradient(135deg, var(--secondary-color), #66d9ff);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+
+  /* Border Radius */
   --border-radius: 8px;
+  --border-radius-lg: 12px;
+
+  /* Transition */
+  --transition: all 0.3s ease;
   --transition-speed: 0.3s;
   --cta-primary: #6e45e2; /* Primary CTA color */
   --cta-secondary: #00d8ff; /* Secondary CTA color */
@@ -313,4 +342,61 @@ section {
   .comparison-table {
     font-size: 0.85rem;
   }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  .button {
+    padding: var(--space-xs) var(--space-sm);
+  }
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: var(--light-color);
+}
+
+p, a, span {
+  font-family: 'Inter', sans-serif;
+  color: var(--light-color);
+}
+
+/* Buttons */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.button.primary {
+  background: var(--gradient-primary);
+  color: var(--light-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.button.primary:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.button.secondary {
+  background: transparent;
+  color: var(--secondary-color);
+  border: 2px solid var(--secondary-color);
+}
+
+.button.secondary:hover {
+  background-color: rgba(0, 216, 255, 0.15);
 }
