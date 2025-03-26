@@ -1,15 +1,15 @@
 :root {
-  /* Enhanced contrast color palette */
+  /* Chrome blue color palette */
   --dark: #121218;
-  --darker: #0a0a10;
-  --light: #f0f0ff;
-  --primary: #6e45e2;
-  --primary-light: #8f70f0;
-  --primary-dark: #4d2eb8;
-  --secondary: #00d8ff;
-  --secondary-light: #70ebff;
-  --secondary-dark: #00a8c7;
-  --accent: #ff5722;
+  --darker: #0a0a12;
+  --light: #f0f4ff;
+  --primary: #4285F4;         /* Chrome blue */
+  --primary-light: #5a95f5;   /* Lighter Chrome blue */
+  --primary-dark: #1a73e8;    /* Darker Chrome blue */
+  --secondary: #00c2ff;       /* Bright blue accent */
+  --secondary-light: #66d9ff;
+  --secondary-dark: #0097e6;
+  --accent: #34a853;          /* Chrome green */
   --gray-dark: #2a2a35;
   --gray-darker: #1e1e28;
   --gray-medium: #9090a7;
@@ -19,8 +19,8 @@
   --text-on-dark: #ffffff;
   --text-muted-on-dark: #c0c0d0;
   --text-on-light: #151520;
-  --link-color: #70adff;
-  --link-hover: #99c2ff;
+  --link-color: #4285F4;      /* Chrome blue for links */
+  --link-hover: #5a95f5;
   
   /* Shadow values for depth */
   --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -76,20 +76,20 @@ section:nth-of-type(odd) {
 .button.primary:focus {
   background-color: var(--primary-light);
   border-color: var(--primary-light);
-  box-shadow: 0 0 0 2px rgba(110, 69, 226, 0.4);
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.4);
 }
 
 .button.secondary {
   color: var(--text-on-dark);
-  border-color: var(--secondary);
+  border-color: var(--primary);
   background-color: transparent;
   font-weight: 600;
 }
 
 .button.secondary:hover,
 .button.secondary:focus {
-  background-color: rgba(0, 216, 255, 0.15);
-  box-shadow: 0 0 0 2px rgba(0, 216, 255, 0.4);
+  background-color: rgba(66, 133, 244, 0.15);
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.4);
 }
 
 /* Improved card and content contrast */
@@ -313,7 +313,7 @@ select:focus,
 .tab-button.active {
   color: var(--text-on-dark);
   background-color: rgba(255, 255, 255, 0.05);
-  border-bottom: 2px solid var(--secondary);
+  border-bottom: 2px solid var(--primary);
 }
 
 .tab-pane {
