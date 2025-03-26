@@ -2,6 +2,10 @@
 :root {
   --border-radius: 8px;
   --transition-speed: 0.3s;
+  --cta-primary: #6e45e2; /* Primary CTA color */
+  --cta-secondary: #00d8ff; /* Secondary CTA color */
+  --cta-hover: #8c5cf6; /* Hover state for CTAs */
+  --cta-focus: rgba(110, 69, 226, 0.3); /* Focus outline for CTAs */
 }
 
 /* Global section spacing */
@@ -56,9 +60,10 @@ section {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 4rem 1rem;
+  padding: var(--space-xl) 0;
+  background: linear-gradient(135deg, var(--cta-primary), var(--cta-secondary));
+  color: var(--light-color);
   overflow: hidden;
-  color: white;
 }
 
 .hero-bg {
@@ -95,23 +100,25 @@ section {
 
 .hero-section h1 {
   font-size: 3.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-md);
   font-weight: 800;
+  color: var(--light-color);
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .hero-section h2 {
   font-size: 2rem;
-  margin-bottom: 1.5rem;
-  color: var(--primary);
+  margin-bottom: var(--space-lg);
+  color: var(--cta-secondary);
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .hero-section p {
   font-size: 1.25rem;
   max-width: 800px;
-  margin: 0 auto 2rem;
+  margin: 0 auto var(--space-lg);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  color: var(--light-color);
 }
 
 /* Benefits section */
@@ -216,6 +223,67 @@ section {
   text-align: center;
 }
 
+/* Call-to-Action Buttons */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.button.primary {
+  background-color: var(--cta-primary);
+  color: var(--light-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.button.primary:hover {
+  background-color: var(--cta-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.button.primary:focus {
+  outline: 2px solid var(--cta-focus);
+  outline-offset: 2px;
+}
+
+.button.secondary {
+  background-color: transparent;
+  color: var(--cta-secondary);
+  border: 2px solid var(--cta-secondary);
+}
+
+.button.secondary:hover {
+  background-color: rgba(0, 216, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 216, 255, 0.15);
+}
+
+/* Comparison Table */
+.comparison-table {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.comparison-table th {
+  background: var(--gradient-primary);
+  color: var(--light-color);
+  font-weight: 600;
+}
+
+.comparison-table td {
+  padding: var(--space-md);
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   section {
@@ -240,5 +308,9 @@ section {
   
   .section-header h2 {
     font-size: 2rem;
+  }
+
+  .comparison-table {
+    font-size: 0.85rem;
   }
 }

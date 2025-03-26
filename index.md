@@ -19,7 +19,8 @@ seo:
     <h2>The Future of Content Streaming</h2>
     <p>Empowering creators and viewers through blockchain technology, decentralized delivery, and direct monetization.</p>
     <div class="hero-cta">
-      {% include cta-buttons.html show_scroll_indicator=true %}
+      <a href="#beta-signup" class="button primary">Join Beta Program</a>
+      <a href="#features" class="button secondary">Learn More</a>
     </div>
   </div>
 </section>
@@ -36,25 +37,25 @@ seo:
       <div class="benefit-card">
         <div class="benefit-icon">💰</div>
         <h3>90%+ Creator Revenue</h3>
-        <p>Creators receive the vast majority of their revenue with minimal platform fees</p>
+        <p>Creators receive the vast majority of their revenue with minimal platform fees.</p>
       </div>
       
       <div class="benefit-card">
         <div class="benefit-icon">🛡️</div>
         <h3>Censorship Resistant</h3>
-        <p>Decentralized content registry prevents arbitrary content removal</p>
+        <p>Decentralized content registry prevents arbitrary content removal.</p>
       </div>
       
       <div class="benefit-card">
         <div class="benefit-icon">🔒</div>
         <h3>Privacy Preserving</h3>
-        <p>Minimal data collection with user control over personal information</p>
+        <p>Minimal data collection with user control over personal information.</p>
       </div>
       
       <div class="benefit-card">
         <div class="benefit-icon">⚡</div>
         <h3>Instant Payments</h3>
-        <p>Near-immediate settlement of earnings without lengthy holding periods</p>
+        <p>Near-immediate settlement of earnings without lengthy holding periods.</p>
       </div>
     </div>
   </div>
@@ -117,7 +118,7 @@ seo:
   <div class="container">
     <div class="section-header">
       <h2>What Sets Us Apart</h2>
-      <p>A direct comparison between traditional platforms and our Web3 solution</p>
+      <p>A direct comparison between traditional platforms and our Web3 solution.</p>
     </div>
     <table class="comparison-table">
       <thead>
