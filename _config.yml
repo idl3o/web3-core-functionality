@@ -3,9 +3,10 @@ title: Web3 Crypto Streaming Service
 email: contact@web3streaming.example
 description: Revolutionary decentralized content streaming platform powered by blockchain technology
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://username.github.io/web3-crypto-streaming-service" 
+url: "https://username.github.io/web3-crypto-streaming-service"
 twitter_username: web3streaming
-github_username:  username
+github_username: username
+author: Web3 Crypto Team
 
 # Build settings
 markdown: kramdown
@@ -42,4 +43,14 @@ defaults:
       path: ""
       type: "pages"
     values:
-      layout: "page"
+      layout: "default"
+
+# Social media
+social:
+  name: Web3 Crypto Streaming
+  links:
+    - https://twitter.com/web3streaming
+    - https://github.com/username/web3-crypto-streaming-service
+
+# Google Analytics (replace with your tracking ID in production)
+google_analytics: UA-XXXXXXXXX-X

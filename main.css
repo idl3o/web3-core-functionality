@@ -365,3 +365,64 @@ footer {
         font-size: 0.9rem;
     }
 }
+
+/* Responsive improvements */
+@media screen and (max-width: 1024px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+    .container {
+        padding: 0 2rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+    section {
+        padding: 2rem 0;
+    }
+}
+
+/* Blog styles */
+.blog-posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.blog-post-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+}
+
+.blog-post-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.post-meta {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.post-excerpt {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1rem;
+}
+
+.read-more {
+    display: inline-block;
+    color: var(--secondary);
+    font-weight: 500;
+}
