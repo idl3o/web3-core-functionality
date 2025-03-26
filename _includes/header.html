@@ -67,6 +67,59 @@
         </div>
 </body>
 
+<style>
+    .site-header {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        background-color: var(--dark);
+        z-index: 1000;
+        padding: 1rem 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    /* Add some spacing before the content to prevent header overlap */
+    .page-content {
+        padding-top: 1rem;
+    }
+    
+    /* Create slight transparency effect on scroll */
+    .site-header.scrolled {
+        background-color: rgba(10, 10, 20, 0.95);
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Fix for mobile header display */
+    @media (max-width: 768px) {
+        .site-header .container {
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            flex: 1;
+            order: 1;
+        }
+        
+        .menu-toggle {
+            order: 2;
+        }
+        
+        .main-nav {
+            order: 3;
+            width: 100%;
+        }
+        
+        .wallet-connect {
+            order: 4;
+            width: 100%;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+        }
+    }
+</style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Mobile menu toggle
@@ -105,6 +158,16 @@
                 dropdowns.forEach(dropdown => {
                     dropdown.classList.remove('open');
                 });
+            }
+        });
+        
+        // Add scrolled class to header when page is scrolled
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.site-header');
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
             }
         });
     });

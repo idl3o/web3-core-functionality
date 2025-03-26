@@ -37,10 +37,28 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700;900&display=swap">
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="{{ '/main.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
     
     <!-- Theme color for browser UI -->
     <meta name="theme-color" content="#6e45e2">
+    
+    <!-- Fix for header display issue - ensure proper spacing -->
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .page-content {
+            flex: 1;
+        }
+    </style>
     
     {% if jekyll.environment == 'production' and site.google_analytics %}
     <!-- Google Analytics -->
