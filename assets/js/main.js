@@ -1,111 +1,191 @@
 /**
- * Web3 Crypto Streaming Service
- * Main JavaScript file
+ * Main JavaScript for Web3 Crypto Streaming Service
  */
 
-// Wait for DOM content to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-  // Theme toggle functionality
-  setupThemeToggle();
-  
-  // Mobile menu toggle
-  setupMobileMenu();
-  
-  // Smooth scrolling for anchor links
-  setupSmoothScrolling();
+    // Initialize components
+    initThemeSwitcher();
+    initSmoothScroll();
+    initAnimations();
+    initWalletConnect();
+    
+    // Add scroll event listener for header
+    window.addEventListener('scroll', handleHeaderScroll);
 });
 
 /**
- * Set up dark/light theme toggle
+ * Theme Switcher Functionality
  */
-function setupThemeToggle() {
-  const themeToggle = document.querySelector('#theme-toggle');
-  if (!themeToggle) return;
-
-  themeToggle.addEventListener('click', function() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+function initThemeSwitcher() {
+    const themeSwitcher = document.getElementById('theme-switcher');
     
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
+    if (!themeSwitcher) return;
     
-    // Update toggle text
-    themeToggle.textContent = newTheme === 'light' ? 'Dark Mode' : 'Light Mode';
-  });
-  
-  // Set initial theme from localStorage or system preference
-  const savedTheme = localStorage.getItem('theme') || 
-    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  themeToggle.textContent = savedTheme === 'light' ? 'Dark Mode' : 'Light Mode';
-}
-
-/**
- * Set up mobile menu toggle
- */
-function setupMobileMenu() {
-  const menuToggle = document.querySelector('.menu-icon');
-  const navTrigger = document.querySelector('#nav-trigger');
-  
-  if (!menuToggle || !navTrigger) return;
-  
-  menuToggle.addEventListener('click', function() {
-    // The checkbox state change will handle the display via CSS
-  });
-}
-
-/**
- * Set up smooth scrolling for anchor links
- */
-function setupSmoothScrolling() {
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      const targetId = this.getAttribute('href');
-      if (targetId === '#') return;
-      
-      const targetElement = document.querySelector(targetId);
-      if (!targetElement) return;
-      
-      e.preventDefault();
-      
-      window.scrollTo({
-        top: targetElement.offsetTop - 80, // Account for fixed header
-        behavior: 'smooth'
-      });
-    });
-  });
-}
-
-/**
- * Wallet connection functionality (placeholder)
- */
-function connectWallet() {
-  const connectButton = document.querySelector('#connect-wallet');
-  if (!connectButton) return;
-  
-  connectButton.addEventListener('click', async function() {
-    // Placeholder for wallet connection logic
-    connectButton.textContent = 'Connecting...';
+    // Check for saved theme preference or respect OS preference
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    try {
-      // This would be replaced with actual Web3 wallet connection code
-      console.log('Connecting to wallet...');
-      
-      // Simulate connection delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Update UI after successful connection
-      connectButton.textContent = 'Connected';
-      connectButton.classList.add('connected');
-      
-    } catch (error) {
-      console.error('Error connecting wallet:', error);
-      connectButton.textContent = 'Connection Failed';
-      
-      // Reset button after delay
-      setTimeout(() => {
-        connectButton.textContent = 'Connect Wallet';
-      }, 2000);
+    if (savedTheme === 'dark' || (!savedTheme && prefersDarkTheme)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (themeSwitcher.querySelector('input')) {
+            themeSwitcher.querySelector('input').checked = true;
+        }
     }
-  });
+    
+    // Theme switch event handler
+    themeSwitcher.addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+}
+
+/**
+ * Smooth Scroll for Anchor Links
+ */
+function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            
+            // Skip if it's just "#" or empty
+            if (targetId === '#' || !targetId) return;
+            
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                e.preventDefault();
+                
+                // Close mobile menu if open
+                const navLinks = document.querySelector('.nav-links');
+                const menuToggle = document.querySelector('.menu-toggle');
+                
+                if (navLinks && navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    if (menuToggle) menuToggle.classList.remove('active');
+                }
+                
+                // Scroll to the target element
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Update URL without scrolling
+                history.pushState(null, null, targetId);
+            }
+        });
+    });
+}
+
+/**
+ * Handle Header Scroll Effects
+ */
+function handleHeaderScroll() {
+    const header = document.querySelector('.site-header');
+    
+    if (!header) return;
+    
+    if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+}
+
+/**
+ * Initialize Scroll Animations
+ */
+function initAnimations() {
+    // Only run if IntersectionObserver is supported
+    if (!('IntersectionObserver' in window)) return;
+    
+    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+                // Unobserve after animation
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+    
+    animatedElements.forEach(element => {
+        observer.observe(element);
+    });
+}
+
+/**
+ * Wallet Connection Functionality
+ */
+function initWalletConnect() {
+    const connectButton = document.getElementById('connect-wallet');
+    const walletStatus = document.getElementById('wallet-status');
+    const walletAddress = document.getElementById('wallet-address');
+    const walletBalance = document.getElementById('wallet-balance');
+    
+    if (!connectButton) return;
+    
+    connectButton.addEventListener('click', async function() {
+        // Check if Web3 is available
+        if (window.ethereum) {
+            try {
+                // Request account access
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                // Get the first account
+                const account = accounts[0];
+                
+                // Show wallet info
+                if (walletStatus) walletStatus.classList.remove('hidden');
+                if (connectButton) connectButton.classList.add('hidden');
+                
+                // Format and display account address
+                if (walletAddress) {
+                    const formattedAddress = `${account.substring(0, 6)}...${account.substring(account.length - 4)}`;
+                    walletAddress.textContent = formattedAddress;
+                }
+                
+                // Get and display balance
+                if (walletBalance) {
+                    const balance = await window.ethereum.request({
+                        method: 'eth_getBalance',
+                        params: [account, 'latest']
+                    });
+                    
+                    const etherBalance = parseInt(balance, 16) / 1e18;
+                    walletBalance.textContent = `${etherBalance.toFixed(4)} ETH`;
+                }
+                
+                // Store connection in session
+                sessionStorage.setItem('walletConnected', 'true');
+                sessionStorage.setItem('walletAddress', account);
+                
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+                alert('Failed to connect wallet. Please try again.');
+            }
+        } else {
+            alert('Web3 wallet not detected. Please install MetaMask or another Web3 wallet.');
+        }
+    });
+    
+    // Check if wallet was previously connected in this session
+    if (sessionStorage.getItem('walletConnected') === 'true') {
+        const savedAddress = sessionStorage.getItem('walletAddress');
+        
+        if (savedAddress && walletAddress) {
+            const formattedAddress = `${savedAddress.substring(0, 6)}...${savedAddress.substring(savedAddress.length - 4)}`;
+            walletAddress.textContent = formattedAddress;
+            
+            if (walletStatus) walletStatus.classList.remove('hidden');
+            if (connectButton) connectButton.classList.add('hidden');
+        }
+    }
 }
