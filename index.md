@@ -1,3 +1,4 @@
+---
 layout: default
 title: Web3 Crypto Streaming Service
 description: Revolutionary decentralized content streaming platform powered by blockchain technology
@@ -8,38 +9,32 @@ seo:
   links:
     - https://twitter.com/web3streaming
     - https://github.com/username/web3-crypto-streaming-service
-    
-<link rel="stylesheet" type="text/css" href="main.css">
-
 ---
 
-{%- comment -%}
+<link rel="stylesheet" type="text/css" href="main.css">
+
+{% comment %}
   Main header with navigation
-{%- endcomment -%}
+{% endcomment %}
 {% include header.html %}
 
 <!-- HERO SECTION -->
 <section class="hero-section">
   <h1>Web3 Crypto Streaming Service</h1>
-
   <div class="hero-content">
     <h2>Welcome to the Future of Content Streaming</h2>
-    
-    <p>Web3 Crypto Streaming Service is pioneering the next generation of digital content delivery by combining high-performance video streaming with blockchain technology. We're building a platform where creators receive fair compensation, viewers maintain privacy, and content remains censorship-resistant.</p>
-    
+    <p>Web3 Crypto Streaming Service is pioneering the next generation of digital content delivery by combining high-performance video streaming with blockchain technology. We're building a platform that empowers creators and their communities.</p>
     <p><strong>Our mission:</strong> To democratize content distribution by removing intermediaries and returning control to creators and their communities.</p>
-    
     {% include cta-buttons.html %}
   </div>
 </section>
 
 <!-- LATEST UPDATES SECTION -->
 <section class="updates-section">
-  <h2>Latest Updates &amp; Blog</h2>
-  
-  {%- comment -%}
+  <h2>Latest Updates & Blog</h2>
+  {% comment %}
     Display the latest blog post
-  {%- endcomment -%}
+  {% endcomment %}
   <div class="featured-post">
     {% if site.posts.size > 0 %}
       {% for post in site.posts limit:1 %}
@@ -53,12 +48,11 @@ seo:
     {% endif %}
   </div>
 
-  {%- comment -%}
+  {% comment %}
     Display recent updates from data file with null check
-  {%- endcomment -%}
+  {% endcomment %}
   <div class="recent-news">
     <h3>Recent News</h3>
-    
     {% if site.data.updates %}
       {% assign updates = site.data.updates | sort: 'date' | reverse %}
       {% for update in updates limit:3 %}
@@ -77,15 +71,12 @@ seo:
         <p>Our payment and subscription smart contracts have successfully passed a comprehensive security audit.</p>
       </div>
     {% endif %}
-    
-    <a href="{{ '/news' | relative_url }}" class="button">View All Updates</a>
   </div>
 </section>
 
 <!-- COMPARISON SECTION -->
 <section class="comparison-section">
   <h2>What Sets Us Apart</h2>
-  
   <table class="comparison-table">
     <thead>
       <tr>
@@ -121,11 +112,8 @@ seo:
 <!-- TECHNOLOGY SECTION -->
 <section class="technology-section" id="technology">
   <h2>Core Technology</h2>
-  
   <p>Our platform leverages cutting-edge technologies across the web3 and streaming ecosystems:</p>
-  
   {% include tech-overview.html %}
-  
   <div class="tech-details">
     <div class="tech-category">
       <h3>Streaming Infrastructure</h3>
@@ -136,7 +124,6 @@ seo:
         <li><strong>Formats:</strong> H.264, H.265, AV1 supported</li>
       </ul>
     </div>
-    
     <div class="tech-category">
       <h3>Blockchain Integration</h3>
       <ul>
@@ -146,7 +133,6 @@ seo:
         <li><strong>Storage:</strong> IPFS for content metadata, with encrypted delivery streams</li>
       </ul>
     </div>
-    
     <div class="tech-category">
       <h3>Wallet Support</h3>
       <ul>
@@ -161,15 +147,12 @@ seo:
 <!-- FEATURES SECTION -->
 <section class="features-section">
   <h2>Features</h2>
-  
-  {%- comment -%}
+  {% comment %}
     Load features from data file and display in cards
-  {%- endcomment -%}
+  {% endcomment %}
   <div class="features-container">
-    <!-- CREATOR FEATURES -->
     <div class="creator-features">
       <h3 id="creator-tools">Creator Tools</h3>
-      
       {% if site.data.features and site.data.features.creator %}
         {% for feature in site.data.features.creator %}
           <div class="feature-card">
@@ -192,11 +175,9 @@ seo:
         </div>
       {% endif %}
     </div>
-    
-    <!-- VIEWER FEATURES -->
+
     <div class="viewer-features">
       <h3 id="viewer-features">Viewer Features</h3>
-      
       {% if site.data.features and site.data.features.viewer %}
         {% for feature in site.data.features.viewer %}
           <div class="feature-card">
@@ -225,7 +206,6 @@ seo:
 <!-- USE CASES SECTION -->
 <section class="use-cases-section">
   <h2>Use Cases</h2>
-  
   <div class="use-cases-grid">
     {% if site.use_cases and site.use_cases.size > 0 %}
       {% for use_case in site.use_cases %}
@@ -256,7 +236,6 @@ seo:
 <!-- ROADMAP SECTION -->
 <section class="roadmap-section" id="roadmap">
   <h2>Detailed Roadmap</h2>
-  
   <div class="roadmap-container">
     {% if site.data.roadmap %}
       {% assign roadmap = site.data.roadmap | sort: 'order' %}
@@ -294,16 +273,13 @@ seo:
 <!-- TEAM SECTION -->
 <section class="team-section" id="team">
   <h2>Team</h2>
-  
   <p>Our team combines expertise in blockchain development, video streaming technology, and content creator ecosystems.</p>
-  
   {% include team-section.html %}
 </section>
 
 <!-- FAQ SECTION -->
 <section class="faq-section" id="faq">
   <h2>Frequently Asked Questions</h2>
-  
   <div class="faq-container">
     {% if site.faqs and site.faqs.size > 0 %}
       {% for faq in site.faqs %}
@@ -318,7 +294,7 @@ seo:
       <details class="faq-item">
         <summary><strong>How is content stored and delivered?</strong></summary>
         <div class="faq-answer">
-          <p>Content metadata is stored on IPFS while the streaming content is delivered through our decentralized node network. This hybrid approach ensures both censorship resistance and high-quality streaming performance.</p>
+          <p>Content metadata is stored on IPFS while the streaming content is delivered through our decentralized node network. This hybrid approach ensures both censorship resistance and high-quality streaming.</p>
         </div>
       </details>
       <details class="faq-item">
@@ -329,7 +305,6 @@ seo:
       </details>
     {% endif %}
   </div>
-  
   <div class="faq-more">
     <a href="{{ '/faq' | relative_url }}" class="button">View All FAQs</a>
   </div>
@@ -337,15 +312,13 @@ seo:
 
 <!-- PARTNERS SECTION -->
 <section class="partners-section">
-  <h2>Partners &amp; Integrations</h2>
-  
+  <h2>Partners & Integrations</h2>
   {% include partners-carousel.html %}
 </section>
 
 <!-- GET INVOLVED SECTION -->
 <section class="get-involved-section" id="get-involved">
   <h2>Get Involved</h2>
-  
   <div class="involvement-grid">
     {% if site.data.involvement %}
       {% for category in site.data.involvement %}
@@ -380,65 +353,17 @@ seo:
 <!-- CONTACT SECTION -->
 <section class="contact-section" id="contact">
   <h2>Contact</h2>
-  
   {% include contact-info.html %}
 </section>
 
 <!-- BETA SIGNUP SECTION -->
 <section class="beta-signup-section" id="beta-signup">
   <h2>Join Our Beta Program</h2>
-  
   <p>Be among the first to experience the future of content streaming.</p>
-  
   {% include beta-signup-form.html %}
 </section>
 
-{%- comment -%}
+{% comment %}
   Site footer with links and copyright
-{%- endcomment -%}
+{% endcomment %}
 {% include footer.html %}
-````
-
-I've made the following changes to fix the null object sorting issue:
-
-1. Added null checks before each sort operation in the file:
-   ```liquid
-   {% if site.data.updates %}
-     {% assign updates = site.data.updates | sort: 'date' | reverse %}
-     // ...rest of code
-   {% else %}
-     // fallback content
-   {% endif %}
-   ```
-
-2. Added fallback content for each section that depends on sorted data
-
-3. Added checks for collection existence:
-   ```liquid
-   {% if site.posts.size > 0 %}
-   {% if site.use_cases and site.use_cases.size > 0 %}
-   {% if site.faqs and site.faqs.size > 0 %}
-   ```
-
-4. Added checks for nested data structures:
-   ```liquid
-   {% if site.data.features and site.data.features.creator %}
-   ```
-{% if site.data.updates %}
-  {% assign updates = site.data.updates | sort: 'date' | reverse %}
-  {% for update in updates limit:3 %}
-    <div class="update-item">
-      <h4>{{ update.date | date: "%B %Y" }}: {{ update.title }}</h4>
-      <p>{{ update.description }}</p>
-    </div>
-  {% endfor %}
-{% else %}
-  <div class="update-item">
-    <h4>October 2023: Beta Testing Phase Launched</h4>
-    <p>We're excited to announce that our beta testing phase has officially begun! Early adopters can now test our streaming capabilities and provide valuable feedback.</p>
-  </div>
-  <div class="update-item">
-    <h4>September 2023: Smart Contract Audit Completed</h4>
-    <p>Our payment and subscription smart contracts have successfully passed a comprehensive security audit.</p>
-  </div>
-{% endif %}
