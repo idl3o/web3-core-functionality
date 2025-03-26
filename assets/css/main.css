@@ -166,6 +166,51 @@ section {
   margin-bottom: 0.5rem;
 }
 
+/* Roadmap timeline */
+.roadmap-timeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.timeline-item {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.timeline-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.timeline-item h4 {
+  margin-top: 0;
+  color: var(--primary-color);
+}
+
+.timeline-item p {
+  margin-bottom: 0;
+  color: var(--text-light);
+}
+
+.hidden {
+  display: none;
+}
+
+#form-success {
+  color: var(--success-color);
+  margin-top: var(--space-md);
+}
+
+#form-error {
+  color: var(--danger-color);
+  margin-top: var(--space-md);
+}
+
 /* Text utilities */
 .text-center {
   text-align: center;

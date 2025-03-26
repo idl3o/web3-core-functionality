@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<form class="beta-signup-form" action="#" method="post">
+<form id="beta-signup-form" action="/submit" method="POST">
     <div class="form-group">
         <label for="email">Email address</label>
         <input type="email" id="email" name="email" placeholder="your@email.com" required>
@@ -30,24 +30,33 @@
     </div>
 
     <div class="form-group">
-        <label>I am a:</label>
-        <div class="checkbox-group">
-            <input type="checkbox" id="creator" name="user_type" value="creator">
-            <label for="creator">Content Creator</label>
-
-            <input type="checkbox" id="viewer" name="user_type" value="viewer">
-            <label for="viewer">Viewer</label>
-
-            <input type="checkbox" id="developer" name="user_type" value="developer">
-            <label for="developer">Developer</label>
-        </div>
+        <label for="role">Role</label>
+        <select id="role" name="role" required>
+            <option value="creator">Creator</option>
+            <option value="viewer">Viewer</option>
+            <option value="developer">Developer</option>
+        </select>
     </div>
 
     <button type="submit" class="button primary">Sign Up for Beta</button>
 
-    <p class="form-disclaimer">By signing up, you agree to our <a href="{{ '/terms' | relative_url }}">Terms of
-            Service</a> and <a href="{{ '/privacy' | relative_url }}">Privacy Policy</a>.</p>
+    <p id="form-success" class="hidden">Thank you for signing up! We'll be in touch soon.</p>
+    <p id="form-error" class="hidden">There was an error submitting the form. Please try again.</p>
 </form>
+
+<script>
+    document.getElementById('beta-signup-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formSuccess = document.getElementById('form-success');
+        const formError = document.getElementById('form-error');
+
+        // Simulate form submission
+        setTimeout(() => {
+            formSuccess.classList.remove('hidden');
+            formError.classList.add('hidden');
+        }, 1000);
+    });
+</script>
 
 <style>
     .beta-status-notice {
