@@ -1,6 +1,7 @@
 /* Base styles for PoE Web3 Streaming Service */
 
 :root {
+    /* Light mode variables */
     --primary-color: #0056b3; /* Darker blue for better contrast */
     --secondary-color: #007b8a; /* Muted teal for readability */
     --dark-color: #1e293b; /* Softer dark color */
@@ -28,11 +29,25 @@
     --border-radius: 8px;
 }
 
+[data-theme="dark"] {
+    /* Dark mode variables */
+    --primary-color: #6e45e2;
+    --secondary-color: #00d8ff;
+    --dark-color: #121212;
+    --light-color: #f7f7f7;
+    --text-color: #e0e0e0;
+    --background-color: #121212;
+    --card-background: #1e1e1e;
+    --border-color: #333333;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
 /* Global styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 html,
@@ -45,13 +60,11 @@ body {
 }
 
 body {
-    color: var(--text-color);
-    background-color: var(--background-color);
     line-height: 1.6;
     letter-spacing: 0.01em;
     font-size: 16px; /* Comfortable base font size */
-    color: #333; /* Slightly softer than black */
-    background-color: #fff;
+    color: var(--text-color); /* Slightly softer than black */
+    background-color: var(--background-color);
 }
 
 p {
@@ -99,26 +112,13 @@ h3 {
 a {
     color: var(--primary-color);
     text-decoration: none;
-    transition: color 0.3s ease;
-    color: #0066cc;
-    text-decoration: none;
+    transition: color 0.3s ease, border-color 0.3s ease;
     border-bottom: 1px solid transparent;
-    transition: border-color 0.2s ease;
-}
-
-a {
-    color: var(--secondary);
-    text-decoration: none;
-    transition: color 0.3s ease;
 }
 
 a:hover {
     color: var(--secondary-color);
     border-bottom-color: currentColor;
-}
-
-a:hover {
-    color: var(--primary);
 }
 
 .container {
