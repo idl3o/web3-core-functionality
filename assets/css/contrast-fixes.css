@@ -1,0 +1,141 @@
+:root {
+  /* Enhanced contrast color palette */
+  --dark: #121218;
+  --light: #f0f0ff;
+  --primary: #6e45e2;
+  --primary-light: #8f70f0;
+  --primary-dark: #4d2eb8;
+  --secondary: #00d8ff;
+  --secondary-light: #70ebff;
+  --secondary-dark: #00a8c7;
+  --accent: #ff5722;
+  --gray-dark: #2a2a35;
+  --gray-medium: #9090a7;
+  --gray-light: #d0d0e0;
+  
+  /* Improved contrast for text */
+  --text-on-dark: #ffffff;
+  --text-muted-on-dark: #c0c0d0;
+  --text-on-light: #151520;
+  --link-color: #70adff;
+  --link-hover: #99c2ff;
+}
+
+/* Improved header contrast */
+.site-header {
+  background-color: var(--dark);
+}
+
+.site-header.scrolled {
+  background-color: rgba(18, 18, 24, 0.97);
+  backdrop-filter: blur(10px);
+}
+
+.nav-links li a {
+  color: var(--text-on-dark);
+  font-weight: 500;
+}
+
+.dropdown-menu {
+  background-color: var(--gray-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced button styles for better visibility */
+.button.primary {
+  background-color: var(--primary);
+  color: var(--text-on-dark);
+  border-color: var(--primary);
+  font-weight: 600;
+}
+
+.button.primary:hover, 
+.button.primary:focus {
+  background-color: var(--primary-light);
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 2px rgba(110, 69, 226, 0.4);
+}
+
+.button.secondary {
+  color: var(--text-on-dark);
+  border-color: var(--secondary);
+  background-color: transparent;
+  font-weight: 600;
+}
+
+.button.secondary:hover,
+.button.secondary:focus {
+  background-color: rgba(0, 216, 255, 0.15);
+  box-shadow: 0 0 0 2px rgba(0, 216, 255, 0.4);
+}
+
+/* Improved card and content contrast */
+.tech-card, 
+.benefit-card, 
+.team-member, 
+.contributor-role {
+  background-color: var(--gray-dark);
+  border-top-color: var(--primary-light);
+}
+
+.tech-card p, 
+.benefit-card p, 
+.team-member p, 
+.contributor-role li {
+  color: var(--text-muted-on-dark);
+}
+
+/* Enhanced footer contrast */
+.site-footer {
+  background-color: var(--dark);
+}
+
+.footer-section h3 {
+  color: var(--text-on-dark);
+}
+
+.footer-section p,
+.footer-section a {
+  color: var(--text-muted-on-dark);
+}
+
+.footer-section a:hover {
+  color: var(--secondary-light);
+}
+
+/* Link styling improvements */
+a {
+  color: var(--link-color);
+  transition: color 0.2s ease;
+}
+
+a:hover, 
+a:focus {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* Add focus styles for accessibility */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+/* Enhanced form elements for better visibility */
+input, 
+textarea, 
+select {
+  background-color: var(--gray-dark);
+  border: 1px solid var(--gray-medium);
+  color: var(--text-on-dark);
+}
+
+/* Better contrast for statistics */
+.stat-number {
+  color: var(--secondary-light);
+  text-shadow: 0 0 10px rgba(0, 216, 255, 0.3);
+}

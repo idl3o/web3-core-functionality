@@ -30,7 +30,7 @@
 </div>
 
 <style>
-    /* Basic inline styles - will likely be replaced by your main CSS file */
+    /* Enhanced button styles for better contrast */
     .cta-buttons-wrapper {
         display: flex;
         flex-direction: column;
@@ -50,32 +50,45 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 0.75rem 1.5rem;
-        border-radius: 4px;
+        padding: 0.85rem 1.75rem;
+        border-radius: 6px;
         font-weight: 600;
         text-decoration: none;
         transition: all 0.3s ease;
+        font-size: 1.05rem;
+        letter-spacing: 0.02em;
     }
 
     .button.primary {
-        background-color: #6366f1;
-        color: white;
-        border: 2px solid #6366f1;
+        background-color: var(--secondary);
+        color: var(--dark);
+        border: 2px solid var(--secondary);
     }
 
     .button.secondary {
         background-color: transparent;
-        color: #6366f1;
-        border: 2px solid #6366f1;
+        color: var(--text-on-dark);
+        border: 2px solid var(--secondary);
     }
 
-    .button.primary:hover {
-        background-color: #4f46e5;
-        border-color: #4f46e5;
+    .button.primary:hover,
+    .button.primary:focus {
+        background-color: var(--secondary-light);
+        border-color: var(--secondary-light);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 216, 255, 0.3);
     }
 
-    .button.secondary:hover {
-        background-color: rgba(99, 102, 241, 0.1);
+    .button.secondary:hover,
+    .button.secondary:focus {
+        background-color: rgba(0, 216, 255, 0.15);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 216, 255, 0.15);
+    }
+
+    .button:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 216, 255, 0.4);
     }
 
     .button .icon {
@@ -88,15 +101,15 @@
 
     @keyframes pulse {
         0% {
-            box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+            box-shadow: 0 0 0 0 rgba(0, 216, 255, 0.7);
         }
 
         70% {
-            box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+            box-shadow: 0 0 0 10px rgba(0, 216, 255, 0);
         }
 
         100% {
-            box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+            box-shadow: 0 0 0 0 rgba(0, 216, 255, 0);
         }
     }
 
@@ -105,22 +118,19 @@
         flex-direction: column;
         align-items: center;
         margin-top: 2rem;
-        color: #6b7280;
-        font-size: 0.875rem;
+        color: var(--text-muted-on-dark);
+        font-size: 0.95rem;
+        font-weight: 500;
     }
 
     .scroll-arrow {
         margin-top: 0.5rem;
         animation: bounce 2s infinite;
+        color: var(--secondary);
     }
 
     @keyframes bounce {
-
-        0%,
-        20%,
-        50%,
-        80%,
-        100% {
+        0%, 20%, 50%, 80%, 100% {
             transform: translateY(0);
         }
 
