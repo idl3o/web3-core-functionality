@@ -1,7 +1,3 @@
-### [index.md](file:///c%3A/Users/Sam/gh/web3-crypto-streaming-service/index.md)
-
-````markdown
----
 layout: default
 title: Web3 Crypto Streaming Service
 description: Revolutionary decentralized content streaming platform powered by blockchain technology
@@ -12,6 +8,9 @@ seo:
   links:
     - https://twitter.com/web3streaming
     - https://github.com/username/web3-crypto-streaming-service
+    
+<link rel="stylesheet" type="text/css" href="main.css">
+
 ---
 
 {%- comment -%}
