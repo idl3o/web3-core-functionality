@@ -131,6 +131,9 @@ Welcome to the Web3 Crypto Streaming Service playground! This is a safe environm
   <a href="#beta-signup" class="button primary">Join Beta Program</a>
 </div>
 
+<!-- Include the asset links -->
+{% include playground-asset-links.html %}
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   // Tab switching functionality

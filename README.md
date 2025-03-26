@@ -39,7 +39,20 @@ The platform leverages:
 
 Browse through the site to learn more about the platform's whitepaper, technology overview, and creator guides. This GitHub Pages implementation serves as both a project showcase and an educational resource for decentralized applications.
 
-## Running the Project Locally
+## Development Environments
+
+### GitHub Codespaces
+
+You can work on this project directly in GitHub Codespaces:
+
+1. Navigate to the GitHub repository
+2. Click the "Code" button
+3. Select the "Codespaces" tab
+4. Click "Create codespace on main" or select an existing codespace
+
+[Open in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=<REPO_ID_HERE>&machine=basicLinux32gb) - Quickly spin up a new codespace for this project
+
+### Running Locally
 
 To view the project locally, you can use the **Live Server** extension in Visual Studio Code:
 
@@ -49,6 +62,18 @@ To view the project locally, you can use the **Live Server** extension in Visual
 4. Alternatively, use the keyboard shortcut `Alt+L Alt+O` to start the server.
 
 This will launch a development server with live reload capability, allowing you to preview changes in real-time.
+
+## Publishing the Project
+
+To publish this project using GitHub Pages:
+
+1. Push your repository to GitHub.
+2. Navigate to your repository on GitHub.
+3. Go to **Settings** > **Pages**.
+4. Under "Branch," select the branch (e.g., `gh-pages`) and folder (e.g., `/root` or `/docs`) you want to publish.
+5. Click **Save**. Your site will be available at `https://<username>.github.io/<repository>`.
+
+For manual deployment or other hosting methods, refer to the documentation of your hosting platform.
 
 <!--
   <<< Author notes: Finish >>>
