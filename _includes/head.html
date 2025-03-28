@@ -39,6 +39,11 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
     <link rel="stylesheet" href="{{ '/assets/css/contrast-fixes.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/flymode.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/animations.css' | relative_url }}">
+    {% if page.layout == 'post' or page.url contains '/blog/' %}
+    <link rel="stylesheet" href="{{ '/assets/css/blog.css' | relative_url }}">
+    {% endif %}
     
     <!-- Theme color for browser UI -->
     <meta name="theme-color" content="#6e45e2">

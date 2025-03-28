@@ -11,6 +11,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add scroll event listener for header
     window.addEventListener('scroll', handleHeaderScroll);
+
+    // Add flymode toggle button if not already added by flymode.js
+    if (!document.querySelector('.flymode-toggle')) {
+        const flymodeToggle = document.createElement('button');
+        flymodeToggle.className = 'flymode-toggle';
+        flymodeToggle.innerHTML = '🚀';
+        document.body.appendChild(flymodeToggle);
+
+        flymodeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('flymode-active');
+        });
+    }
 });
 
 /**

@@ -1,20 +1,21 @@
 # Site settings
 title: Web3 Crypto Streaming Service
 email: contact@web3streaming.example
-description: Revolutionary decentralized content streaming platform powered by blockchain technology
+description: A decentralized content streaming platform built on blockchain technology
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://username.github.io/web3-crypto-streaming-service"
+url: "https://web3streaming.example.com"
 twitter_username: web3streaming
-github_username: username
+github_username: web3streaming
 author: Web3 Crypto Team
 
 # Build settings
 markdown: kramdown
-plugins:
-  - jekyll-feed
-  - jekyll-seo-tag
-  - jekyll-sitemap
-  - jekyll-paginate
+permalink: /blog/:year/:month/:day/:title/
+
+# Blog settings
+show_excerpts: true
+paginate: 9
+paginate_path: "/blog/page:num/"
 
 # Collections
 collections:
@@ -24,26 +25,30 @@ collections:
   use_cases:
     output: true
     permalink: /use-cases/:name/
-
-# Pagination
-paginate: 6
-paginate_path: "/blog/page:num/"
+  authors:
+    output: true
 
 # Default front matter
 defaults:
-  -
-    scope:
+  - scope:
       path: ""
       type: "posts"
     values:
       layout: "post"
       comments: true
-  -
-    scope:
+      author: "Web3 Streaming Team"
+  - scope:
       path: ""
       type: "pages"
     values:
       layout: "default"
+
+# Plugins
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-paginate
+  - jekyll-seo-tag
 
 # Social media
 social:
@@ -54,3 +59,12 @@ social:
 
 # Google Analytics (replace with your tracking ID in production)
 google_analytics: UA-XXXXXXXXX-X
+
+# Exclude from processing
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .gitignore
