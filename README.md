@@ -1,88 +1,120 @@
+<header>
+
+<!--
+  <<< Author notes: Course header >>>
+  Include a 1280×640 image, course title in sentence case, and a concise description in emphasis.
+  In your repository settings: enable template repository, add your 1280×640 social image, auto delete head branches.
+  Add your open source license, GitHub uses MIT license.
+-->
+
 # Web3 Crypto Streaming Service
 
-## Project Overview
-A decentralized streaming platform leveraging blockchain technology to provide secure, private, and monetizable content streaming services. The platform integrates with multiple cryptocurrency payment systems and employs advanced cryptographic protocols to ensure content protection and user privacy.
+This repository contains the website for the Web3 Crypto Streaming Service, a decentralized platform for content streaming built on blockchain technology.
 
-## Technologies & Skills
-- **Frontend**: Vue.js, TypeScript, HTML5/CSS3
-- **Backend**: Node.js, Express, TypeScript
-- **Blockchain**: Ethereum (ENS integration), Bitcoin, Dogecoin
-- **Security**: Quantum-resistant encryption, SNE Protocol, CCK2M system
-- **Streaming**: HLS, DASH, P2P protocols
-- **DevOps**: Docker, CI/CD pipelines, PowerShell automation
-- **Testing**: Jest, Mocha, Integration testing
+## Overview
 
-## Key Features Implemented
+The Web3 Crypto Streaming Service leverages blockchain technology to create a more equitable, transparent, and efficient content streaming ecosystem. Our platform enables direct creator-to-viewer relationships, fair revenue distribution, and community governance.
 
-### Advanced Security Architecture
-- Designed and implemented multi-layered security system using composite cipher approaches
-- Created quantum-resistant encryption methods for future-proof data protection
-- Developed token-based authentication with verification chains
+## Repository Information
 
-### Multi-Cryptocurrency Payment Integration
-- Integrated Bitcoin and Dogecoin payment networks with automatic retry capabilities
-- Implemented micropayment systems allowing per-second content consumption billing
-- Developed transaction verification systems with multi-signature security
+This repository is a combination of our original work and contributions from [idl3o/gh-pages](https://github.com/idl3o/gh-pages), merged to provide an enhanced user experience and additional functionality.
 
-### Decentralized Streaming Infrastructure
-- Created proxy-based secure streaming with multiple encryption levels
-- Built resource allocation system that dynamically manages bandwidth and compute resources
-- Implemented multi-device streaming with HomePod and Sonos integration
+## Key Features
 
-### Philosophical Content System
-- Developed the Dionysian Agent for delivering philosophical audio content
-- Created content categorization and adaptive playback systems
-- Implemented metrics tracking for content engagement analysis
+- Decentralized content storage and delivery
+- Tokenized economy with the STREAM token
+- Smart contract integration for transparent transactions
+- User-friendly interfaces for creators and viewers
 
-## Architecture Highlights
+## Documentation
 
-### Modular Service Design
-The system uses a comprehensive service-oriented architecture with clear boundaries between components:
+- [Whitepaper](whitepaper/web3-streaming-service-whitepaper.md)
+- [Announcement Post](_posts/2025-03-25-first.md)
+- [Repository Merge Guide](REPOSITORY_MERGE_GUIDE.md)
 
-- **Core Services**: Authentication, streaming, payment processing
-- **Security Services**: Encryption, token verification, secure proxying
-- **Utility Services**: Resource management, health monitoring, error handling
+## Development
 
-### Advanced Security Implementation
-Multiple security layers provide defense-in-depth protection:
+### Prerequisites
 
-- **SNE Protocol**: End-to-end encryption for streaming content
-- **POE Stream Crypto Token Protocol**: Secure token operations for content access
-- **Lyigvas System**: Quantum-resistant security layer with matrix-based verification
+- Git
+- Ruby (for Jekyll, if applicable)
+- Node.js (if applicable)
 
-## Challenges & Solutions
+### Local Setup
 
-### Challenge: Secure Multi-Device Streaming
-**Solution**: Implemented the LAN Peer Discovery Service that securely discovers compatible devices on local networks while maintaining privacy and security constraints.
+1. Clone the repository
+   ```
+   git clone https://github.com/yourusername/gh-pages.git
+   cd gh-pages
+   ```
 
-### Challenge: Reliable Cryptocurrency Payments
-**Solution**: Created a fault-tolerant payment processing system with automatic retry mechanisms, transaction verification, and secure wallet management.
+2. Install dependencies
+   ```
+   # For Jekyll sites
+   bundle install
+   
+   # For Node.js sites
+   npm install
+   ```
 
-### Challenge: Content Protection
-**Solution**: Developed the SecureProxyStreamingService with multiple encryption levels and dynamic resource allocation to prevent unauthorized access while maintaining streaming quality.
+3. Run locally
+   ```
+   # For Jekyll sites
+   bundle exec jekyll serve
+   
+   # For Node.js sites
+   npm start
+   ```
 
-## Results & Impact
-- Created a comprehensive full-stack application spanning frontend, backend, and blockchain technologies
-- Implemented 20+ specialized services handling everything from security to content delivery
-- Developed sophisticated PowerShell automation scripts for development workflow optimization
-- Built with security and privacy as first-class concerns throughout the architecture
+## Contributing
 
-## Future Development
+We welcome contributions to improve the Web3 Crypto Streaming Service! Please see our [contribution guidelines](CONTRIBUTING.md) for more information.
 
-Planned enhancements include:
-- Cross-chain support expansion
-- DAO governance implementation
-- Mobile applications for iOS and Android
-- Enhanced creator tools and dashboard
+## License
 
-## Related Skills
-- Cryptographic protocol design
-- Advanced TypeScript patterns
-- Service-oriented architecture
-- Blockchain integration
-- Streaming optimization algorithms
-- Security-focused development
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+</header>
+
+<!--
+  <<< Author notes: Finish >>>
+  Review what we learned, ask for feedback, provide next steps.
+-->
+
+## Finish
+
+_Congratulations friend, you've completed this course!_
+
+<img src=https://octodex.github.com/images/constructocat2.jpg alt=celebrate width=300 align=right>
+
+Your blog is now live and has been deployed!
+
+Here's a recap of all the tasks you've accomplished in your repository:
+
+- You enabled GitHub Pages.
+- You selected a theme using the config file.
+- You learned about proper directory format and file naming conventions in Jekyll.
+- You created your first blog post with Jekyll!
+
+### What's next?
+
+- Keep working on your GitHub Pages site... we love seeing what you come up with!
+- We'd love to hear what you thought of this course [in our discussion board](https://github.com/orgs/skills/discussions/categories/github-pages).
+- [Take another GitHub Skills course](https://github.com/skills).
+- [Read the GitHub Getting Started docs](https://docs.github.com/en/get-started).
+- To find projects to contribute to, check out [GitHub Explore](https://github.com/explore).
+
+<footer>
+
+<!--
+  <<< Author notes: Footer >>>
+  Add a link to get support, GitHub status page, code of conduct, license link.
+-->
 
 ---
 
-*This project serves as a demonstration of blockchain integration, cryptographic security implementation, and decentralized application architecture.*
+Get help: [Post in our discussion board](https://github.com/orgs/skills/discussions/categories/github-pages) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
+
+&copy; 2023 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
+
+</footer>
