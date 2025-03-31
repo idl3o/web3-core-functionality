@@ -24,9 +24,58 @@
       margin: 0 auto;
       padding: 2rem 1rem;
     }
+    .nav-container {
+      background-color: #1a1a2e;
+      padding: 1rem 0;
+    }
+    .main-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    .logo {
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+    }
+    .logo img {
+      margin-right: 10px;
+      height: 30px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+    .nav-links a {
+      color: white;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: #4361ee;
+    }
   </style>
 </head>
 <body>
+
+<div class="nav-container">
+  <div class="main-nav">
+    <a href="/" class="logo">
+      <img src="assets/images/logo.png" alt="Web3 Streaming Logo" />
+      <span>Web3 Streaming</span>
+    </a>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#beta-program">Beta Program</a>
+      <a href="docs/">Documentation</a>
+      <a href="whitepaper/web3-streaming-service-whitepaper">Whitepaper</a>
+    </div>
+  </div>
+</div>
 
 <div class="hero" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 4rem 2rem; text-align: center; border-radius: 8px;">
   <h1 style="font-size: 2.8rem; margin-bottom: 1rem;">Web3 Crypto Streaming Service</h1>
@@ -77,6 +126,31 @@
         <h3>Earn Directly</h3>
         <p>Receive payments instantly when viewers engage with your content.</p>
       </div>
+    </div>
+  </section>
+
+  <section style="margin: 5rem 0; text-align: center;">
+    <h2 style="font-size: 2.2rem; margin-bottom: 2rem;">Comprehensive Documentation</h2>
+    <p style="max-width: 700px; margin: 0 auto 2rem auto;">Our detailed documentation provides everything you need to understand and integrate with our platform.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+      <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h3 style="color: #4361ee;">For Creators</h3>
+        <p>Learn how to upload, monetize, and manage your content.</p>
+        <a href="docs/guides.creators" style="color: #4361ee; display: inline-block; margin-top: 1rem; font-weight: bold;">Read more →</a>
+      </div>
+      <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h3 style="color: #4361ee;">For Viewers</h3>
+        <p>Discover how to find, purchase, and enjoy content.</p>
+        <a href="docs/guides.viewers" style="color: #4361ee; display: inline-block; margin-top: 1rem; font-weight: bold;">Read more →</a>
+      </div>
+      <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h3 style="color: #4361ee;">For Developers</h3>
+        <p>Access API documentation and integration guides.</p>
+        <a href="docs/guides.developers" style="color: #4361ee; display: inline-block; margin-top: 1rem; font-weight: bold;">Read more →</a>
+      </div>
+    </div>
+    <div style="margin-top: 2.5rem;">
+      <a href="docs/" style="display: inline-block; background: #4361ee; color: white; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: bold;">Browse All Documentation</a>
     </div>
   </section>
 
@@ -175,7 +249,8 @@
       <h4 style="margin-bottom: 1rem;">Resources</h4>
       <ul style="list-style: none; padding: 0;">
         <li style="margin-bottom: 0.5rem;"><a href="whitepaper/web3-streaming-service-whitepaper" style="color: white; text-decoration: none;">Whitepaper</a></li>
-        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: white; text-decoration: none;">Documentation</a></li>
+        <li style="margin-bottom: 0.5rem;"><a href="docs/" style="color: white; text-decoration: none;">Documentation</a></li>
+        <li style="margin-bottom: 0.5rem;"><a href="docs/tech.contracts" style="color: white; text-decoration: none;">Smart Contracts</a></li>
         <li style="margin-bottom: 0.5rem;"><a href="_posts/2025-03-25-first" style="color: white; text-decoration: none;">Announcement</a></li>
       </ul>
     </div>
