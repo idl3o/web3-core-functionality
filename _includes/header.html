@@ -22,53 +22,38 @@
 
 <body>
     <header class="site-header">
-        <div class="container">
-            <div class="logo">
-                <a href="{{ '/' | relative_url }}" class="site-title">
-                    <span class="logo-text">Web3 Crypto Streaming</span>
-                </a>
-            </div>
+        <div class="container header-container">
+            <a href="{{ '/' | relative_url }}" class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2z" fill="url(#gradient)" />
+                    <path d="M22 16l-8 4.598V11.402L22 16z" fill="white" />
+                    <defs>
+                        <linearGradient id="gradient" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#6e45e2" />
+                            <stop offset="1" stop-color="#88d3ce" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                Web3 Streaming
+            </a>
             
             <nav class="main-nav">
-                <button class="menu-toggle" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <ul class="nav-links">
-                    <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a></li>
-                    <li><a href="{{ '/about' | relative_url }}" {% if page.url == '/about/' %}class="active"{% endif %}>About</a></li>
-                    <li><a href="{{ '/telos' | relative_url }}" {% if page.url == '/telos/' %}class="active"{% endif %}>Telos</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle">Platform</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ '/#technology' | relative_url }}">Technology</a></li>
-                            <li><a href="{{ '/#roadmap' | relative_url }}">Roadmap</a></li>
-                            <li><a href="{{ '/whitepaper' | relative_url }}">Whitepaper</a></li>
-                            <li><a href="{{ '/docs/beta-deployment' | relative_url }}">Beta Guide</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle">Creators</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ '/creators' | relative_url }}">For Creators</a></li>
-                            <li><a href="{{ '/calculator' | relative_url }}">Earnings Calculator</a></li>
-                            <li><a href="{{ '/docs/github-web3-integration' | relative_url }}">GitHub Integration</a></li>
-                            <li><a href="{{ '/docs/git-setup' | relative_url }}">Git Setup Guide</a></li>
-                            <li><a href="{{ '/#get-involved' | relative_url }}">Get Involved</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="{{ '/blog' | relative_url }}" {% if page.url contains '/blog/' %}class="active"{% endif %}>Blog</a></li>
-                    <li><a href="{{ '/faq' | relative_url }}" {% if page.url == '/faq/' %}class="active"{% endif %}>FAQ</a></li>
+                <ul>
+                    <li><a href="{{ '/technology' | relative_url }}">Technology</a></li>
+                    <li><a href="{{ '/creators' | relative_url }}">For Creators</a></li>
+                    <li><a href="{{ '/tokens' | relative_url }}">Token</a></li>
+                    <li><a href="{{ '/roadmap' | relative_url }}">Roadmap</a></li>
+                    <li><a href="{{ '/community' | relative_url }}">Community</a></li>
                 </ul>
             </nav>
             
-            <div class="wallet-connect">
-                <button id="connect-wallet" class="button primary">Connect Wallet</button>
-                <div id="wallet-status" class="hidden">
-                    <span id="wallet-address">0x0...0000</span>
-                    <span id="wallet-balance">0 ETH</span>
-                </div>
+            <div class="header-actions">
+                <button class="theme-toggle" title="Switch Theme">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <button id="connect-wallet" class="wallet-button">
+                    <i class="fas fa-wallet"></i> Connect Wallet
+                </button>
             </div>
         </div>
     </header>

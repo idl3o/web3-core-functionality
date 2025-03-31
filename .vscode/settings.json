@@ -1,5 +1,19 @@
 {
   "sonarlint.pathToNodeExecutable": "/usr/local/bin/node",
   "sonarlint.output.showAnalyzerLogs": true,
-  "sonarlint.output.showVerboseLogs": false
+  "sonarlint.output.showVerboseLogs": false,
+  "sonarlint.disableTelemetry": true,
+  "sonarlint.analyses.mode": "onSave",
+  "[javascript]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+      "source.fixAll.sonarlint": true
+    }
+  },
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+      "source.fixAll.sonarlint": true
+    }
+  }
 }
