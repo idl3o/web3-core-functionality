@@ -22,7 +22,8 @@ Welcome to the official documentation for the Web3 Crypto Streaming Service. Thi
 ## Technical Documentation
 
 - [Architecture](tech.architecture): Platform architecture and components
-- [Smart Contracts](tech.contracts): Smart contract documentation
+- [Smart Contract Architecture](tech.contracts): Smart contract documentation
+- [Smart Contract Catalog](tech.contract-list): Detailed list of all platform contracts
 - [Token](tech.token): STREAM token specifications and utilities
 
 ## Governance
