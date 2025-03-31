@@ -19,11 +19,18 @@ Welcome to the official documentation for the Web3 Crypto Streaming Service. Thi
 - [For Viewers](guides.viewers): How to discover and consume content
 - [For Developers](guides.developers): Integration and API documentation
 
+## Use Cases
+
+- [Smart Contracts in Action](use-cases/smart-contract-applications): Real-world applications of our blockchain technology
+- [Creator Success Stories](use-cases/creator-stories): How creators are benefiting from the platform
+- [Viewer Benefits](use-cases/viewer-benefits): Advantages for content consumers
+
 ## Technical Documentation
 
 - [Architecture](tech.architecture): Platform architecture and components
 - [Smart Contract Architecture](tech.contracts): Smart contract documentation
 - [Smart Contract Catalog](tech.contract-list): Detailed list of all platform contracts
+- [Solidity Code Review](tech.solidity-review): In-depth analysis of our smart contract code
 - [Token](tech.token): STREAM token specifications and utilities
 
 ## Governance
