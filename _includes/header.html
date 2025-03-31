@@ -10,6 +10,13 @@
     <meta property="og:image" content="{{ page.image | absolute_url }}">
     {% endif %}
     <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+    {% if page.url == '/telos/' %}
+    <link rel="stylesheet" href="{{ '/assets/css/telos.css' | relative_url }}">
+    <script src="{{ '/assets/js/engram-visualization.js' | relative_url }}" defer></script>
+    {% endif %}
+    {% if page.url == '/viewer/' %}
+    <link rel="stylesheet" href="{{ '/assets/css/content-viewer.css' | relative_url }}">
+    {% endif %}
     {% seo %}
 </head>
 
@@ -31,19 +38,23 @@
                 <ul class="nav-links">
                     <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a></li>
                     <li><a href="{{ '/about' | relative_url }}" {% if page.url == '/about/' %}class="active"{% endif %}>About</a></li>
+                    <li><a href="{{ '/telos' | relative_url }}" {% if page.url == '/telos/' %}class="active"{% endif %}>Telos</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle">Platform</a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ '/#technology' | relative_url }}">Technology</a></li>
                             <li><a href="{{ '/#roadmap' | relative_url }}">Roadmap</a></li>
                             <li><a href="{{ '/whitepaper' | relative_url }}">Whitepaper</a></li>
+                            <li><a href="{{ '/docs/beta-deployment' | relative_url }}">Beta Guide</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle">Community</a>
+                        <a href="#" class="dropdown-toggle">Creators</a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ '/creators' | relative_url }}">For Creators</a></li>
                             <li><a href="{{ '/calculator' | relative_url }}">Earnings Calculator</a></li>
+                            <li><a href="{{ '/docs/github-web3-integration' | relative_url }}">GitHub Integration</a></li>
+                            <li><a href="{{ '/docs/git-setup' | relative_url }}">Git Setup Guide</a></li>
                             <li><a href="{{ '/#get-involved' | relative_url }}">Get Involved</a></li>
                         </ul>
                     </li>

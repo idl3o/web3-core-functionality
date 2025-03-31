@@ -1,0 +1,17 @@
+{
+  "pathToNodeExecutable": "/usr/local/bin/node",
+  "testFilePattern": "**/__tests__/**",
+  "javascript": {
+    "node": {
+      "enabled": true
+    },
+    "environments": [
+      "browser",
+      "node",
+      "es6"
+    ]
+  },
+  "typescript": {
+    "enabled": true
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "sonarlint.pathToNodeExecutable": "/usr/local/bin/node",
+  "sonarlint.output.showAnalyzerLogs": true,
+  "sonarlint.output.showVerboseLogs": false
+}
