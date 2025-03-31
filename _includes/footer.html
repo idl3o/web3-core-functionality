@@ -1,70 +1,75 @@
 <footer class="site-footer">
-    <div class="container">
-        <div class="footer-grid">
-            <div class="footer-section">
-                <h3>Web3 Crypto Streaming</h3>
-                <p>A decentralized content streaming platform built on blockchain technology that empowers creators and viewers.</p>
-                <div class="social-links">
-                    <a href="https://twitter.com/web3streaming" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
-                    </a>
-                    <a href="https://github.com/username/web3-crypto-streaming-service" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                    </a>
-                    <a href="https://discord.gg/web3streaming" target="_blank" rel="noopener noreferrer" aria-label="Discord">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 18V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2Z"></path><path d="m9 10 2 2 4-4"></path></svg>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Platform</h3>
-                <ul>
-                    <li><a href="{{ '/#technology' | relative_url }}">Technology</a></li>
-                    <li><a href="{{ '/#roadmap' | relative_url }}">Roadmap</a></li>
-                    <li><a href="{{ '/whitepaper' | relative_url }}">Whitepaper</a></li>
-                    <li><a href="{{ '/#team' | relative_url }}">Team</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Community</h3>
-                <ul>
-                    <li><a href="{{ '/creators' | relative_url }}">For Creators</a></li>
-                    <li><a href="{{ '/calculator' | relative_url }}">Earnings Calculator</a></li>
-                    <li><a href="{{ '/blog' | relative_url }}">Blog</a></li>
-                    <li><a href="{{ '/faq' | relative_url }}">FAQ</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Legal</h3>
-                <ul>
-                    <li><a href="{{ '/terms' | relative_url }}">Terms of Service</a></li>
-                    <li><a href="{{ '/privacy' | relative_url }}">Privacy Policy</a></li>
-                </ul>
-            </div>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <a href="{{ '/' | relative_url }}">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2z" fill="url(#footer-gradient)" />
+            <path d="M22 16l-8 4.598V11.402L22 16z" fill="white" />
+            <defs>
+              <linearGradient id="footer-gradient" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6e45e2" />
+                <stop offset="1" stop-color="#88d3ce" />
+              </linearGradient>
+            </defs>
+          </svg>
+          Web3 Streaming
+        </a>
+      </div>
+      
+      <div class="footer-links">
+        <div class="footer-links-column">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="{{ '/viewer' | relative_url }}">Watch Content</a></li>
+            <li><a href="{{ '/creators' | relative_url }}">For Creators</a></li>
+            <li><a href="{{ '/telos' | relative_url }}">Technology</a></li>
+            <li><a href="{{ '/installation' | relative_url }}">Installation</a></li>
+          </ul>
         </div>
         
-        <div class="newsletter">
-            <h3>Stay Updated</h3>
-            <p>Subscribe to our newsletter for the latest updates and announcements.</p>
-            <form class="newsletter-form" action="#" method="post">
-                <input type="email" placeholder="Your email address" required>
-                <button type="submit" class="button primary">Subscribe</button>
-            </form>
+        <div class="footer-links-column">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="{{ '/whitepaper' | relative_url }}">Whitepaper</a></li>
+            <li><a href="{{ '/docs' | relative_url }}">Documentation</a></li>
+            <li><a href="{{ '/api' | relative_url }}">API Reference</a></li>
+            <li><a href="{{ '/faq' | relative_url }}">FAQ</a></li>
+          </ul>
         </div>
         
-        <div class="footer-contribute">
-            <h3>Contribute to Our Project</h3>
-            <p>Help us build the future of decentralized streaming. Visit our GitHub repository to contribute:</p>
-            <a href="https://github.com/username/gh-pages/contribute" target="_blank" rel="noopener" class="button primary">Contribute on GitHub</a>
+        <div class="footer-links-column">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="https://discord.gg/web3streaming" target="_blank" rel="noopener">Discord</a></li>
+            <li><a href="https://twitter.com/web3streaming" target="_blank" rel="noopener">Twitter</a></li>
+            <li><a href="https://github.com/web3streaming" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="https://forum.web3streaming.com" target="_blank" rel="noopener">Forum</a></li>
+          </ul>
         </div>
         
-        <div class="copyright">
-            <p>&copy; {{ site.time | date: '%Y' }} Web3 Crypto Streaming Service. All rights reserved.</p>
+        <div class="footer-links-column">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="{{ '/legal/terms' | relative_url }}">Terms & Conditions</a></li>
+            <li><a href="{{ '/legal/privacy' | relative_url }}">Privacy Policy</a></li>
+            <li><a href="{{ '/legal/copyright' | relative_url }}">Copyright Policy</a></li>
+            <li><a href="{{ '/legal/token-disclaimer' | relative_url }}">Token Disclaimer</a></li>
+          </ul>
         </div>
+      </div>
     </div>
+    
+    <div class="footer-bottom">
+      <p class="copyright">&copy; {{ site.time | date: '%Y' }} Web3 Crypto Streaming Service. All rights reserved.</p>
+      <div class="social-icons">
+        <a href="https://discord.gg/web3streaming" target="_blank" rel="noopener"><i class="fab fa-discord"></i></a>
+        <a href="https://twitter.com/web3streaming" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a>
+        <a href="https://github.com/web3streaming" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>
+        <a href="https://t.me/web3streaming" target="_blank" rel="noopener"><i class="fab fa-telegram"></i></a>
+      </div>
+    </div>
+  </div>
 </footer>
 
 <style>

@@ -35,6 +35,160 @@
   </div>
 </section>
 
+<div class="hero-section">
+  <div class="container">
+    <h1>Web3 Crypto Streaming</h1>
+    <p class="tagline">Decentralized content that rewards creators and viewers</p>
+    <div class="hero-buttons">
+      <button class="primary-button" id="connect-wallet">Connect Wallet</button>
+      <button class="secondary-button">Explore Content</button>
+    </div>
+  </div>
+</div>
+
+<section class="features-section">
+  <div class="container">
+    <h2>The Future of Content Streaming</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <i class="fa fa-lock"></i>
+        <h3>Decentralized Ownership</h3>
+        <p>Content ownership secured on the blockchain</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa fa-money-bill"></i>
+        <h3>Creator Revenue</h3>
+        <p>90% of revenue goes directly to creators</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa fa-users"></i>
+        <h3>Community Governance</h3>
+        <p>Platform decisions made by token holders</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-header">
+      <h2>Platform Metrics</h2>
+      <p>Real-time blockchain analytics from our decentralized ecosystem</p>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-data">
+          <div class="stat-counter" id="creator-count">0</div>
+          <div class="stat-label">Active Creators</div>
+        </div>
+        <div class="stat-chart">
+          <div class="mini-chart creator-chart"></div>
+          <div class="trend positive">+5.8% <i class="fas fa-caret-up"></i></div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-film"></i>
+        </div>
+        <div class="stat-data">
+          <div class="stat-counter" id="content-count">0</div>
+          <div class="stat-label">Content Items</div>
+        </div>
+        <div class="stat-chart">
+          <div class="mini-chart content-chart"></div>
+          <div class="trend positive">+12.4% <i class="fas fa-caret-up"></i></div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-coins"></i>
+        </div>
+        <div class="stat-data">
+          <div class="stat-counter" id="token-volume">0</div>
+          <div class="stat-label">STREAM Token Vol. (24h)</div>
+        </div>
+        <div class="stat-chart">
+          <div class="mini-chart token-chart"></div>
+          <div class="trend negative">-2.3% <i class="fas fa-caret-down"></i></div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-server"></i>
+        </div>
+        <div class="stat-data">
+          <div class="stat-counter" id="storage-count">0</div>
+          <div class="stat-label">TB Stored on IPFS</div>
+        </div>
+        <div class="stat-chart">
+          <div class="mini-chart storage-chart"></div>
+          <div class="trend positive">+8.7% <i class="fas fa-caret-up"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trending-content">
+  <div class="container">
+    <h2>Trending Content</h2>
+    <div class="content-grid" id="trending-content-grid">
+      <!-- Content will be loaded dynamically -->
+      <div class="content-placeholder">Loading trending content...</div>
+    </div>
+  </div>
+</section>
+
+<section class="how-it-works">
+  <div class="container">
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Connect Your Wallet</h3>
+        <p>Use MetaMask or any Web3 wallet to join the platform</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Browse or Upload Content</h3>
+        <p>Discover creators or share your own content</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Earn & Support</h3>
+        <p>Earn tokens by watching or supporting creators</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="wallet-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <h2>Connect Your Wallet</h2>
+    <div class="wallet-options">
+      <button class="wallet-option" data-wallet="metamask">
+        <img src="/assets/images/metamask.svg" alt="MetaMask">
+        <span>MetaMask</span>
+      </button>
+      <button class="wallet-option" data-wallet="walletconnect">
+        <img src="/assets/images/walletconnect.svg" alt="WalletConnect">
+        <span>WalletConnect</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/web3-connect.js"></script>
+<script src="/assets/js/content-loader.js"></script>
+
 <section class="features" id="technology">
   <div class="container">
     <div class="section-header">
@@ -440,5 +594,47 @@
         }
       });
     }
+
+    // Initialize counters with realistic animation
+    animateCounter('creator-count', 0, 4328, 2000);
+    animateCounter('content-count', 0, 27495, 2500);
+    animateCounter('token-volume', 0, 856240, 3000, value => '$' + numberWithCommas(value));
+    animateCounter('storage-count', 0, 348, 2800);
+    
+    // Helper functions for realistic counter animation
+    function animateCounter(elementId, start, end, duration, formatter) {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+      
+      const range = end - start;
+      const minIncrements = 30;
+      let current = start;
+      const stepTime = Math.max(duration / minIncrements, 1);
+      
+      // Add slight randomness to make it feel more realistic
+      const updateCounter = () => {
+        const progress = Math.min((current - start) / range, 1);
+        
+        // Ease-out effect for more natural counting
+        const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+        const nextValue = Math.floor(start + easeOutCubic * range);
+        
+        if (nextValue > current) {
+          current = nextValue;
+          element.textContent = formatter ? formatter(current) : numberWithCommas(current);
+        }
+        
+        if (progress < 1) {
+          requestAnimationFrame(updateCounter);
+        }
+      };
+      
+      requestAnimationFrame(updateCounter);
+    }
+    
+    function numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
   });
 </script>
+</html>
