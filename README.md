@@ -7,9 +7,72 @@
   Add your open source license, GitHub uses MIT license.
 -->
 
-# GitHub Pages
+# Web3 Crypto Streaming Service
 
-_Create a site or blog from your GitHub repositories with GitHub Pages._
+This repository contains the website for the Web3 Crypto Streaming Service, a decentralized platform for content streaming built on blockchain technology.
+
+## Overview
+
+The Web3 Crypto Streaming Service leverages blockchain technology to create a more equitable, transparent, and efficient content streaming ecosystem. Our platform enables direct creator-to-viewer relationships, fair revenue distribution, and community governance.
+
+## Repository Information
+
+This repository is a combination of our original work and contributions from [idl3o/gh-pages](https://github.com/idl3o/gh-pages), merged to provide an enhanced user experience and additional functionality.
+
+## Key Features
+
+- Decentralized content storage and delivery
+- Tokenized economy with the STREAM token
+- Smart contract integration for transparent transactions
+- User-friendly interfaces for creators and viewers
+
+## Documentation
+
+- [Whitepaper](whitepaper/web3-streaming-service-whitepaper.md)
+- [Announcement Post](_posts/2025-03-25-first.md)
+- [Repository Merge Guide](REPOSITORY_MERGE_GUIDE.md)
+
+## Development
+
+### Prerequisites
+
+- Git
+- Ruby (for Jekyll, if applicable)
+- Node.js (if applicable)
+
+### Local Setup
+
+1. Clone the repository
+   ```
+   git clone https://github.com/yourusername/gh-pages.git
+   cd gh-pages
+   ```
+
+2. Install dependencies
+   ```
+   # For Jekyll sites
+   bundle install
+   
+   # For Node.js sites
+   npm install
+   ```
+
+3. Run locally
+   ```
+   # For Jekyll sites
+   bundle exec jekyll serve
+   
+   # For Node.js sites
+   npm start
+   ```
+
+## Contributing
+
+We welcome contributions to improve the Web3 Crypto Streaming Service! Please see our [contribution guidelines](CONTRIBUTING.md) for more information.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 </header>
 
