@@ -1,4 +1,4 @@
-<<<<<<< test-rewrite
+idl3o.com/gh-pages
 <header>
 
 <!--
