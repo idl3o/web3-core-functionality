@@ -3,242 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project RED X - URL Launcher</title>
+    <title>Web3 Crypto Streaming Service - Resource Directory</title>
     <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --light-bg: #f1f3f9;
+            --dark-bg: #1a1a2e;
+            --text: #333;
+            --text-light: #666;
+            --success: #27ae60;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            background-color: #222;
-            color: #eee;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
             margin: 0;
-            padding: 20px;
-        }
-        h1, h2 {
-            color: #f00;
-        }
-        .url-section {
-            margin-bottom: 30px;
-            background-color: #333;
-            padding: 15px;
-            border-radius: 5px;
-            border-left: 4px solid #f00;
-        }
-        .url-list {
-            list-style: none;
             padding: 0;
+            color: var(--text);
+            background-color: var(--light-bg);
         }
-        .url-list li {
-            padding: 10px;
-            margin-bottom: 5px;
-            background-color: #444;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
         }
-        .url-list li:hover {
-            background-color: #555;
+        
+        header {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            text-align: center;
         }
-        .url-list a {
-            color: #f00;
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        h2 {
+            color: var(--primary);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .resource-card {
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 1.25rem;
+            transition: all 0.2s ease;
+        }
+        
+        .resource-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .resource-card h3 {
+            margin-top: 0;
+            color: var(--secondary);
+        }
+        
+        .resource-card p {
+            margin-bottom: 0.75rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        a {
+            color: var(--primary);
             text-decoration: none;
-            flex-grow: 1;
-            display: inline-block;
+            font-weight: 500;
         }
-        .url-list a:hover {
+        
+        a:hover {
             text-decoration: underline;
         }
-        .badge {
-            background-color: #f00;
-            color: #000;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-right: 10px;
-        }
-        .url-list .description {
-            color: #aaa;
-            margin-left: 10px;
-            font-size: 14px;
-        }
-        .launch-btn {
-            background-color: #f00;
-            color: #000;
-            border: none;
-            padding: 5px 15px;
+        
+        .tag {
+            display: inline-block;
+            font-size: 0.8rem;
+            background: var(--light-bg);
+            padding: 0.2rem 0.5rem;
             border-radius: 4px;
-            cursor: pointer;
+            margin-right: 0.5rem;
+            color: var(--text-light);
+        }
+        
+        .direct-link {
+            display: block;
+            margin-top: 1rem;
             font-weight: bold;
-            margin-left: 10px;
         }
-        .launch-btn:hover {
-            background-color: #ff3333;
-        }
-        @media (max-width: 600px) {
-            .url-list li {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .description {
-                margin-left: 0;
-                margin-top: 5px;
-            }
-            .launch-btn {
-                margin-top: 10px;
-                margin-left: 0;
-                width: 100%;
-            }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <h1>Project RED X - URL Launcher</h1>
-    <p>Quick access to all important URLs for development and deployment.</p>
+    <header>
+        <div class="container">
+            <h1>Web3 Crypto Streaming Service</h1>
+            <p>Complete resource directory with direct URLs to all platform components</p>
+        </div>
+    </header>
     
-    <div class="url-section">
-        <h2>Live Demos</h2>
-        <ul class="url-list">
-            <li>
-                <span class="badge">MAIN</span>
-                <a href="index.html">Main Landing Page</a>
-                <span class="description">Project overview and static demo launcher</span>
-                <button class="launch-btn" onclick="window.open('index.html', '_blank')">Launch</button>
-            </li>
-            <li>
-                <span class="badge">DEMO</span>
-                <a href="red_x/index.html">RED X WebAssembly Demo</a>
-                <span class="description">WebAssembly application with visual display</span>
-                <button class="launch-btn" onclick="window.open('red_x/index.html', '_blank')">Launch</button>
-            </li>
-        </ul>
+    <div class="container">
+        <section class="section">
+            <h2>Core Documentation</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <h3>Platform Overview</h3>
+                    <p>Introduction to the Web3 Crypto Streaming Service platform</p>
+                    <span class="tag">Getting Started</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/root/introduction" class="direct-link">Open Documentation →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>Whitepaper</h3>
+                    <p>Complete technical whitepaper detailing platform architecture</p>
+                    <span class="tag">Technical</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/whitepaper/web3-streaming-service-whitepaper" class="direct-link">Read Whitepaper →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>User Documentation</h3>
+                    <p>Complete documentation index with all platform guides</p>
+                    <span class="tag">Resources</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs" class="direct-link">Browse Documentation →</a>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2>Smart Contract Resources</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <h3>Smart Contract Architecture</h3>
+                    <p>Architectural overview of platform smart contracts</p>
+                    <span class="tag">Technical</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/tech.contracts" class="direct-link">View Architecture →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>Smart Contract Catalog</h3>
+                    <p>Complete catalog of platform smart contracts</p>
+                    <span class="tag">Developer</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/tech.contract-list" class="direct-link">Browse Contracts →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>Solidity Code Review</h3>
+                    <p>In-depth code analysis and optimization techniques</p>
+                    <span class="tag">Developer</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/tech.solidity-review" class="direct-link">Read Code Review →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>StreamAccessContract</h3>
+                    <p>Direct access to content access control contract</p>
+                    <span class="tag">Contract</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/contracts/stream-access" class="direct-link">View Contract →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>ProofOfExistence</h3>
+                    <p>Direct access to content verification contract</p>
+                    <span class="tag">Contract</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/contracts/proof-of-existence" class="direct-link">View Contract →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>StreamPayment</h3>
+                    <p>Direct access to payment streaming contract</p>
+                    <span class="tag">Contract</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/contracts/stream-payment" class="direct-link">View Contract →</a>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2>User Guides</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <h3>Creator Guide</h3>
+                    <p>Complete guide for content creators using the platform</p>
+                    <span class="tag">Users</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/guides.creators" class="direct-link">Creator Guide →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>Viewer Guide</h3>
+                    <p>Complete guide for content viewers using the platform</p>
+                    <span class="tag">Users</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/guides.viewers" class="direct-link">Viewer Guide →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>Developer Guide</h3>
+                    <p>Integration guide for developers building on the platform</p>
+                    <span class="tag">Developer</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/guides.developers" class="direct-link">Developer Guide →</a>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2>Use Cases & Examples</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <h3>Smart Contracts in Action</h3>
+                    <p>Real-world applications of platform smart contracts</p>
+                    <span class="tag">Use Cases</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/use-cases/smart-contract-applications" class="direct-link">View Use Cases →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>Creator Success Stories</h3>
+                    <p>Case studies of successful creators on the platform</p>
+                    <span class="tag">Use Cases</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/use-cases/creator-stories" class="direct-link">Read Success Stories →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>Economic Impact Analysis</h3>
+                    <p>Data on creator earnings and platform economy</p>
+                    <span class="tag">Analysis</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/analysis/economic-impact" class="direct-link">View Analysis →</a>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2>Career Resources</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <h3>Web3 Resume</h3>
+                    <p>Example blockchain developer resume for job applications</p>
+                    <span class="tag">Career</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/career/sam-lavi-web3-resume" class="direct-link">View Resume →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>Web3 CV</h3>
+                    <p>Comprehensive curriculum vitae for blockchain positions</p>
+                    <span class="tag">Career</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/career/sam-lavi-web3-cv" class="direct-link">View CV →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>Application Tips</h3>
+                    <p>Best practices for Web3 job applications</p>
+                    <span class="tag">Career</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/career/web3-application-tips" class="direct-link">Read Tips →</a>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2>Platform Resources</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <h3>GitHub Repository</h3>
+                    <p>Source code repository for the platform</p>
+                    <span class="tag">Code</span>
+                    <a href="https://github.com/sam-lavi/gh-pages" class="direct-link">View on GitHub →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>Community Discord</h3>
+                    <p>Join our developer and user community</p>
+                    <span class="tag">Community</span>
+                    <a href="https://discord.gg/web3streaming" class="direct-link">Join Discord →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <h3>Contract Addresses</h3>
+                    <p>Network deployment addresses for all contracts</p>
+                    <span class="tag">Developer</span>
+                    <a href="https://sam-lavi.github.io/gh-pages/docs/contract-addresses" class="direct-link">View Addresses →</a>
+                </div>
+            </div>
+        </section>
     </div>
     
-    <div class="url-section">
-        <h2>Development URLs</h2>
-        <ul class="url-list">
-            <li>
-                <span class="badge">DEV</span>
-                <a href="http://localhost:3000">Local Development Server</a>
-                <span class="description">Node.js server with full functionality</span>
-                <button class="launch-btn" onclick="window.open('http://localhost:3000', '_blank')">Launch</button>
-            </li>
-            <li>
-                <span class="badge">API</span>
-                <a href="http://localhost:3000/api/version">API Version Endpoint</a>
-                <span class="description">Node.js server version information</span>
-                <button class="launch-btn" onclick="window.open('http://localhost:3000/api/version', '_blank')">Launch</button>
-            </li>
-            <li>
-                <span class="badge">LINKS</span>
-                <a href="wub-links.txt">WUB Links Source</a>
-                <span class="description">Source file for external link collection</span>
-                <button class="launch-btn" onclick="window.open('wub-links.txt', '_blank')">Launch</button>
-            </li>
-        </ul>
-    </div>
-    
-    <div class="url-section">
-        <h2>GitHub & Deployment</h2>
-        <ul class="url-list">
-            <li>
-                <span class="badge">GITHUB</span>
-                <a href="https://github.com/modsias/red_x">GitHub Repository</a>
-                <span class="description">Project source code repository</span>
-                <button class="launch-btn" onclick="window.open('https://github.com/modsias/red_x', '_blank')">Launch</button>
-            </li>
-            <li>
-                <span class="badge">PAGES</span>
-                <a href="https://modsias.github.io/red_x/">GitHub Pages Deployment</a>
-                <span class="description">Live static deployment on GitHub Pages</span>
-                <button class="launch-btn" onclick="window.open('https://modsias.github.io/red_x/', '_blank')">Launch</button>
-            </li>
-            <li>
-                <span class="badge">ACTIONS</span>
-                <a href="https://github.com/modsias/red_x/actions">GitHub Actions</a>
-                <span class="description">Deployment workflow status</span>
-                <button class="launch-btn" onclick="window.open('https://github.com/modsias/red_x/actions', '_blank')">Launch</button>
-            </li>
-        </ul>
-    </div>
-    
-    <div class="url-section">
-        <h2>Documentation & Resources</h2>
-        <ul class="url-list">
-            <li>
-                <span class="badge">README</span>
-                <a href="https://github.com/modsias/red_x/blob/main/README.md">Project README</a>
-                <span class="description">Main project documentation</span>
-                <button class="launch-btn" onclick="window.open('https://github.com/modsias/red_x/blob/main/README.md', '_blank')">Launch</button>
-            </li>
-            <li>
-                <span class="badge">DOC</span>
-                <a href="README_GITHUB_PAGES.md">GitHub Pages Documentation</a>
-                <span class="description">Instructions for GitHub Pages deployment</span>
-                <button class="launch-btn" onclick="window.open('README_GITHUB_PAGES.md', '_blank')">Launch</button>
-            </li>
-            <li>
-                <span class="badge">SDL2</span>
-                <a href="https://wiki.libsdl.org/">SDL2 Documentation</a>
-                <span class="description">SDL2 library reference</span>
-                <button class="launch-btn" onclick="window.open('https://wiki.libsdl.org/', '_blank')">Launch</button>
-            </li>
-            <li>
-                <span class="badge">EMSCRIPTEN</span>
-                <a href="https://emscripten.org/docs/api_reference/index.html">Emscripten Documentation</a>
-                <span class="description">WebAssembly compiler reference</span>
-                <button class="launch-btn" onclick="window.open('https://emscripten.org/docs/api_reference/index.html', '_blank')">Launch</button>
-            </li>
-        </ul>
-    </div>
-
-    <div class="url-section">
-        <h2>Project Information</h2>
-        <ul class="url-list">
-            <li>
-                <span class="badge">TEAM</span>
-                <a href="team.html">Project Team</a>
-                <span class="description">Meet the team behind Project RED X</span>
-                <button class="launch-btn" onclick="window.open('team.html', '_blank')">Launch</button>
-            </li>
-            <li>
-                <span class="badge">STATUS</span>
-                <a href="status.html">System Status</a>
-                <span class="description">Current operational status of all systems</span>
-                <button class="launch-btn" onclick="window.open('status.html', '_blank')">Launch</button>
-            </li>
-            <li>
-                <span class="badge">README</span>
-                <a href="README_GITHUB_PAGES.md">GitHub Pages Documentation</a>
-                <span class="description">Instructions for GitHub Pages deployment</span>
-                <button class="launch-btn" onclick="window.open('README_GITHUB_PAGES.md', '_blank')">Launch</button>
-            </li>
-            <li>
-                <span class="badge">GITHUB</span>
-                <a href="https://github.com/modsias/red_x">GitHub Repository</a>
-                <span class="description">Project source code repository</span>
-                <button class="launch-btn" onclick="window.open('https://github.com/modsias/red_x', '_blank')">Launch</button>
-            </li>
-        </ul>
-    </div>
-
-    <script>
-        // Add functionality to check if localhost links are available
-        document.addEventListener('DOMContentLoaded', function() {
-            const localhostLinks = document.querySelectorAll('a[href^="http://localhost"]');
-            
-            localhostLinks.forEach(link => {
-                const parentLi = link.parentElement;
-                fetch(link.href, { mode: 'no-cors', method: 'HEAD', timeout: 1000 })
-                    .then(() => {
-                        // Success - server is likely running
-                        parentLi.style.opacity = '1';
-                    })
-                    .catch(() => {
-                        // Failed - server is not available
-                        parentLi.style.opacity = '0.5';
-                        parentLi.querySelector('.description').textContent = 'SERVER NOT RUNNING: ' + 
-                            parentLi.querySelector('.description').textContent;
-                    });
-            });
-        });
-    </script>
+    <footer>
+        <div class="container">
+            <p>Web3 Crypto Streaming Service &copy; 2025 | All contracts are open-source under MIT License</p>
+            <p>
+                <a href="https://sam-lavi.github.io/gh-pages/">Home</a> &bull;
+                <a href="https://sam-lavi.github.io/gh-pages/docs">Documentation</a> &bull;
+                <a href="https://sam-lavi.github.io/gh-pages/whitepaper/web3-streaming-service-whitepaper">Whitepaper</a>
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
