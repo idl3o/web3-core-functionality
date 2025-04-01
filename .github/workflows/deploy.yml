@@ -60,8 +60,9 @@ jobs:
           ./deploy-gh-pages.sh
           
       - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
+          name: build-artifact
           path: ./build
           
   deploy:
