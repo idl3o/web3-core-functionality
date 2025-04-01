@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/red_x.git"
+    "url": "git+https://github.com/modsias/red_x.git"
   },
   "dependencies": {
     "gh-pages": "^6.0.0"

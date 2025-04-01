@@ -31,3 +31,24 @@ Alternatively, use GitHub Actions to automate deployment (see `.github/workflows
 
 For full functionality including AI features and real-time networking, run the project locally:
 
+```bash
+cd red_x
+npm install
+make web
+npm start
+```
+
+## Resources
+
+- [WebAssembly Documentation](https://webassembly.org/)
+- [SDL2 Library](https://www.libsdl.org/)
+- [Emscripten](https://emscripten.org/)
+- [GitHub Pages Documentation](https://docs.github.com/en/pages)
+- [Project Team](https://modsias.github.io/red_x/team.html)
+- [System Status](https://modsias.github.io/red_x/status.html)
+
+## Copyright
+
+COPYRIGHT (C) 2025 github/modsias  
+CODE GEN ID: AIMODE-775045-V1.0
+

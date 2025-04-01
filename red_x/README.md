@@ -50,3 +50,13 @@ npm start
 
 The GitHub Pages version is a static build with limited functionality. Dynamic features that require a server (like Claude AI and real-time networking) won't work.
 
+## Resources
+
+For more information about WebAssembly and SDL2 integration, check the documentation in the `docs` directory or visit [the project wiki](https://github.com/modsias/red_x/wiki).
+
+## Copyright
+
+PROJECT RED X CORE  
+CODE GEN ID: AIMODE-775045-V1.0  
+COPYRIGHT (C) 2025 github/modsias
+

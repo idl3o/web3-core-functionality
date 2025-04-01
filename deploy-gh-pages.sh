@@ -15,6 +15,7 @@ cp index.html $BUILD_DIR/
 cp 404.html $BUILD_DIR/
 cp url-launcher.html $BUILD_DIR/
 cp team.html $BUILD_DIR/
+cp status.html $BUILD_DIR/
 
 # Check if npm is available
 if ! command -v npm &> /dev/null; then
