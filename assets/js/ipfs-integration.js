@@ -1,194 +1,222 @@
 /**
- * IPFS Integration Module for Web3 Crypto Streaming Service™
- * ModSIAS™ (Modular Secure IPFS Authentication System)
+ * IPFS Integration for Web3 Crypto Streaming Platform
+ * Handles file uploads to IPFS network
  */
-class IPFSIntegration {
-  constructor() {
-    this.ipfs = null;
-    this.initialized = false;
-    this.ipfsGateway = 'https://ipfs.io/ipfs/';
-    this.statusListeners = [];
-    this.connectionStatus = {
-      connected: false,
-      error: null
-    };
-  }
 
-  /**
-   * Initialize IPFS client
-   */
-  async initialize() {
-    if (this.initialized) {
-      console.log('IPFS already initialized.');
-      return;
-    }
-    try {
-      // In production, we would actually connect to IPFS here
-      // Using library like ipfs-http-client
-      // this.ipfs = await window.IpfsHttpClient.create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
-      
-      // For demo purposes, we'll simulate successful connection
-      console.log('Initializing IPFS connection...');
-      
-      // Simulate connection delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      this.initialized = true;
-      this.connectionStatus = {
-        connected: true,
-        error: null
-      };
-      
-      this._notifyStatusListeners();
-      console.log('IPFS connection established');
-      
-      return true;
-    } catch (error) {
-      console.error('Failed to initialize IPFS client:', error);
-      this.connectionStatus = {
-        connected: false,
-        error: error.message
-      };
-      this._notifyStatusListeners();
-      throw error;
-    }
-  }
+// IPFS Gateway URLs for retrieval
+const IPFS_GATEWAYS = [
+  'https://ipfs.io/ipfs/',
+  'https://gateway.pinata.cloud/ipfs/',
+  'https://cloudflare-ipfs.com/ipfs/',
+  'https://ipfs.infura.io/ipfs/'
+];
 
-  /**
-   * Add a file to IPFS
-   * @param {File} file - The file to upload
-   * @returns {Promise<string>} - CID of the uploaded file
-   */
-  async addFile(file) {
-    if (!this.initialized) {
-      await this.initialize();
+// Custom API endpoint for IPFS uploads
+const IPFS_UPLOAD_ENDPOINT = '/api/ipfs/upload';
+
+/**
+ * Upload a file to IPFS
+ * 
+ * @param {File} file - File to upload
+ * @param {Function} onProgress - Progress callback (0-100)
+ * @returns {Promise<Object>} IPFS upload result with CID and gateway URLs
+ */
+async function uploadToIPFS(file, onProgress = null) {
+  // Create form data
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    // Get authentication token if available
+    const authToken = localStorage.getItem('auth_token');
+    
+    // Set up headers
+    const headers = {};
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
     }
     
-    try {
-      // In production, we would actually add the file to IPFS
-      // const added = await this.ipfs.add(file);
-      // return added.cid.toString();
-      
-      // For demo, generate a mock CID
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Generate a mock CID that looks realistic
-      const mockCID = 'Qm' + Array(44).fill(0).map(() => 'abcdef0123456789'.charAt(Math.floor(Math.random() * 16))).join('');
-      console.log(`File "${file.name}" uploaded to IPFS with CID: ${mockCID}`);
-      
-      return mockCID;
-    } catch (error) {
-      console.error('Error adding file to IPFS:', error);
-      throw new Error(`Failed to upload to IPFS: ${error.message}`);
-    }
-  }
-
-  /**
-   * Add JSON data to IPFS
-   * @param {Object} data - JSON data to store
-   * @returns {Promise<string>} - CID of the stored data
-   */
-  async addJSON(data) {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
-    try {
-      // In production, we'd convert to buffer and upload
-      // const jsonString = JSON.stringify(data);
-      // const buffer = Buffer.from(jsonString);
-      // const added = await this.ipfs.add(buffer);
-      // return added.cid.toString();
-
-      // For demo, generate a mock CID after delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const mockCID = 'Qm' + Array(44).fill(0).map(() => 'abcdef0123456789'.charAt(Math.floor(Math.random() * 16))).join('');
-      console.log(`JSON data stored on IPFS with CID: ${mockCID}`);
-      console.log('Data stored:', data);
-      
-      return mockCID;
-    } catch (error) {
-      console.error('Error adding JSON to IPFS:', error);
-      throw new Error(`Failed to store data on IPFS: ${error.message}`);
-    }
-  }
-
-  /**
-   * Get content from IPFS by CID
-   * @param {string} cid - Content identifier
-   * @returns {Promise<any>} - Retrieved content
-   */
-  async getFromCID(cid) {
-    if (!this.initialized) {
-      await this.initialize();
+    // Create XMLHttpRequest to track upload progress
+    const xhr = new XMLHttpRequest();
+    
+    // Set up progress tracking
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          onProgress(percentComplete);
+        }
+      };
     }
     
-    try {
-      // In production, we would fetch from IPFS
-      // const chunks = [];
-      // for await (const chunk of this.ipfs.cat(cid)) {
-      //   chunks.push(chunk);
-      // }
-      // return Buffer.concat(chunks).toString();
+    // Create promise for async/await pattern
+    const uploadPromise = new Promise((resolve, reject) => {
+      xhr.open('POST', IPFS_UPLOAD_ENDPOINT);
       
-      // For demo, simulate fetching
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Set headers
+      Object.keys(headers).forEach(key => {
+        xhr.setRequestHeader(key, headers[key]);
+      });
       
-      return {
-        success: true,
-        cid: cid,
-        retrievalTime: new Date().toISOString(),
-        message: `Content successfully retrieved from IPFS with CID: ${cid}`
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            resolve(response);
+          } catch (e) {
+            reject(new Error('Invalid response from server'));
+          }
+        } else {
+          reject(new Error(`Upload failed with status ${xhr.status}`));
+        }
       };
+      
+      xhr.onerror = () => reject(new Error('Network error during upload'));
+      xhr.send(formData);
+    });
+    
+    // Wait for upload to complete
+    const result = await uploadPromise;
+    
+    // Add gateway URLs to result
+    result.gatewayUrls = IPFS_GATEWAYS.map(gateway => `${gateway}${result.cid}`);
+    
+    return result;
+  } catch (error) {
+    console.error('IPFS upload error:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get the best available IPFS gateway URL for a CID
+ * 
+ * @param {string} cid - IPFS content identifier
+ * @returns {Promise<string>} Best gateway URL
+ */
+async function getBestGatewayUrl(cid) {
+  // Try each gateway and return the first that responds quickly
+  const promises = IPFS_GATEWAYS.map(async (gateway) => {
+    const url = `${gateway}${cid}`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    
+    try {
+      const response = await fetch(url, { 
+        method: 'HEAD',
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      
+      if (response.ok) {
+        return { url, time: Date.now() };
+      }
+      return null;
     } catch (error) {
-      console.error(`Error retrieving content with CID ${cid} from IPFS:`, error);
-      throw new Error(`Failed to retrieve content from IPFS: ${error.message}`);
+      clearTimeout(timeoutId);
+      return null;
     }
-  }
-
-  /**
-   * Get public URL for IPFS content
-   * @param {string} cid - Content identifier
-   * @returns {string} - Public gateway URL
-   */
-  getPublicURL(cid) {
-    return `${this.ipfsGateway}${cid}`;
-  }
-
-  /**
-   * Add status change listener
-   * @param {Function} listener - Callback for status changes
-   */
-  addStatusListener(listener) {
-    this.statusListeners.push(listener);
-  }
-
-  /**
-   * Remove status change listener
-   * @param {Function} listener - Previously added listener
-   */
-  removeStatusListener(listener) {
-    const index = this.statusListeners.indexOf(listener);
-    if (index !== -1) {
-      this.statusListeners.splice(index, 1);
+  });
+  
+  // Use Promise.any to get the first successful response
+  try {
+    const results = await Promise.all(promises);
+    const validResults = results.filter(result => result !== null);
+    
+    if (validResults.length > 0) {
+      // Sort by response time
+      validResults.sort((a, b) => a.time - b.time);
+      return validResults[0].url;
     }
+    
+    // Fallback to default gateway
+    return `${IPFS_GATEWAYS[0]}${cid}`;
+  } catch (error) {
+    console.error('Error finding best gateway:', error);
+    return `${IPFS_GATEWAYS[0]}${cid}`;
   }
+}
 
-  /**
-   * Notify all status listeners of connection changes
-   * @private
-   */
-  _notifyStatusListeners() {
-    this.statusListeners.forEach(listener => {
+/**
+ * Initialize drag and drop functionality for file uploads
+ * 
+ * @param {string} dropzoneId - HTML ID of the dropzone element
+ * @param {Function} onUpload - Callback when upload completes
+ * @param {Function} onProgress - Optional progress callback
+ */
+function initializeIpfsDropzone(dropzoneId, onUpload, onProgress = null) {
+  const dropzone = document.getElementById(dropzoneId);
+  if (!dropzone) return;
+  
+  // Prevent default drag behaviors
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, preventDefaults, false);
+  });
+  
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  
+  // Highlight dropzone on drag
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropzone.addEventListener(eventName, highlight, false);
+  });
+  
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, unhighlight, false);
+  });
+  
+  function highlight() {
+    dropzone.classList.add('highlight');
+  }
+  
+  function unhighlight() {
+    dropzone.classList.remove('highlight');
+  }
+  
+  // Handle dropped files
+  dropzone.addEventListener('drop', handleDrop, false);
+  
+  async function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    
+    if (files.length > 0) {
       try {
-        listener(this.connectionStatus);
+        const result = await uploadToIPFS(files[0], onProgress);
+        if (onUpload) {
+          onUpload(result);
+        }
       } catch (error) {
-        console.error('Error in IPFS status listener:', error);
+        console.error('Drop upload error:', error);
+        alert(`Upload failed: ${error.message}`);
+      }
+    }
+  }
+  
+  // Handle file input
+  const fileInput = dropzone.querySelector('input[type="file"]');
+  if (fileInput) {
+    fileInput.addEventListener('change', async (e) => {
+      if (e.target.files.length > 0) {
+        try {
+          const result = await uploadToIPFS(e.target.files[0], onProgress);
+          if (onUpload) {
+            onUpload(result);
+          }
+        } catch (error) {
+          console.error('File input upload error:', error);
+          alert(`Upload failed: ${error.message}`);
+        }
       }
     });
   }
 }
 
-// Create global singleton instance
-window.ipfsIntegration = new IPFSIntegration();
+// Export functions for use in other scripts
+window.ipfsUtils = {
+  uploadToIPFS,
+  getBestGatewayUrl,
+  initializeIpfsDropzone
+};

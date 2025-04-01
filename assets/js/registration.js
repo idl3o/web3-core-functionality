@@ -1,174 +1,190 @@
-import { resizeImage } from './utils.js';
-
 /**
- * Creator Registration Handler for Web3 Crypto Streaming Service™
- * Implements ModSIAS™ (Modular Secure IPFS Authentication System)
+ * Registration functionality for Web3 Crypto Streaming Platform
  */
+
 document.addEventListener('DOMContentLoaded', function() {
-  const registrationForm = document.getElementById('creator-registration');
-  const connectWalletBtn = document.getElementById('connect-wallet-register');
-  const walletStatusElement = document.getElementById('wallet-status');
-  const successMessage = document.getElementById('registration-success');
-  const errorMessage = document.getElementById('registration-error');
-  const errorDetails = errorMessage.querySelector('.error-details');
-  const tryAgainBtn = document.getElementById('try-again');
-  const profileCidElement = document.getElementById('profile-cid');
-  const profilePreview = document.getElementById('profile-preview'); // Add this line
+  const registerForm = document.getElementById('register-form');
+  const connectWalletBtn = document.getElementById('connect-wallet');
+  const walletAddressField = document.getElementById('wallet-address');
+  const walletConnectedStatus = document.getElementById('wallet-connected');
+  const submitButton = document.getElementById('submit-registration');
+  const loadingIndicator = document.getElementById('loading-indicator');
+  const formErrorMessage = document.getElementById('form-error');
+  const formSuccessMessage = document.getElementById('form-success');
   
-  // File upload handling
-  const fileInput = document.getElementById('profile-image');
-  const fileSelectButton = document.querySelector('.file-select-button');
-  const fileName = document.querySelector('.file-name');
+  // Check if wallet was previously connected
+  const checkWalletConnection = async () => {
+    if (window.ethereum && window.ethereum.selectedAddress) {
+      updateWalletUI(window.ethereum.selectedAddress);
+    }
+  };
   
-  let connectedWalletAddress = null;
-  let profileImageFile = null;
+  // Update UI with connected wallet info
+  const updateWalletUI = (address) => {
+    if (address) {
+      walletAddressField.value = address;
+      walletConnectedStatus.textContent = `Connected: ${formatAddress(address)}`;
+      walletConnectedStatus.classList.remove('hidden');
+      connectWalletBtn.textContent = 'Change Wallet';
+      
+      // Enable submit button if form is valid
+      if (validateForm()) {
+        submitButton.disabled = false;
+      }
+    }
+  };
   
-  // Initialize IPFS connection on page load
-  window.ipfsIntegration.initialize().catch(error => {
-    console.error('Failed to initialize IPFS:', error);
+  // Format address for display
+  const formatAddress = (address) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+  
+  // Connect wallet handler
+  const connectWallet = async () => {
+    if (!window.ethereum) {
+      showError('No Ethereum wallet detected. Please install MetaMask or another Web3 wallet.');
+      return;
+    }
+    
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      if (accounts.length > 0) {
+        updateWalletUI(accounts[0]);
+      }
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+      showError('Failed to connect wallet. ' + (error.message || 'Please try again.'));
+    }
+  };
+  
+  // Validate registration form
+  const validateForm = () => {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const walletAddress = walletAddressField.value;
+    const termsCheck = document.getElementById('terms').checked;
+    
+    // Basic form validation
+    if (!name || !email || !walletAddress || !termsCheck) {
+      return false;
+    }
+    
+    // Email format validation
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailPattern.test(email)) {
+      return false;
+    }
+    
+    // Wallet address validation (basic check)
+    if (!walletAddress.startsWith('0x') || walletAddress.length !== 42) {
+      return false;
+    }
+    
+    return true;
+  };
+  
+  // Show error message
+  const showError = (message) => {
+    formErrorMessage.textContent = message;
+    formErrorMessage.classList.remove('hidden');
+    setTimeout(() => {
+      formErrorMessage.classList.add('hidden');
+    }, 5000);
+  };
+  
+  // Show success message
+  const showSuccess = (message) => {
+    formSuccessMessage.textContent = message;
+    formSuccessMessage.classList.remove('hidden');
+  };
+  
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      showError('Please fill in all required fields correctly.');
+      return;
+    }
+    
+    const formData = {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      walletAddress: walletAddressField.value,
+      username: document.getElementById('username').value || undefined,
+      bio: document.getElementById('bio').value || undefined
+    };
+    
+    try {
+      // Show loading state
+      submitButton.disabled = true;
+      loadingIndicator.classList.remove('hidden');
+      
+      // Call registration API
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+      
+      // Success - clear form and show message
+      registerForm.reset();
+      showSuccess('Registration successful! Redirecting to dashboard...');
+      
+      // Redirect to dashboard after delay
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Registration error:', error);
+      showError(error.message || 'Registration failed. Please try again.');
+      
+    } finally {
+      submitButton.disabled = false;
+      loadingIndicator.classList.add('hidden');
+    }
+  };
+  
+  // Attach event listeners
+  if (connectWalletBtn) {
+    connectWalletBtn.addEventListener('click', connectWallet);
+  }
+  
+  if (registerForm) {
+    registerForm.addEventListener('submit', handleSubmit);
+  }
+  
+  // Initialize form
+  checkWalletConnection();
+  submitButton.disabled = !validateForm();
+  
+  // Live validation
+  document.querySelectorAll('input, textarea').forEach(input => {
+    input.addEventListener('input', () => {
+      submitButton.disabled = !validateForm();
+    });
   });
   
-  // File selection handling
-  if (fileSelectButton) {
-    fileSelectButton.addEventListener('click', function() {
-      fileInput.click();
-    });
-  }
-  
-  if (fileInput) {
-    fileInput.addEventListener('change', async function(e) {
-      if (e.target.files.length > 0) {
-        profileImageFile = e.target.files[0];
-        fileName.textContent = profileImageFile.name;
-
-        // Display preview of the selected image
-        if (profilePreview) {
-          profilePreview.src = URL.createObjectURL(profileImageFile);
-        }
+  // Listen for account changes in MetaMask
+  if (window.ethereum) {
+    window.ethereum.on('accountsChanged', (accounts) => {
+      if (accounts.length > 0) {
+        updateWalletUI(accounts[0]);
       } else {
-        fileName.textContent = 'No file selected';
-        profileImageFile = null;
-        if (profilePreview) {
-          profilePreview.src = '';
-        }
+        walletAddressField.value = '';
+        walletConnectedStatus.classList.add('hidden');
+        connectWalletBtn.textContent = 'Connect Wallet';
+        submitButton.disabled = true;
       }
-    });
-  }
-  
-  // Wallet connection
-  if (connectWalletBtn) {
-    connectWalletBtn.addEventListener('click', async function() {
-      try {
-        if (window.ethereum) {
-          // Request account access
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          connectedWalletAddress = accounts[0];
-          
-          // Update wallet status display
-          walletStatusElement.innerHTML = `
-            <span class="wallet-connected">
-              <i class="fas fa-check-circle"></i>
-              Connected: ${connectedWalletAddress.substring(0, 6)}...${connectedWalletAddress.substring(38)}
-            </span>
-          `;
-          
-          connectWalletBtn.classList.add('connected');
-          connectWalletBtn.innerHTML = '<i class="fas fa-wallet"></i> Wallet Connected';
-        } else {
-          throw new Error('No Ethereum wallet detected. Please install MetaMask or another Web3 wallet.');
-        }
-      } catch (error) {
-        console.error('Error connecting wallet:', error);
-        walletStatusElement.innerHTML = `
-          <span class="wallet-error">
-            <i class="fas fa-exclamation-circle"></i>
-            Connection failed: ${error.message}
-          </span>
-        `;
-      }
-    });
-  }
-  
-  // Form submission
-  if (registrationForm) {
-    registrationForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      // Show loading state
-      const submitButton = registrationForm.querySelector('button[type="submit"]');
-      const originalButtonText = submitButton.textContent;
-      submitButton.disabled = true;
-      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-      
-      try {
-        // Validate wallet connection
-        if (!connectedWalletAddress) {
-          throw new Error('Please connect your wallet to continue registration.');
-        }
-        
-        // Get form data
-        const creatorData = {
-          name: document.getElementById('creator-name').value,
-          email: document.getElementById('creator-email').value,
-          bio: document.getElementById('creator-bio').value,
-          category: document.getElementById('creator-category').value,
-          walletAddress: connectedWalletAddress,
-          registrationDate: new Date().toISOString(),
-          profileImageCid: null,
-          trademark: {
-            platform: 'Web3 Crypto Streaming Service™',
-            technology: 'ModSIAS™'
-          }
-        };
-        
-        // Handle profile image upload to IPFS if provided
-        if (profileImageFile) {
-          // Resize image before uploading
-          const resizedImageFile = await resizeImage(profileImageFile, 200, 200); // Resize to 200x200 pixels
-          const imageCid = await window.ipfsIntegration.addFile(resizedImageFile);
-          creatorData.profileImageCid = imageCid;
-          creatorData.profileImageUrl = window.ipfsIntegration.getPublicURL(imageCid);
-        }
-        
-        // Store creator data on IPFS
-        const creatorDataCid = await window.ipfsIntegration.addJSON(creatorData);
-        
-        // In a real implementation, we would now:
-        // 1. Store the mapping of wallet address -> CID in a smart contract
-        // 2. Verify the registration transaction on the blockchain
-        // 3. Update the creator database with the new registration
-        
-        // Show success message
-        registrationForm.style.display = 'none';
-        successMessage.style.display = 'block';
-        if (profileCidElement) {
-          profileCidElement.textContent = creatorDataCid;
-        }
-        
-        // Log success
-        console.log(`Creator ${creatorData.name} registered successfully with CID: ${creatorDataCid}`);
-        
-      } catch (error) {
-        console.error('Registration error:', error);
-        
-        // Show error message
-        errorDetails.textContent = error.message || 'Unknown error occurred.';
-        registrationForm.style.display = 'none';
-        errorMessage.style.display = 'block';
-      }
-    });
-  }
-  
-  // Try again button handler
-  if (tryAgainBtn) {
-    tryAgainBtn.addEventListener('click', function() {
-      errorMessage.style.display = 'none';
-      registrationForm.style.display = 'block';
-      
-      // Reset submit button
-      const submitButton = registrationForm.querySelector('button[type="submit"]');
-      submitButton.disabled = false;
-      submitButton.innerHTML = 'Complete Registration';
     });
   }
 });

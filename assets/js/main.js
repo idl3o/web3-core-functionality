@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScroll();
     initAnimations();
     initWalletConnect();
+    loadHomepageStats(); // Load homepage statistics
     
     // Add scroll event listener for header
     window.addEventListener('scroll', handleHeaderScroll);
@@ -200,4 +201,29 @@ function initWalletConnect() {
             if (connectButton) connectButton.classList.add('hidden');
         }
     }
+}
+
+/**
+ * Load and display dynamic statistics on the homepage
+ */
+function loadHomepageStats() {
+    const creatorRevenueElement = document.getElementById('creator-revenue');
+    const platformControlElement = document.getElementById('platform-control');
+    const ownershipElement = document.getElementById('ownership');
+    const creatorCountElement = document.getElementById('creator-count');
+    const contentCountElement = document.getElementById('content-count');
+    const tokenVolumeElement = document.getElementById('token-volume');
+    const storageCountElement = document.getElementById('storage-count');
+
+    if (creatorRevenueElement) creatorRevenueElement.textContent = '90%';
+    if (platformControlElement) platformControlElement.textContent = '0%';
+    if (ownershipElement) ownershipElement.textContent = '100%';
+
+    // Simulate fetching stats from an API or blockchain
+    setTimeout(() => {
+        if (creatorCountElement) creatorCountElement.textContent = '4,328';
+        if (contentCountElement) contentCountElement.textContent = '27,495';
+        if (tokenVolumeElement) tokenVolumeElement.textContent = '$856,240';
+        if (storageCountElement) storageCountElement.textContent = '348 TB';
+    }, 1000);
 }

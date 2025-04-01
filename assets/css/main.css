@@ -95,52 +95,27 @@ section {
 }
 
 /* Hero section with Chrome blue overlay */
-.hero-section {
+.hero {
   position: relative;
   min-height: 80vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
   padding: var(--space-xl) 0;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: var(--light-color);
   overflow: hidden;
 }
 
-.hero-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  filter: brightness(0.7) saturate(1.2);
-  z-index: 0;
-}
-
-.hero-bg::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, 
-                rgba(10, 10, 30, 0.7) 0%, 
-                rgba(10, 10, 30, 0.85) 70%, 
-                rgba(18, 18, 36, 1) 100%);
-}
-
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  text-align: center;
   max-width: 900px;
-  padding: 0 2rem;
+  margin-bottom: 2rem;
 }
 
-.hero-section h1 {
+.hero-title {
   font-size: 3.5rem;
   margin-bottom: var(--space-md);
   font-weight: 800;
@@ -148,14 +123,7 @@ section {
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.hero-section h2 {
-  font-size: 2rem;
-  margin-bottom: var(--space-lg);
-  color: var(--cta-secondary);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
-
-.hero-section p {
+.hero-subtitle {
   font-size: 1.25rem;
   max-width: 800px;
   margin: 0 auto var(--space-lg);
@@ -163,47 +131,11 @@ section {
   color: var(--light-color);
 }
 
-.tagline {
-  font-size: 1.5rem;
-  margin-bottom: 40px;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.hero-buttons {
+.hero-actions {
   display: flex;
   justify-content: center;
   gap: 20px;
-}
-
-button {
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.primary-button {
-  background-color: #ffffff;
-  color: var(--primary-color);
-  border: none;
-}
-
-.primary-button:hover {
-  background-color: rgba(255, 255, 255, 0.9);
-  transform: translateY(-2px);
-}
-
-.secondary-button {
-  background-color: transparent;
-  color: #ffffff;
-  border: 2px solid #ffffff;
-}
-
-.secondary-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
+  flex-wrap: wrap;
 }
 
 /* Benefits section */
@@ -639,6 +571,18 @@ button {
   box-shadow: 0 4px 12px rgba(0, 216, 255, 0.15);
 }
 
+.button.danger {
+  background: linear-gradient(135deg, #8b0000, #cc0000);
+  color: white;
+  box-shadow: 0 4px 10px rgba(139, 0, 0, 0.3);
+}
+
+.button.danger:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(139, 0, 0, 0.4);
+  background: linear-gradient(135deg, #a00000, #e60000);
+}
+
 /* Comparison Table */
 .comparison-table {
   border-radius: var(--border-radius);
@@ -853,22 +797,68 @@ button {
   margin-left: 0.5rem;
 }
 
+/* Beta Program Section */
+.beta-program {
+  background-color: var(--card-bg);
+  padding: 4rem 0;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.beta-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.beta-benefits {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.benefit-item {
+  text-align: left;
+}
+
+.benefit-item i {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.beta-cta {
+  margin-top: 3rem;
+}
+
+.beta-terms {
+  font-size: 0.8rem;
+  color: var(--text-muted-on-dark);
+  margin-top: 1rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   section {
     padding: 3rem 0;
   }
   
-  .hero-section h1 {
+  .hero-title {
     font-size: 2.5rem;
   }
   
-  .hero-section h2 {
-    font-size: 1.5rem;
+  .hero-subtitle {
+    font-size: 1rem;
   }
   
-  .hero-section p {
-    font-size: 1rem;
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .hero-actions > * {
+    width: 100%;
+    margin-bottom: 10px;
   }
   
   .updates-grid {
@@ -965,4 +955,16 @@ p, a, span {
 
 .button.secondary:hover {
   background-color: rgba(0, 216, 255, 0.15);
+}
+
+.button.danger {
+  background: linear-gradient(135deg, #8b0000, #cc0000);
+  color: white;
+  box-shadow: 0 4px 10px rgba(139, 0, 0, 0.3);
+}
+
+.button.danger:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(139, 0, 0, 0.4);
+  background: linear-gradient(135deg, #a00000, #e60000);
 }
