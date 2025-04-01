@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - Project RED X</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #eee;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        h1 {
+            color: #f00;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .x-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 2rem 0;
+        }
+        .x-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .x-line:before {
+            content: "";
+            position: absolute;
+            background-color: #f00;
+            width: 20px;
+            height: 100%;
+            transform: rotate(45deg);
+        }
+        .x-line:after {
+            content: "";
+            position: absolute;
+            background-color: #f00;
+            width: 20px;
+            height: 100%;
+            transform: rotate(-45deg);
+        }
+        .btn {
+            background-color: #f00;
+            color: #000;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 1rem;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #ff3333;
+        }
+        p {
+            max-width: 600px;
+            margin: 1rem auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>404 - Page Not Found</h1>
+    
+    <div class="x-container">
+        <div class="x-line"></div>
+    </div>
+    
+    <p>The page you were looking for couldn't be found.</p>
+    
+    <a href="/" class="btn">Return to Home</a>
+    
+    <p>Project RED X &copy; 2025</p>
+</body>
+</html>

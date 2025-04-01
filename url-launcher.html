@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project RED X - URL Launcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #f00;
+        }
+        .url-section {
+            margin-bottom: 30px;
+            background-color: #333;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #f00;
+        }
+        .url-list {
+            list-style: none;
+            padding: 0;
+        }
+        .url-list li {
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: #444;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+        .url-list li:hover {
+            background-color: #555;
+        }
+        .url-list a {
+            color: #f00;
+            text-decoration: none;
+            flex-grow: 1;
+            display: inline-block;
+        }
+        .url-list a:hover {
+            text-decoration: underline;
+        }
+        .badge {
+            background-color: #f00;
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        .url-list .description {
+            color: #aaa;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+        .launch-btn {
+            background-color: #f00;
+            color: #000;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .launch-btn:hover {
+            background-color: #ff3333;
+        }
+        @media (max-width: 600px) {
+            .url-list li {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .description {
+                margin-left: 0;
+                margin-top: 5px;
+            }
+            .launch-btn {
+                margin-top: 10px;
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Project RED X - URL Launcher</h1>
+    <p>Quick access to all important URLs for development and deployment.</p>
+    
+    <div class="url-section">
+        <h2>Live Demos</h2>
+        <ul class="url-list">
+            <li>
+                <span class="badge">MAIN</span>
+                <a href="index.html">Main Landing Page</a>
+                <span class="description">Project overview and static demo launcher</span>
+                <button class="launch-btn" onclick="window.open('index.html', '_blank')">Launch</button>
+            </li>
+            <li>
+                <span class="badge">DEMO</span>
+                <a href="red_x/index.html">RED X WebAssembly Demo</a>
+                <span class="description">WebAssembly application with visual display</span>
+                <button class="launch-btn" onclick="window.open('red_x/index.html', '_blank')">Launch</button>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="url-section">
+        <h2>Development URLs</h2>
+        <ul class="url-list">
+            <li>
+                <span class="badge">DEV</span>
+                <a href="http://localhost:3000">Local Development Server</a>
+                <span class="description">Node.js server with full functionality</span>
+                <button class="launch-btn" onclick="window.open('http://localhost:3000', '_blank')">Launch</button>
+            </li>
+            <li>
+                <span class="badge">API</span>
+                <a href="http://localhost:3000/api/version">API Version Endpoint</a>
+                <span class="description">Node.js server version information</span>
+                <button class="launch-btn" onclick="window.open('http://localhost:3000/api/version', '_blank')">Launch</button>
+            </li>
+            <li>
+                <span class="badge">LINKS</span>
+                <a href="wub-links.txt">WUB Links Source</a>
+                <span class="description">Source file for external link collection</span>
+                <button class="launch-btn" onclick="window.open('wub-links.txt', '_blank')">Launch</button>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="url-section">
+        <h2>GitHub & Deployment</h2>
+        <ul class="url-list">
+            <li>
+                <span class="badge">GITHUB</span>
+                <a href="https://github.com/yourusername/red_x">GitHub Repository</a>
+                <span class="description">Project source code repository</span>
+                <button class="launch-btn" onclick="window.open('https://github.com/yourusername/red_x', '_blank')">Launch</button>
+            </li>
+            <li>
+                <span class="badge">PAGES</span>
+                <a href="https://yourusername.github.io/red_x/">GitHub Pages Deployment</a>
+                <span class="description">Live static deployment on GitHub Pages</span>
+                <button class="launch-btn" onclick="window.open('https://yourusername.github.io/red_x/', '_blank')">Launch</button>
+            </li>
+            <li>
+                <span class="badge">ACTIONS</span>
+                <a href="https://github.com/yourusername/red_x/actions">GitHub Actions</a>
+                <span class="description">Deployment workflow status</span>
+                <button class="launch-btn" onclick="window.open('https://github.com/yourusername/red_x/actions', '_blank')">Launch</button>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="url-section">
+        <h2>Documentation & Resources</h2>
+        <ul class="url-list">
+            <li>
+                <span class="badge">README</span>
+                <a href="https://github.com/yourusername/red_x/blob/main/README.md">Project README</a>
+                <span class="description">Main project documentation</span>
+                <button class="launch-btn" onclick="window.open('https://github.com/yourusername/red_x/blob/main/README.md', '_blank')">Launch</button>
+            </li>
+            <li>
+                <span class="badge">DOC</span>
+                <a href="README_GITHUB_PAGES.md">GitHub Pages Documentation</a>
+                <span class="description">Instructions for GitHub Pages deployment</span>
+                <button class="launch-btn" onclick="window.open('README_GITHUB_PAGES.md', '_blank')">Launch</button>
+            </li>
+            <li>
+                <span class="badge">SDL2</span>
+                <a href="https://wiki.libsdl.org/">SDL2 Documentation</a>
+                <span class="description">SDL2 library reference</span>
+                <button class="launch-btn" onclick="window.open('https://wiki.libsdl.org/', '_blank')">Launch</button>
+            </li>
+            <li>
+                <span class="badge">EMSCRIPTEN</span>
+                <a href="https://emscripten.org/docs/api_reference/index.html">Emscripten Documentation</a>
+                <span class="description">WebAssembly compiler reference</span>
+                <button class="launch-btn" onclick="window.open('https://emscripten.org/docs/api_reference/index.html', '_blank')">Launch</button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="url-section">
+        <h2>Project Information</h2>
+        <ul class="url-list">
+            <li>
+                <span class="badge">TEAM</span>
+                <a href="team.html">Project Team</a>
+                <span class="description">Meet the team behind Project RED X</span>
+                <button class="launch-btn" onclick="window.open('team.html', '_blank')">Launch</button>
+            </li>
+            <li>
+                <span class="badge">README</span>
+                <a href="README_GITHUB_PAGES.md">GitHub Pages Documentation</a>
+                <span class="description">Instructions for GitHub Pages deployment</span>
+                <button class="launch-btn" onclick="window.open('README_GITHUB_PAGES.md', '_blank')">Launch</button>
+            </li>
+            <li>
+                <span class="badge">GITHUB</span>
+                <a href="https://github.com/modsias/red_x">GitHub Repository</a>
+                <span class="description">Project source code repository</span>
+                <button class="launch-btn" onclick="window.open('https://github.com/modsias/red_x', '_blank')">Launch</button>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        // Add functionality to check if localhost links are available
+        document.addEventListener('DOMContentLoaded', function() {
+            const localhostLinks = document.querySelectorAll('a[href^="http://localhost"]');
+            
+            localhostLinks.forEach(link => {
+                const parentLi = link.parentElement;
+                fetch(link.href, { mode: 'no-cors', method: 'HEAD', timeout: 1000 })
+                    .then(() => {
+                        // Success - server is likely running
+                        parentLi.style.opacity = '1';
+                    })
+                    .catch(() => {
+                        // Failed - server is not available
+                        parentLi.style.opacity = '0.5';
+                        parentLi.querySelector('.description').textContent = 'SERVER NOT RUNNING: ' + 
+                            parentLi.querySelector('.description').textContent;
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

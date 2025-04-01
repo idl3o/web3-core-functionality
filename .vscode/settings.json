@@ -12,8 +12,25 @@
   },
   "[typescript]": {
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true,
-      "source.fixAll.sonarlint": true
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.sonarlint": "explicit"
     }
+  },
+  "dotnet.defaultSolution": "",
+  "omnisharp.autoStart": false,
+  "omnisharp.enabled": false,
+  "dotnet.server.useOmnisharp": false,
+  "C_Cpp.intelliSenseEngine": "default",
+  "files.exclude": {
+    "**/*.sln": true,
+    "**/*.csproj": true,
+    "**/bin": true,
+    "**/obj": true
+  },
+  "search.exclude": {
+    "**/*.sln": true,
+    "**/*.csproj": true,
+    "**/bin": true, 
+    "**/obj": true
   }
 }

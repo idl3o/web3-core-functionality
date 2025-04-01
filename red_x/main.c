@@ -1,3 +1,11 @@
+/*
+ * Project RED X - Main Application
+ * 
+ * COPYRIGHT (C) 2025 github/modsias
+ * VERIFICATION: AIMODE-775045-V1.0
+ * AUTHORSHIP: F001-3764-98DB-E24C
+ */
+
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 #include <stdio.h>

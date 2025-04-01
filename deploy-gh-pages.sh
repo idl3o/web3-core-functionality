@@ -10,8 +10,11 @@ cd "$(dirname "$0")"
 BUILD_DIR="./build"
 mkdir -p $BUILD_DIR
 
-# Copy root index.html
+# Copy root HTML files
 cp index.html $BUILD_DIR/
+cp 404.html $BUILD_DIR/
+cp url-launcher.html $BUILD_DIR/
+cp team.html $BUILD_DIR/
 
 # Check if npm is available
 if ! command -v npm &> /dev/null; then
@@ -64,6 +67,10 @@ mkdir -p ../build/red_x
 # Copy necessary files
 cp index.html index.js index.wasm ../build/red_x/
 
+# Copy copyright information in machine language
+mkdir -p ../build/red_x/legal
+cp COPYRIGHT.* ../build/red_x/legal/ 2>/dev/null || echo "No COPYRIGHT files found"
+
 # Make sure the js directory exists before copying
 if [ -d "js" ]; then
     mkdir -p ../build/red_x/js
@@ -99,8 +106,6 @@ class LinkExtractor {
     this.parseAndDisplay(fallbackData);
   }
   parseAndDisplay(content) {
-    // ... existing code ...
-    // Simplified implementation
     this.container.innerHTML = '<p>Static GitHub Pages version - links loaded</p>';
     const sections = content.split(/^## /m);
     sections.forEach(section => {
@@ -131,6 +136,66 @@ fi
 # Create .nojekyll file to prevent Jekyll processing
 touch ../build/.nojekyll
 
+# Create _headers file for Cloudflare/Netlify edge caching
+cat > ../build/_headers << 'EOL'
+# All pages
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.socket.io; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.cloudflare.com wss://*.cloudflare.com; worker-src 'self' blob:;
+
+# WebAssembly specific headers
+/*.wasm
+  Content-Type: application/wasm
+  Cache-Control: public, max-age=86400
+
+# API responses should not be cached
+/api/*
+  Cache-Control: no-cache
+EOL
+
+# Write edge functions redirects file for Netlify/Vercel
+cat > ../build/_redirects << 'EOL'
+# Netlify/Vercel Edge Functions redirects
+/api/*  /.netlify/functions/api-handler  200
+EOL
+
+# Add WASM compression support after build
+if [ -f "red_x/js/utils/compression.js" ]; then
+  echo "Optimizing WebAssembly size..."
+  node -e "
+    const fs = require('fs');
+    const path = require('path');
+    const Compressor = require('./red_x/js/utils/compression');
+    
+    async function optimizeWasm() {
+      try {
+        const wasmPath = './build/red_x/index.wasm';
+        const wasmBuffer = fs.readFileSync(wasmPath);
+        console.log('Original WASM size:', (wasmBuffer.length / 1024).toFixed(2), 'KB');
+        
+        // Create compressed version
+        const optimizedPath = './build/red_x/index.wasm.br';
+        await Compressor.compressFile(wasmPath, optimizedPath, {
+          format: 'brotli',
+          level: 9,
+          isWasm: true
+        });
+        
+        const compressedSize = fs.statSync(optimizedPath).size;
+        console.log('Compressed WASM size:', (compressedSize / 1024).toFixed(2), 'KB');
+        console.log('Compression ratio:', ((1 - compressedSize / wasmBuffer.length) * 100).toFixed(2), '%');
+      } catch (err) {
+        console.error('WASM optimization failed:', err);
+      }
+    }
+    
+    optimizeWasm();
+  " || echo "WASM optimization skipped"
+fi
+
 echo "Static build complete! Files are in the ./build directory."
 echo "To deploy to GitHub Pages:"
 echo "1. Create a gh-pages branch"
@@ -138,5 +203,9 @@ echo "2. Copy the contents of the build directory to the gh-pages branch"
 echo "3. Push the gh-pages branch to GitHub"
 echo ""
 echo "Or use gh-pages npm package with: npm install -g gh-pages && gh-pages -d build"
+echo ""
+echo "To deploy to the edge (Cloudflare Workers):"
+echo "1. Fill in your account details in wrangler.toml"
+echo "2. Run 'npx wrangler publish' to publish to Cloudflare"
 
 exit 0

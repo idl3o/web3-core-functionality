@@ -21,10 +21,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
+      # Remove any potential .NET files that might trigger VS Code tools
+      - name: Remove .NET Solution files
+        run: |
+          rm -f *.sln
+          rm -f **/*.csproj
+        
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 18.17.0
           
       - name: Verify npm installation
         run: |
@@ -40,7 +46,7 @@ jobs:
         run: |
           # Create package.json in root if it doesn't exist
           if [ ! -f "package.json" ]; then
-            echo '{"name":"red-x-pages","version":"1.0.0","private":true,"dependencies":{"gh-pages":"^6.0.0"}}' > package.json
+            echo '{"name":"red-x-pages","version":"1.0.0","private":true,"dependencies":{"gh-pages":"^6.0.0"},"engines":{"node":"18.17.0"}}' > package.json
             npm install
           fi
           
