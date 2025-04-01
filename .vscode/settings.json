@@ -6,8 +6,8 @@
   "sonarlint.analyses.mode": "onSave",
   "[javascript]": {
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true,
-      "source.fixAll.sonarlint": true
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.sonarlint": "explicit"
     }
   },
   "[typescript]": {

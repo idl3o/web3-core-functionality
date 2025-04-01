@@ -2,6 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "java",
+      "name": "Launch Java Program",
+      "request": "launch",
+      "mainClass": ""
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "Launch Server",
@@ -17,7 +23,9 @@
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "restart": true
+      "restart": true,
+      "runtimeExecutable": "${command:extension.js-debug.npmScript}",
+      "runtimeArgs": ["node"]
     },
     {
       "type": "chrome",
@@ -61,7 +69,8 @@
       "name": "Compress Key",
       "program": "${workspaceFolder}/red_x/utils/compress-key.js",
       "args": [],
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "runtimeExecutable": "node"
     },
     {
       "type": "node",
@@ -73,7 +82,8 @@
         "AWS_REGION": "${env:AWS_REGION}",
         "AWS_ACCESS_KEY_ID": "${env:AWS_ACCESS_KEY_ID}",
         "AWS_SECRET_ACCESS_KEY": "${env:AWS_SECRET_ACCESS_KEY}"
-      }
+      },
+      "runtimeExecutable": "node"
     },
     {
       "type": "lldb",
@@ -83,6 +93,22 @@
       "args": [],
       "cwd": "${workspaceFolder}/red_x",
       "preLaunchTask": "make_native"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/your-entry-file.js",
+      "runtimeExecutable": "node"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "JSON Processor",
+      "program": "${workspaceFolder}/red_x/utils/process-json.js",
+      "args": ["${file}"],
+      "console": "integratedTerminal",
+      "runtimeExecutable": "node"
     }
   ],
   "compounds": [

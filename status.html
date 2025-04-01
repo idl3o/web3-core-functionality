@@ -562,6 +562,18 @@
                 timeZoneName: 'short'
             };
             document.getElementById('timestamp').textContent = now.toLocaleDateString('en-US', options);
+            
+            // Add note for GitHub Pages deployment
+            if (window.location.hostname.includes('github.io')) {
+                document.querySelectorAll('.status-details').forEach(el => {
+                    if (el.textContent.includes('API') || el.textContent.includes('network')) {
+                        const card = el.closest('.status-card');
+                        const indicator = card.querySelector('.status-indicator');
+                        indicator.classList.replace('status-green', 'status-yellow');
+                        el.textContent += ' (limited functionality in static deployment)';
+                    }
+                });
+            }
         });
     </script>
 </body>
