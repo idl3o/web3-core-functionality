@@ -31,7 +31,7 @@ jobs:
         ls -la build_output || echo "build_output directory not found"
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: build-artifact
         path: build_output
