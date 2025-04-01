@@ -2,76 +2,26 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        
-      # Remove any potential .NET files that might trigger VS Code tools
-      - name: Remove .NET Solution files
-        run: |
-          rm -f *.sln
-          rm -f **/*.csproj
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.17.0
-          
-      - name: Verify npm installation
-        run: |
-          npm --version
-          echo "Node.js version: $(node --version)"
-          echo "npm version: $(npm --version)"
-          
-      - name: Setup Emscripten
-        uses: mymindstorm/setup-emsdk@v12
-      
-      # Install dependencies in both root and red_x directories
-      - name: Install dependencies
-        run: |
-          # Create package.json in root if it doesn't exist
-          if [ ! -f "package.json" ]; then
-            echo '{"name":"red-x-pages","version":"1.0.0","private":true,"dependencies":{"gh-pages":"^6.0.0"},"engines":{"node":"18.17.0"}}' > package.json
-            npm install
-          fi
-          
-          # Install dependencies in red_x directory for static build
-          cd red_x
-          npm ci || npm install
-          
-      - name: Build static site
-        run: |
-          chmod +x ./deploy-gh-pages.sh
-          ./deploy-gh-pages.sh
-          
-      - name: Upload pages artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-artifact
-          path: ./build
-          
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup EMSDK
+      uses: mymindstorm/setup-emsdk@v12
+
+    - name: Build project
+      run: |
+        # Your build commands here
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifact
+        path: path/to/artifact
