@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web3 Crypto Streaming Service</title>
+  <title data-i18n="title">Web3 Crypto Streaming Service</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -58,6 +58,23 @@
     .nav-links a:hover {
       color: #4361ee;
     }
+    .language-switcher {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+    }
+    .lang-btn {
+      padding: 5px 10px;
+      margin-left: 5px;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      cursor: pointer;
+    }
+    .lang-btn.active {
+      background-color: #4CAF50;
+      color: white;
+      border-color: #3e8e41;
+    }
   </style>
 </head>
 <body>
@@ -66,23 +83,28 @@
   <div class="main-nav">
     <a href="/" class="logo">
       <img src="assets/images/logo.png" alt="Web3 Streaming Logo" />
-      <span>Web3 Streaming</span>
+      <span data-i18n="logo">Web3 Streaming</span>
     </a>
     <div class="nav-links">
-      <a href="#">Home</a>
-      <a href="#beta-program">Beta Program</a>
-      <a href="docs/">Documentation</a>
-      <a href="whitepaper/web3-streaming-service-whitepaper">Whitepaper</a>
+      <a href="#" data-i18n="nav-home">Home</a>
+      <a href="#beta-program" data-i18n="nav-beta">Beta Program</a>
+      <a href="docs/" data-i18n="nav-docs">Documentation</a>
+      <a href="whitepaper/web3-streaming-service-whitepaper" data-i18n="nav-whitepaper">Whitepaper</a>
     </div>
   </div>
 </div>
 
+<div class="language-switcher">
+  <button onclick="changeLanguage('en')" class="lang-btn" id="en-btn">English</button>
+  <button onclick="changeLanguage('pt')" class="lang-btn" id="pt-btn">Português</button>
+</div>
+
 <div class="hero" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 4rem 2rem; text-align: center; border-radius: 8px;">
-  <h1 style="font-size: 2.8rem; margin-bottom: 1rem;">Web3 Crypto Streaming Service</h1>
-  <p style="font-size: 1.4rem; max-width: 800px; margin: 0 auto 2rem auto;">Revolutionizing content streaming through decentralized blockchain technology</p>
+  <h1 style="font-size: 2.8rem; margin-bottom: 1rem;" data-i18n="hero-title">Web3 Crypto Streaming Service</h1>
+  <p style="font-size: 1.4rem; max-width: 800px; margin: 0 auto 2rem auto;" data-i18n="hero-description">Revolutionizing content streaming through decentralized blockchain technology</p>
   <div>
-    <a href="#beta-program" style="display: inline-block; background: #4361ee; color: white; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: bold; margin-right: 1rem;">Join Beta</a>
-    <a href="whitepaper/web3-streaming-service-whitepaper" style="display: inline-block; background: transparent; color: white; padding: 12px 28px; border: 2px solid white; border-radius: 50px; text-decoration: none; font-weight: bold;">Read Whitepaper</a>
+    <a href="#beta-program" style="display: inline-block; background: #4361ee; color: white; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: bold; margin-right: 1rem;" data-i18n="hero-join-beta">Join Beta</a>
+    <a href="whitepaper/web3-streaming-service-whitepaper" style="display: inline-block; background: transparent; color: white; padding: 12px 28px; border: 2px solid white; border-radius: 50px; text-decoration: none; font-weight: bold;" data-i18n="hero-read-whitepaper">Read Whitepaper</a>
   </div>
 </div>
 
@@ -293,9 +315,11 @@
     </div>
   </div>
   <div style="max-width: 1200px; margin: 2rem auto 0 auto; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-    <p>&copy; 2025 Web3 Crypto Streaming Service. All rights reserved.</p>
+    <p data-i18n="footer">&copy; 2025 Web3 Crypto Streaming Service. All rights reserved.</p>
   </div>
 </footer>
+
+<script src="i18n.js"></script>
 
 </body>
 </html>

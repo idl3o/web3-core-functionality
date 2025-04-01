@@ -19,6 +19,12 @@ Welcome to the official documentation for the Web3 Crypto Streaming Service. Thi
 - [For Viewers](guides.viewers): How to discover and consume content
 - [For Developers](guides.developers): Integration and API documentation
 
+## Project Analysis
+
+- [Project Overview](analysis/project-analysis): Key use cases and platform strengths
+- [Technical Recommendations](analysis/technical-recommendations): Implementation suggestions
+- [Enhanced Roadmap](roadmap/enhanced-roadmap): Detailed development timeline with KPIs
+
 ## Use Cases
 
 - [Smart Contracts in Action](use-cases/smart-contract-applications): Real-world applications of our blockchain technology
