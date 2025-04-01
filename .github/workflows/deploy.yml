@@ -5,23 +5,598 @@ on:
     branches:
       - main
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # Fetch all history for better dependency resolution
 
     - name: Setup EMSDK
       uses: mymindstorm/setup-emsdk@v12
+      with:
+        actions-cache-folder: 'emsdk-cache'
+        update-tags: true
+        version: 'latest'
 
-    - name: Build project
+    - name: Install additional dependencies
       run: |
-        # Your build commands here
+        sudo apt-get update
+        sudo apt-get install -y aspell aspell-en
+        npm install --global cspell
+
+    - name: Verify EMSDK installation
+      run: |
+        emcc --version
+        echo "EMSDK installation verified"
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/node_modules
+          emsdk-cache
+          .emscripten_cache
+          build_output/.downloaded
+        key: ${{ runner.os }}-deps-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-deps-
+
+    - name: Download and reconcile external resources
+      id: download
+      run: |
+        echo "Creating download directory structure..."
+        mkdir -p build_output/.downloaded
+        
+        # Download any external dependencies
+        cd build_output/.downloaded
+        
+        # Example download commands with retry mechanism
+        echo "Downloading external resources..."
+        function download_with_retry {
+          local url=$1
+          local output=$2
+          local max_attempts=3
+          local attempt=1
+          
+          while [ $attempt -le $max_attempts ]; do
+            echo "Attempt $attempt to download $url"
+            wget -q --timeout=30 "$url" -O "$output" && return 0
+            attempt=$((attempt+1))
+            sleep 2
+          done
+          
+          echo "::error::Failed to download $url after $max_attempts attempts"
+          return 1
+        }
+        
+        download_with_retry "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" "bootstrap.min.css"
+        download_with_retry "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" "bootstrap.bundle.min.js"
+        
+        # Verify downloads are complete and valid
+        echo "Verifying downloads..."
+        FILE_COUNT=$(find . -type f -not -empty | wc -l)
+        if [ $FILE_COUNT -eq 0 ]; then
+          echo "::error::No files were downloaded. Please check the download URLs and network connection."
+          echo "downloaded=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+        
+        # Move downloaded resources to their final locations and verify each file
+        echo "Moving resources to appropriate directories..."
+        mkdir -p ../css ../js
+        
+        # Handle CSS files with validation
+        CSS_COUNT=$(find . -name "*.css" | wc -l)
+        if [ $CSS_COUNT -gt 0 ]; then
+          cp *.css ../css/
+          echo "Copied $CSS_COUNT CSS files"
+        else
+          echo "::warning::No CSS files found to copy"
+        fi
+        
+        # Handle JS files with validation
+        JS_COUNT=$(find . -name "*.js" | wc -l)
+        if [ $JS_COUNT -gt 0 ]; then
+          cp *.js ../js/
+          echo "Copied $JS_COUNT JavaScript files"
+        else
+          echo "::warning::No JavaScript files found to copy"
+        fi
+        
+        echo "All external resources downloaded and reconciled successfully."
+        echo "downloaded=true" >> $GITHUB_OUTPUT
+
+    - name: Setup spelling and translation codex
+      id: spelling
+      run: |
+        echo "Setting up spelling and translation codex..."
+        mkdir -p build_output/codex
+        
+        # Create a dictionary file
+        cat > build_output/codex/dictionary.txt << EOL
+        # Custom dictionary words
+        GitHub
+        WebAssembly
+        WASM
+        Emscripten
+        JavaScript
+        CSS
+        HTML
+        EOL
+        
+        # Download language data files
+        cd build_output/codex
+        download_with_retry "https://raw.githubusercontent.com/wooorm/dictionaries/main/dictionaries/en/index.dic" "english.dic"
+        download_with_retry "https://raw.githubusercontent.com/wooorm/dictionaries/main/dictionaries/en/index.aff" "english.aff"
+        
+        # Download dictionary definitions dataset (lite version)
+        echo "Downloading dictionary definitions..."
+        download_with_retry "https://raw.githubusercontent.com/matthewreagan/WebstersEnglishDictionary/master/dictionary_compact.json" "dictionary_definitions.json"
+        
+        # Create a definitions lookup script
+        cat > build_output/js/definitions-lookup.js << EOL
+        // Dictionary definitions lookup
+        document.addEventListener('DOMContentLoaded', function() {
+          const lookupInput = document.getElementById('word-to-lookup');
+          const lookupButton = document.getElementById('lookup-definition');
+          const definitionResults = document.getElementById('definition-results');
+          let dictionaryData = {};
+          
+          // Load dictionary definitions
+          fetch('codex/dictionary_definitions.json')
+            .then(response => response.json())
+            .then(data => {
+              dictionaryData = data;
+              console.log('Dictionary definitions loaded with ' + Object.keys(dictionaryData).length + ' entries');
+              
+              // Enable lookup once dictionary is loaded
+              if (lookupButton) {
+                lookupButton.disabled = false;
+                lookupButton.textContent = 'Lookup Definition';
+                document.getElementById('dictionary-status').textContent = 'Dictionary loaded successfully!';
+                document.getElementById('dictionary-status').className = 'text-success';
+              }
+            })
+            .catch(error => {
+              console.error('Error loading dictionary definitions:', error);
+              if (lookupButton) {
+                lookupButton.textContent = 'Dictionary Failed to Load';
+                document.getElementById('dictionary-status').textContent = 'Error loading dictionary.';
+                document.getElementById('dictionary-status').className = 'text-danger';
+              }
+            });
+          
+          // Handle lookup button click
+          if (lookupButton) {
+            lookupButton.disabled = true;
+            lookupButton.textContent = 'Loading Dictionary...';
+            
+            lookupButton.addEventListener('click', function() {
+              const word = lookupInput.value.trim().toLowerCase();
+              
+              if (!word) {
+                definitionResults.innerHTML = '<div class="alert alert-warning">Please enter a word to lookup.</div>';
+                return;
+              }
+              
+              if (dictionaryData[word]) {
+                definitionResults.innerHTML = \`
+                  <div class="card mt-3">
+                    <div class="card-header">
+                      <h5 class="mb-0">\${word}</h5>
+                    </div>
+                    <div class="card-body">
+                      <p>\${dictionaryData[word]}</p>
+                    </div>
+                  </div>
+                \`;
+              } else {
+                // Check for similar words as suggestions
+                const similarWords = Object.keys(dictionaryData)
+                  .filter(dictWord => 
+                    dictWord.includes(word) || 
+                    word.includes(dictWord) || 
+                    levenshteinDistance(word, dictWord) < 3)
+                  .slice(0, 5);
+                
+                let suggestionHtml = '';
+                if (similarWords.length > 0) {
+                  suggestionHtml = \`
+                    <p>Did you mean:</p>
+                    <ul class="list-group">
+                      \${similarWords.map(w => \`
+                        <li class="list-group-item">
+                          <a href="#" class="suggestion-link" data-word="\${w}">\${w}</a>
+                        </li>\`).join('')}
+                    </ul>
+                  \`;
+                }
+                
+                definitionResults.innerHTML = \`
+                  <div class="alert alert-warning">
+                    No definition found for "\${word}".
+                    \${suggestionHtml}
+                  </div>
+                \`;
+                
+                // Add event listeners to suggestions
+                document.querySelectorAll('.suggestion-link').forEach(link => {
+                  link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const suggestedWord = this.getAttribute('data-word');
+                    lookupInput.value = suggestedWord;
+                    lookupButton.click();
+                  });
+                });
+              }
+            });
+          }
+          
+          // Simple Levenshtein distance calculation for finding similar words
+          function levenshteinDistance(a, b) {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
+            
+            const matrix = [];
+            
+            // Initialize matrix
+            for (let i = 0; i <= b.length; i++) {
+              matrix[i] = [i];
+            }
+            
+            for (let j = 0; j <= a.length; j++) {
+              matrix[0][j] = j;
+            }
+            
+            // Fill matrix
+            for (let i = 1; i <= b.length; i++) {
+              for (let j = 1; j <= a.length; j++) {
+                const cost = a[j - 1] === b[i - 1] ? 0 : 1;
+                matrix[i][j] = Math.min(
+                  matrix[i - 1][j] + 1,      // deletion
+                  matrix[i][j - 1] + 1,      // insertion
+                  matrix[i - 1][j - 1] + cost  // substitution
+                );
+              }
+            }
+            
+            return matrix[b.length][a.length];
+          }
+        });
+        EOL
+        
+        # Create spelling config file
+        cat > build_output/codex/cspell.json << EOL
+        {
+          "version": "0.2",
+          "language": "en",
+          "words": [],
+          "dictionaries": ["en_US", "companies", "softwareTerms", "html", "css", "typescript", "node"],
+          "dictionaryDefinitions": [
+            {
+              "name": "custom-dictionary",
+              "path": "./dictionary.txt",
+              "addWords": true
+            }
+          ],
+          "ignorePaths": [
+            "node_modules/**"
+          ]
+        }
+        EOL
+        
+        echo "Spelling and translation codex setup completed successfully"
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+      
+    - name: Build project
+      id: build
+      run: |
+        # Build commands
+        echo "Building project..."
+        
+        # Ensure the directory exists
+        mkdir -p build_output/css build_output/js build_output/codex
+        
+        # Verify CSS directory content
+        CSS_COUNT=$(find build_output/css -type f | wc -l)
+        if [ $CSS_COUNT -eq 0 ]; then
+          echo "::warning::No CSS files found in build output. Creating a fallback CSS file."
+          echo "/* Fallback CSS file */" > build_output/css/fallback.css
+        fi
+        
+        # Verify JS directory content
+        JS_COUNT=$(find build_output/js -type f | wc -l)
+        if [ $JS_COUNT -eq 0 ]; then
+          echo "::warning::No JavaScript files found in build output. Creating a fallback JS file."
+          echo "// Fallback JavaScript file" > build_output/js/fallback.js
+        fi
+        
+        # Run optional Emscripten build if source files exist
+        if [ -d "src" ] && [ -f "src/main.cpp" ]; then
+          echo "Found C/C++ source files, building with Emscripten..."
+          
+          # Create build directory
+          mkdir -p build
+          
+          # Build with Emscripten
+          emcc -O2 src/main.cpp -o build_output/js/app.js \
+            -s WASM=1 \
+            -s ALLOW_MEMORY_GROWTH=1 \
+            -s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+            || echo "::warning::Emscripten build failed, but continuing"
+            
+          # Add WASM module loader to index.html if build succeeded
+          if [ -f "build_output/js/app.js" ]; then
+            echo "Emscripten build successful, updating index.html to load WASM module"
+            
+            # Create a more advanced HTML file with WASM support
+            cat > build_output/index.html << EOL
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>My GitHub Pages Site with WASM</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <link rel="stylesheet" href="css/bootstrap.min.css">
+          <link rel="stylesheet" href="css/fallback.css">
+          <style>
+            #wasm-status { margin-top: 20px; }
+            .spinner { width: 2rem; height: 2rem; }
+          </style>
+        </head>
+        <body>
+          <div class="container mt-5">
+            <h1>Hello GitHub Pages with WebAssembly!</h1>
+            <p class="lead">Site successfully deployed using GitHub Actions with all dependencies reconciled.</p>
+            <div id="status" class="alert alert-info">
+              Resource loading status will be displayed here.
+            </div>
+            <div id="wasm-status" class="alert alert-info">
+              WASM module loading...
+              <div class="spinner-border spinner" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div id="wasm-output" class="mt-3 p-3 bg-light rounded"></div>
+          </div>
+          
+          <script src="js/bootstrap.bundle.min.js"></script>
+          <script src="js/fallback.js"></script>
+          <script>
+            // Script to check if resources loaded properly
+            document.addEventListener('DOMContentLoaded', function() {
+              const statusDiv = document.getElementById('status');
+              const wasmStatusDiv = document.getElementById('wasm-status');
+              const wasmOutputDiv = document.getElementById('wasm-output');
+              
+              try {
+                // Basic check if Bootstrap is loaded
+                if (typeof bootstrap !== 'undefined') {
+                  statusDiv.textContent = 'All resources loaded successfully!';
+                  statusDiv.className = 'alert alert-success';
+                } else {
+                  statusDiv.textContent = 'Warning: Some JavaScript resources may not have loaded correctly.';
+                  statusDiv.className = 'alert alert-warning';
+                }
+                
+                // Load WASM module
+                try {
+                  var Module = {
+                    onRuntimeInitialized: function() {
+                      wasmStatusDiv.textContent = 'WASM module loaded successfully!';
+                      wasmStatusDiv.className = 'alert alert-success';
+                      
+                      // Call exported function if available
+                      if (typeof Module._main === 'function') {
+                        const result = Module._main();
+                        wasmOutputDiv.textContent = 'WASM function result: ' + result;
+                      } else {
+                        wasmOutputDiv.textContent = 'WASM module loaded, but no _main function found.';
+                      }
+                    },
+                    print: function(text) {
+                      wasmOutputDiv.textContent += text + '\\n';
+                    },
+                    printErr: function(text) {
+                      console.error(text);
+                      wasmOutputDiv.textContent += 'Error: ' + text + '\\n';
+                    }
+                  };
+                } catch (e) {
+                  wasmStatusDiv.textContent = 'Error initializing WASM: ' + e.message;
+                  wasmStatusDiv.className = 'alert alert-danger';
+                }
+              } catch (e) {
+                statusDiv.textContent = 'Error checking resources: ' + e.message;
+                statusDiv.className = 'alert alert-danger';
+              }
+            });
+          </script>
+          <script src="js/app.js"></script>
+        </body>
+        </html>
+        EOL
+          else
+            # Use the existing HTML template
+            echo "Emscripten build failed, using default HTML template"
+          fi
+        else
+          echo "No C/C++ source files found, skipping Emscripten build"
+          
+          # Create a basic HTML file that uses the downloaded resources or fallbacks
+          cat > build_output/index.html << EOL
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>My GitHub Pages Site</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <link rel="stylesheet" href="css/bootstrap.min.css">
+          <link rel="stylesheet" href="css/fallback.css">
+          <style>
+            #spelling-checker, #definitions-lookup { margin-top: 30px; padding: 20px; border-radius: 5px; background-color: #f8f9fa; }
+            .form-group { margin-bottom: 15px; }
+            .tab-content { padding-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <div class="container mt-5">
+            <h1>Hello GitHub Pages!</h1>
+            <p class="lead">Site successfully deployed using GitHub Actions with all dependencies reconciled.</p>
+            <div id="status" class="alert alert-info">
+              Resource loading status will be displayed here.
+            </div>
+            
+            <!-- Language Tools Tabs -->
+            <ul class="nav nav-tabs" id="languageTools" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="spelling-tab" data-bs-toggle="tab" data-bs-target="#spelling" type="button" role="tab">
+                  Spelling Checker
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="definitions-tab" data-bs-toggle="tab" data-bs-target="#definitions" type="button" role="tab">
+                  Dictionary Lookup
+                </button>
+              </li>
+            </ul>
+            
+            <!-- Tab Content -->
+            <div class="tab-content" id="languageToolsContent">
+              <!-- Spelling Checker Tab -->
+              <div class="tab-pane fade show active" id="spelling" role="tabpanel">
+                <div id="spelling-checker">
+                  <h3>Translation & Spelling Codex</h3>
+                  <p>Use this tool to check spelling in your text.</p>
+                  <div class="form-group">
+                    <label for="text-to-check">Enter text to check:</label>
+                    <textarea id="text-to-check" class="form-control" rows="4" placeholder="Enter text here..."></textarea>
+                  </div>
+                  <button id="check-spelling" class="btn btn-primary">Check Spelling</button>
+                  <div id="spelling-results" class="mt-3"></div>
+                </div>
+              </div>
+              
+              <!-- Dictionary Definitions Tab -->
+              <div class="tab-pane fade" id="definitions" role="tabpanel">
+                <div id="definitions-lookup">
+                  <h3>Dictionary Lookup</h3>
+                  <p>Look up definitions for English words. <span id="dictionary-status" class="text-muted">Loading dictionary...</span></p>
+                  <div class="form-group">
+                    <label for="word-to-lookup">Enter a word to look up:</label>
+                    <input type="text" id="word-to-lookup" class="form-control" placeholder="Enter word here...">
+                  </div>
+                  <button id="lookup-definition" class="btn btn-primary">Loading Dictionary...</button>
+                  <div id="definition-results" class="mt-3"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <script src="js/bootstrap.bundle.min.js"></script>
+          <script src="js/fallback.js"></script>
+          <script src="js/spell-checker.js"></script>
+          <script src="js/definitions-lookup.js"></script>
+          <script>
+            // Script to check if resources loaded properly
+            document.addEventListener('DOMContentLoaded', function() {
+              const statusDiv = document.getElementById('status');
+              try {
+                // Basic check if Bootstrap is loaded
+                if (typeof bootstrap !== 'undefined') {
+                  statusDiv.textContent = 'All resources loaded successfully!';
+                  statusDiv.className = 'alert alert-success';
+                } else {
+                  statusDiv.textContent = 'Warning: Some JavaScript resources may not have loaded correctly.';
+                  statusDiv.className = 'alert alert-warning';
+                }
+              } catch (e) {
+                statusDiv.textContent = 'Error checking resources: ' + e.message;
+                statusDiv.className = 'alert alert-danger';
+              }
+            });
+          </script>
+        </body>
+        </html>
+        EOL
+        fi
+        
+        # Check if build output exists with improved error handling
+        FILE_COUNT=$(find build_output -type f | wc -l)
+        if [ $FILE_COUNT -eq 0 ]; then
+          echo "::error::No files were generated in the build output directory."
+          echo "built=false" >> $GITHUB_OUTPUT
+          exit 1
+        else
+          echo "Built $FILE_COUNT files successfully!"
+          echo "built=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Run spelling check on documentation
+      if: success()
+      run: |
+        echo "Running spelling check on documentation files..."
+        if [ -d "docs" ]; then
+          # Use cspell to check documentation files
+          npx cspell --config build_output/codex/cspell.json "docs/**/*.{md,txt,html}"
+          
+          # Generate spelling report
+          echo "Generating spelling report..."
+          npx cspell --config build_output/codex/cspell.json "docs/**/*.{md,txt,html}" --no-progress --no-summary > build_output/codex/spelling-report.txt || true
+          
+          # Count issues
+          ISSUE_COUNT=$(grep -c "Unknown word" build_output/codex/spelling-report.txt || echo "0")
+          echo "Found $ISSUE_COUNT potential spelling issues in documentation"
+          echo "See spelling report in the deployed site at /codex/spelling-report.txt"
+        else
+          echo "No docs directory found, skipping documentation spelling check"
+        fi
+
+    - name: Notify build status
+      if: always()
+      run: |
+        if [[ "${{ steps.download.outcome }}" == "failure" ]]; then
+          echo "::warning::Download step failed. No files were found or downloads were incomplete."
+        fi
+        
+        if [[ "${{ steps.build.outcome }}" == "failure" ]]; then
+          echo "::warning::Build step failed. No output files were generated."
+        fi
+        
+        if [[ "${{ steps.download.outcome }}" == "success" && "${{ steps.build.outcome }}" == "success" ]]; then
+          echo "All steps completed successfully. Files are ready for deployment."
+        fi
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-pages-artifact@v2
       with:
-        name: build-artifact
-        path: path/to/artifact
+        path: build_output
+        if-no-files-found: error  # Will fail the workflow if no files are found
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
