@@ -10,15 +10,43 @@ A simple C graphics demo that displays a red X on screen using SDL2, now with Cl
 - Node.js 18+ (for development server)
 - AWS account with access to Bedrock and Claude 4
 
+> **Note:** This project does not require .NET. If you're seeing errors about "dotnet not found", you can safely ignore them for GitHub Pages deployment or check your local environment setup.
+
 ## Building
 
 ### Native Build
 
-# How to Launch Project RED X
+```bash
+make
+```
 
-I'll explain how to launch your SDL2-based C project both locally and potentially online.
+### Web Build
 
-## Step 1: Complete your README with running instructions
+```bash
+make web
+```
 
-### `/Users/s/vsc25/gh-pages/red_x/README.md`
+### GitHub Pages Build
+
+```bash
+../deploy-gh-pages.sh
+```
+
+## Running
+
+### Native Application
+
+```bash
+./red_x
+```
+
+### Web Version
+
+```bash
+npm start
+```
+
+### GitHub Pages Version
+
+The GitHub Pages version is a static build with limited functionality. Dynamic features that require a server (like Claude AI and real-time networking) won't work.
 

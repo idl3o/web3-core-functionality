@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const http = require('http');
+const cors = require('cors');
 const { BedrockRuntimeClient, InvokeModelCommand } = require('@aws-sdk/client-bedrock-runtime');
 const WindowsInstanceConnector = require('./windows-connector');
 const fs = require('fs');
@@ -8,8 +10,22 @@ const os = require('os');
 const KeyCompressor = require('./utils/key-compressor');
 const multer = require('multer');
 const upload = multer({ dest: os.tmpdir() });
+const rateLimit = require('express-rate-limit');
+const slowDown = require('express-slow-down');
 const app = express();
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const io = new Server(server);
 const port = process.env.PORT || 3000;
+
+// Configure CORS for both Express and Socket.io
+const corsOptions = {
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 
 // Configure AWS
 const bedrockClient = new BedrockRuntimeClient({
@@ -20,10 +36,13 @@ const bedrockClient = new BedrockRuntimeClient({
   },
 });
 
-// Enable Cross-Origin Resource Sharing
+// Enable Cross-Origin Resource Sharing with proper headers
 app.use((req, res, next) => {
   res.header('Cross-Origin-Opener-Policy', 'same-origin');
   res.header('Cross-Origin-Embedder-Policy', 'require-corp');
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
 
@@ -43,6 +62,88 @@ app.get('*.wasm', (req, res, next) => {
   };
   res.sendFile(req.path.substring(1), options);
 });
+
+// Special handling for .txt files
+app.get('*.txt', (req, res, next) => {
+  const options = {
+    root: path.join(__dirname, '..'),
+    headers: {
+      'Content-Type': 'text/plain',
+      'Access-Control-Allow-Origin': '*'
+    }
+  };
+  
+  const filePath = req.path.substring(1);
+  console.log(`Serving text file: ${filePath}`);
+  
+  res.sendFile(filePath, options, (err) => {
+    if (err) {
+      console.error(`Error serving ${filePath}:`, err);
+      next(err);
+    }
+  });
+});
+
+// Add resource limiting middleware
+// Configure rate limiting
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many requests, please try again later.'
+});
+
+// Configure speed limiter (gradually slows down responses)
+const speedLimiter = slowDown({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  delayAfter: 50, // allow 50 requests per windowMs
+  delayMs: 500 // begin adding 500ms of delay per request
+});
+
+// Apply to all API routes
+app.use('/api/', apiLimiter);
+app.use('/api/', speedLimiter);
+
+// Memory usage monitoring
+const maxMemoryUsage = process.env.MAX_MEMORY_MB || 512; // MB
+const memoryCheckInterval = setInterval(() => {
+  const memoryUsage = process.memoryUsage().heapUsed / 1024 / 1024;
+  if (memoryUsage > maxMemoryUsage) {
+    console.warn(`WARNING: Memory usage exceeds limit: ${Math.round(memoryUsage)}MB / ${maxMemoryUsage}MB`);
+  }
+}, 30000);
+
+// Task queue for processing heavy jobs
+const queue = {
+  tasks: [],
+  concurrentLimit: process.env.MAX_CONCURRENT_TASKS || 5,
+  running: 0,
+  
+  add(task) {
+    return new Promise((resolve, reject) => {
+      this.tasks.push({ task, resolve, reject });
+      this.process();
+    });
+  },
+  
+  process() {
+    if (this.running >= this.concurrentLimit || this.tasks.length === 0) {
+      return;
+    }
+    
+    const { task, resolve, reject } = this.tasks.shift();
+    this.running++;
+    
+    Promise.resolve(task())
+      .then(resolve)
+      .catch(reject)
+      .finally(() => {
+        this.running--;
+        this.process();
+      });
+  }
+};
 
 // API route to get Node.js version
 app.get('/api/version', (req, res) => {
@@ -259,19 +360,79 @@ app.post('/api/windows/compress-key', async (req, res) => {
   }
 });
 
+// Socket.io connection limits
+io.use((socket, next) => {
+  // Get number of connections
+  const numConnections = Object.keys(io.sockets.sockets).length;
+  const maxConnections = process.env.MAX_SOCKET_CONNECTIONS || 100;
+  
+  if (numConnections >= maxConnections) {
+    return next(new Error('Connection limit reached. Please try again later.'));
+  }
+  next();
+});
+
+// Socket.io connection handling
+io.on('connection', (socket) => {
+  console.log('New client connected:', socket.id);
+  
+  // Send welcome message
+  socket.emit('welcome', { message: 'Connected to Project RED X netcode' });
+  
+  // Broadcast to all other connected clients
+  socket.broadcast.emit('userJoined', { id: socket.id });
+  
+  // Handle client messages
+  socket.on('message', (data) => {
+    console.log(`Message from ${socket.id}:`, data);
+    // Broadcast to all including sender
+    io.emit('message', {
+      from: socket.id,
+      content: data.content,
+      timestamp: Date.now()
+    });
+  });
+  
+  // Handle client position updates (for multiplayer)
+  socket.on('position', (data) => {
+    // Broadcast position to all except sender
+    socket.broadcast.emit('position', {
+      id: socket.id,
+      x: data.x,
+      y: data.y
+    });
+  });
+  
+  // Handle disconnection
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+    io.emit('userLeft', { id: socket.id });
+  });
+});
+
 // Catch-all route to serve index.html for all routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Start server
-app.listen(port, () => {
+// Clean up on server shutdown
+process.on('SIGINT', () => {
+  console.log('\nShutting down server...');
+  clearInterval(memoryCheckInterval);
+  server.close(() => {
+    console.log('Server closed.');
+    process.exit(0);
+  });
+});
+
+// Start server using http.server instead of app.listen for Socket.io
+server.listen(port, () => {
   console.log(`
   ╔═══════════════════════════════════════╗
   ║                                       ║
   ║    Project RED X Server Running       ║
   ║    with Claude 4 AI Integration       ║
-  ║    and Windows Instance Connector     ║
+  ║    and Netcode SDK Support            ║
   ║                                       ║
   ║    http://localhost:${port}              ║
   ║                                       ║
