@@ -4,47 +4,47 @@ This document contains direct URLs to all platform components once they are depl
 
 ## Main Resources
 
-- **Homepage**: [https://sam-lavi.github.io/gh-pages/](https://sam-lavi.github.io/gh-pages/)
-- **Documentation Home**: [https://sam-lavi.github.io/gh-pages/docs/](https://sam-lavi.github.io/gh-pages/docs/)
-- **URL Launcher**: [https://sam-lavi.github.io/gh-pages/url-launcher.html](https://sam-lavi.github.io/gh-pages/url-launcher.html)
-- **Whitepaper**: [https://sam-lavi.github.io/gh-pages/whitepaper/web3-streaming-service-whitepaper](https://sam-lavi.github.io/gh-pages/whitepaper/web3-streaming-service-whitepaper)
+- **Homepage**: [https://idl3o.github.io/gh-pages/](https://idl3o.github.io/gh-pages/)
+- **Documentation Home**: [https://idl3o.github.io/gh-pages/docs/](https://idl3o.github.io/gh-pages/docs/)
+- **URL Launcher**: [https://idl3o.github.io/gh-pages/url-launcher.html](https://idl3o.github.io/gh-pages/url-launcher.html)
+- **Whitepaper**: [https://idl3o.github.io/gh-pages/whitepaper/web3-streaming-service-whitepaper.html](https://idl3o.github.io/gh-pages/whitepaper/web3-streaming-service-whitepaper.html)
 
 ## Technical Documentation
 
-- **Smart Contract Architecture**: [https://sam-lavi.github.io/gh-pages/docs/tech.contracts](https://sam-lavi.github.io/gh-pages/docs/tech.contracts)
-- **Smart Contract Catalog**: [https://sam-lavi.github.io/gh-pages/docs/tech.contract-list](https://sam-lavi.github.io/gh-pages/docs/tech.contract-list)
-- **Solidity Code Review**: [https://sam-lavi.github.io/gh-pages/docs/tech.solidity-review](https://sam-lavi.github.io/gh-pages/docs/tech.solidity-review)
+- **Smart Contract Architecture**: [https://idl3o.github.io/gh-pages/docs/tech.contracts.html](https://idl3o.github.io/gh-pages/docs/tech.contracts.html)
+- **Smart Contract Catalog**: [https://idl3o.github.io/gh-pages/docs/tech.contract-list.html](https://idl3o.github.io/gh-pages/docs/tech.contract-list.html)
+- **Solidity Code Review**: [https://idl3o.github.io/gh-pages/docs/tech.solidity-review.html](https://idl3o.github.io/gh-pages/docs/tech.solidity-review.html)
 
 ## Smart Contract Details
 
-- **StreamAccessContract**: [https://sam-lavi.github.io/gh-pages/docs/contracts/stream-access](https://sam-lavi.github.io/gh-pages/docs/contracts/stream-access)
-- **ProofOfExistence**: [https://sam-lavi.github.io/gh-pages/docs/contracts/proof-of-existence](https://sam-lavi.github.io/gh-pages/docs/contracts/proof-of-existence)
-- **StreamingToken**: [https://sam-lavi.github.io/gh-pages/docs/contracts/streaming-token](https://sam-lavi.github.io/gh-pages/docs/contracts/streaming-token)
-- **StreamPayment**: [https://sam-lavi.github.io/gh-pages/docs/contracts/stream-payment](https://sam-lavi.github.io/gh-pages/docs/contracts/stream-payment)
+- **StreamAccessContract**: [https://idl3o.github.io/gh-pages/docs/contracts/stream-access.html](https://idl3o.github.io/gh-pages/docs/contracts/stream-access.html)
+- **ProofOfExistence**: [https://idl3o.github.io/gh-pages/docs/contracts/proof-of-existence.html](https://idl3o.github.io/gh-pages/docs/contracts/proof-of-existence.html)
+- **StreamingToken**: [https://idl3o.github.io/gh-pages/docs/contracts/streaming-token.html](https://idl3o.github.io/gh-pages/docs/contracts/streaming-token.html)
+- **StreamPayment**: [https://idl3o.github.io/gh-pages/docs/contracts/stream-payment.html](https://idl3o.github.io/gh-pages/docs/contracts/stream-payment.html)
 
 ## User Guides
 
-- **Creator Guide**: [https://sam-lavi.github.io/gh-pages/docs/guides.creators](https://sam-lavi.github.io/gh-pages/docs/guides.creators)
-- **Viewer Guide**: [https://sam-lavi.github.io/gh-pages/docs/guides.viewers](https://sam-lavi.github.io/gh-pages/docs/guides.viewers)
-- **Developer Guide**: [https://sam-lavi.github.io/gh-pages/docs/guides.developers](https://sam-lavi.github.io/gh-pages/docs/guides.developers)
+- **Creator Guide**: [https://idl3o.github.io/gh-pages/docs/guides.creators.html](https://idl3o.github.io/gh-pages/docs/guides.creators.html)
+- **Viewer Guide**: [https://idl3o.github.io/gh-pages/docs/guides.viewers.html](https://idl3o.github.io/gh-pages/docs/guides.viewers.html)
+- **Developer Guide**: [https://idl3o.github.io/gh-pages/docs/guides.developers.html](https://idl3o.github.io/gh-pages/docs/guides.developers.html)
 
 ## Use Cases & Examples
 
-- **Smart Contracts in Action**: [https://sam-lavi.github.io/gh-pages/docs/use-cases/smart-contract-applications](https://sam-lavi.github.io/gh-pages/docs/use-cases/smart-contract-applications)
-- **Creator Success Stories**: [https://sam-lavi.github.io/gh-pages/docs/use-cases/creator-stories](https://sam-lavi.github.io/gh-pages/docs/use-cases/creator-stories)
+- **Smart Contracts in Action**: [https://idl3o.github.io/gh-pages/docs/use-cases/smart-contract-applications.html](https://idl3o.github.io/gh-pages/docs/use-cases/smart-contract-applications.html)
+- **Creator Success Stories**: [https://idl3o.github.io/gh-pages/docs/use-cases/creator-stories.html](https://idl3o.github.io/gh-pages/docs/use-cases/creator-stories.html)
 
 ## Career Resources
 
-- **Web3 Resume**: [https://sam-lavi.github.io/gh-pages/career/sam-lavi-web3-resume](https://sam-lavi.github.io/gh-pages/career/sam-lavi-web3-resume)
-- **Web3 CV**: [https://sam-lavi.github.io/gh-pages/career/sam-lavi-web3-cv](https://sam-lavi.github.io/gh-pages/career/sam-lavi-web3-cv)
-- **Web3 Cover Letter**: [https://sam-lavi.github.io/gh-pages/career/sam-lavi-web3-cover-letter](https://sam-lavi.github.io/gh-pages/career/sam-lavi-web3-cover-letter)
-- **Application Tips**: [https://sam-lavi.github.io/gh-pages/career/web3-application-tips](https://sam-lavi.github.io/gh-pages/career/web3-application-tips)
+- **Web3 Resume**: [https://idl3o.github.io/gh-pages/career/sam-lavi-web3-resume.html](https://idl3o.github.io/gh-pages/career/sam-lavi-web3-resume.html)
+- **Web3 CV**: [https://idl3o.github.io/gh-pages/career/sam-lavi-web3-cv.html](https://idl3o.github.io/gh-pages/career/sam-lavi-web3-cv.html)
+- **Web3 Cover Letter**: [https://idl3o.github.io/gh-pages/career/sam-lavi-web3-cover-letter.html](https://idl3o.github.io/gh-pages/career/sam-lavi-web3-cover-letter.html)
+- **Application Tips**: [https://idl3o.github.io/gh-pages/career/web3-application-tips.html](https://idl3o.github.io/gh-pages/career/web3-application-tips.html)
 
 ## Note on URL Structure
 
 These URLs assume:
 
-1. Your GitHub username is `sam-lavi` 
+1. Your GitHub username is `idl3o` 
 2. Your repository name is `gh-pages`
 3. GitHub Pages is enabled on the repository
 
