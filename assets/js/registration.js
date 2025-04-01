@@ -1,3 +1,5 @@
+import { resizeImage } from './utils.js';
+
 /**
  * Creator Registration Handler for Web3 Crypto Streaming Service™
  * Implements ModSIAS™ (Modular Secure IPFS Authentication System)
@@ -11,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const errorDetails = errorMessage.querySelector('.error-details');
   const tryAgainBtn = document.getElementById('try-again');
   const profileCidElement = document.getElementById('profile-cid');
+  const profilePreview = document.getElementById('profile-preview'); // Add this line
   
   // File upload handling
   const fileInput = document.getElementById('profile-image');
@@ -33,13 +36,21 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   if (fileInput) {
-    fileInput.addEventListener('change', function(e) {
+    fileInput.addEventListener('change', async function(e) {
       if (e.target.files.length > 0) {
         profileImageFile = e.target.files[0];
         fileName.textContent = profileImageFile.name;
+
+        // Display preview of the selected image
+        if (profilePreview) {
+          profilePreview.src = URL.createObjectURL(profileImageFile);
+        }
       } else {
         fileName.textContent = 'No file selected';
         profileImageFile = null;
+        if (profilePreview) {
+          profilePreview.src = '';
+        }
       }
     });
   }
@@ -112,7 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Handle profile image upload to IPFS if provided
         if (profileImageFile) {
-          const imageCid = await window.ipfsIntegration.addFile(profileImageFile);
+          // Resize image before uploading
+          const resizedImageFile = await resizeImage(profileImageFile, 200, 200); // Resize to 200x200 pixels
+          const imageCid = await window.ipfsIntegration.addFile(resizedImageFile);
           creatorData.profileImageCid = imageCid;
           creatorData.profileImageUrl = window.ipfsIntegration.getPublicURL(imageCid);
         }

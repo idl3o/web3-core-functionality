@@ -18,6 +18,10 @@ class IPFSIntegration {
    * Initialize IPFS client
    */
   async initialize() {
+    if (this.initialized) {
+      console.log('IPFS already initialized.');
+      return;
+    }
     try {
       // In production, we would actually connect to IPFS here
       // Using library like ipfs-http-client
@@ -188,4 +192,3 @@ class IPFSIntegration {
 
 // Create global singleton instance
 window.ipfsIntegration = new IPFSIntegration();
-```
