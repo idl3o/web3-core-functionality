@@ -1,0 +1,16 @@
+/* Fix for header banner overlap */
+.main-content {
+  padding-top: 120px; /* Adjust this value as needed */
+}
+
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+/* Ensure content starts with appropriate spacing */
+.markdown-body {
+  padding-top: 30px;
+}

@@ -1,3 +1,5 @@
+<div style="height: 100px; width: 100%;"></div>
+
 # Web3 Crypto Streaming Service - TypeScript SDK
 
 This SDK allows you to interact with the Web3 Crypto Streaming Service platform using TypeScript or JavaScript.
