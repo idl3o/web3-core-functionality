@@ -1,11 +1,11 @@
 {
-  "name": "project-red-x",
-  "version": "1.0.1",
-  "description": "A WebAssembly-powered graphics demo with Claude AI integration",
+  "name": "gh-pages",
+  "version": "1.0.0",
+  "description": "GitHub Pages website",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js",
+    "dev": "vite",
     "lint": "eslint --ext .js .",
     "lint:fix": "eslint --ext .js . --fix",
     "format": "prettier --write \"**/*.{js,html,css,json,md}\"",
@@ -17,7 +17,7 @@
     "security": "npm audit fix",
     "deploy": "node scripts/deploy-gh-pages.js deploy",
     "deploy:status": "node scripts/deploy-gh-pages.js status",
-    "build": "node scripts/build-wasm.js && jekyll build",
+    "build": "vite build",
     "optimize-images": "imagemin assets/images/* --out-dir=assets/images",
     "minify-css": "cleancss -o assets/css/main.min.css assets/css/main.css",
     "predeploy": "npm run lint && npm run build",
@@ -25,7 +25,8 @@
     "handshake": "node scripts/handshake-connector.js",
     "sync-docs": "node scripts/google-docs-integration.js",
     "gen:education": "node scripts/generate-educational-content.js",
-    "gen:fun": "node scripts/generate-fun-content.js"
+    "gen:fun": "node scripts/generate-fun-content.js",
+    "preview": "vite preview"
   },
   "author": "Project RED X Team",
   "license": "MIT",
@@ -47,7 +48,8 @@
     "lint-staged": "^13.2.3",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.1",
-    "rimraf": "^5.0.1"
+    "rimraf": "^5.0.1",
+    "vite": "^4.4.9"
   },
   "engines": {
     "node": ">=14.0.0"
