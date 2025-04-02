@@ -38,6 +38,8 @@ yarn-error.log*
 .Trashes
 ehthumbs.db
 Thumbs.db
+.directory
+desktop.ini
 
 # Jekyll build files
 _site/
@@ -53,10 +55,16 @@ vendor/
 # Environment variables
 .env
 .env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Editor directories and files
 .idea/
 .vscode/*
+*.sublime-project
+*.sublime-workspace
 !.vscode/settings.json
 *.swp
 *.swo
@@ -67,6 +75,10 @@ dist/
 build/
 tmp/
 temp/
+/dist
+/build
+.cache/
+.temp/
 
 # Local deploy files
 .deploy/

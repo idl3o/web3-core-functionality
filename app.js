@@ -1,3 +1,6 @@
+// Load environment variables
+require('dotenv').config();
+
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -25,6 +28,7 @@ const MIME_TYPES = {
 };
 
 console.log('Starting Project RED X server...');
+console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 
 // Create a simple HTTP server
 const server = http.createServer((req, res) => {
@@ -63,4 +67,13 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
   console.log('Press Ctrl+C to stop the server');
+});
+
+// Handle graceful shutdown
+process.on('SIGINT', () => {
+  console.log('\nShutting down server...');
+  server.close(() => {
+    console.log('Server shut down successfully');
+    process.exit(0);
+  });
 });
