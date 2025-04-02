@@ -13,7 +13,15 @@ const statusEndpoints = {
   contracts: { status: 'operational', latency: 85 },
   cdn: { status: 'operational', latency: 42 },
   api: { status: 'operational', latency: 153 },
-  auth: { status: 'operational', latency: 210 }
+  auth: { status: 'operational', latency: 210 },
+  // Adding security endpoint status
+  security: {
+    status: 'operational',
+    latency: 65,
+    threatProtection: 'active',
+    lastScan: new Date().toISOString(),
+    detectedThreats: 0
+  }
 };
 
 // Create simple server
@@ -29,6 +37,30 @@ const app = http.createServer((req, res) => {
       timestamp: new Date().toISOString(),
       components: statusEndpoints,
       overall: 'operational'
+    }));
+    return;
+  }
+
+  // Add security status endpoint
+  if (req.url === '/api/security-status') {
+    // Update security status data
+    statusEndpoints.security.lastScan = new Date().toISOString();
+    statusEndpoints.security.detectedThreats = Math.random() > 0.95 ? Math.floor(Math.random() * 3) : 0;
+
+    res.setHeader('Content-Type', 'application/json');
+    res.writeHead(200);
+    res.end(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      securityStatus: statusEndpoints.security,
+      activeThreatProtection: true,
+      firewallStatus: 'active',
+      malwareProtection: 'active',
+      phishingProtection: 'active',
+      smartContractAudit: {
+        lastCheck: new Date(Date.now() - 86400000).toISOString(),
+        vulnerabilitiesFound: 0,
+        status: 'secure'
+      }
     }));
     return;
   }
@@ -64,6 +96,7 @@ app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
   console.log(`Serving content from ${path.join(__dirname, 'dist')}`);
   console.log(`Status page available at http://localhost:${PORT}/status.html`);
+  console.log(`Security status available at http://localhost:${PORT}/security.html`);
 });
 
 console.log('To build the project first, run: npm run build');

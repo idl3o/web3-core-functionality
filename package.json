@@ -13,6 +13,8 @@
     "reinstall": "npm run clean && npm install",
     "prepare": "husky install || echo 'Husky not installed, skipping'",
     "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "build:wasm": "cd red_x && node ../scripts/build-wasm.js",
     "security": "npm audit fix",
     "deploy": "node scripts/deploy-gh-pages.js deploy",
@@ -26,7 +28,13 @@
     "sync-docs": "node scripts/google-docs-integration.js",
     "gen:education": "node scripts/generate-educational-content.js",
     "gen:fun": "node scripts/generate-fun-content.js",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cfig": "node scripts/cfig.js",
+    "cfig:get": "node scripts/cfig.js get",
+    "cfig:set": "node scripts/cfig.js set",
+    "cfig:list": "node scripts/cfig.js list",
+    "cfig:features": "node scripts/cfig.js features",
+    "cfig:env": "node scripts/cfig.js env"
   },
   "author": "Project RED X Team",
   "license": "MIT",
@@ -37,7 +45,8 @@
     "googleapis": "^118.0.0",
     "ethers": "^5.7.2",
     "canvas": "^2.11.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "chalk": "^4.1.2"
   },
   "devDependencies": {
     "eslint": "^8.46.0",

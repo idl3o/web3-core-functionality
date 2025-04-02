@@ -2,6 +2,14 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "bashdb",
+      "request": "launch",
+      "name": "Bash-Debug (hardcoded script name)",
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/path/to/script.sh",
+      "args": []
+    },
+    {
       "type": "java",
       "name": "Launch Java Program",
       "request": "launch",
