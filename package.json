@@ -1,32 +1,20 @@
 {
-  "name": "project-red-x-pages",
+  "name": "project-red-x",
   "version": "1.0.0",
-  "description": "GitHub Pages deployment for Project RED X",
-  "private": true,
+  "description": "A WebAssembly-powered graphics demo with Claude AI integration",
+  "main": "app.js",
   "scripts": {
-    "build": "./deploy-gh-pages.sh",
-    "deploy": "gh-pages -d build",
-    "deploy:ci": "gh-pages --dist build --message 'Automated deployment' --repo https://github.com/${GITHUB_REPOSITORY}.git",
-    "predeploy": "npm run build",
-    "deploy:edge": "npm run build && npx wrangler publish",
-    "deploy:edge:staging": "npm run build && npx wrangler publish --env staging",
-    "deploy:netlify": "netlify deploy --prod",
-    "deploy:vercel": "vercel --prod"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/modsias/red_x.git"
-  },
+  "author": "",
+  "license": "MIT",
   "dependencies": {
-    "gh-pages": "^6.0.0"
   },
   "devDependencies": {
-    "serve": "^14.2.0",
-    "wrangler": "^3.4.0",
-    "@cloudflare/kv-asset-handler": "^0.3.0",
-    "netlify-cli": "^15.0.0"
+    "nodemon": "^3.0.1"
   },
   "engines": {
-    "node": "18.17.0"
+    "node": ">=14.0.0"
   }
 }

@@ -230,3 +230,88 @@
         }
         
         body.dark-mode a:hover {
+            color: var(--primary-hover);
+        }
+        
+        body.dark-mode footer {
+            border-top-color: var(--dark-border);
+        }
+        
+        body.dark-mode .theme-toggle {
+            background: var(--dark-card-bg);
+            color: var(--dark-text);
+            border-color: var(--dark-border);
+        }
+        
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .btn-container {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .theme-toggle {
+                top: var(--space-md);
+                right: var(--space-md);
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" aria-label="Toggle dark mode">🌓</button>
+    
+    <header>
+        <div class="header-content">
+            <h1>Project RED X</h1>
+            <p>A WebAssembly-powered graphics demo with Claude AI integration</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="btn-container">
+            <a href="red_x/index.html" class="btn btn-primary">Launch Static Demo</a>
+            <a href="url-launcher.html" class="btn btn-secondary">URL Launcher</a>
+            <a href="team.html" class="btn btn-secondary">Meet the Team</a>
+            <a href="status.html" class="btn btn-success">System Status</a>
+        </div>
+        
+        <div class="note">
+            <p>Note: This static GitHub Pages deployment has limited functionality. 
+            For the full experience with AI features and real-time networking, 
+            please run the project locally with Node.js.</p>
+        </div>
+    </div>
+    
+    <footer>
+        <p>See the <a href="https://github.com/modsias/red_x">GitHub repository</a> for setup instructions</p>
+        <p>Developed by <a href="https://github.com/modsias">github/modsias</a></p>
+    </footer>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        // Apply theme immediately to prevent flash of unstyled content
+        if (localStorage.getItem('theme') === 'dark' || 
+            (localStorage.getItem('theme') !== 'light' && prefersDarkScheme.matches)) {
+            document.body.classList.add('dark-mode');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        });
+    </script>
+</body>
+</html>
