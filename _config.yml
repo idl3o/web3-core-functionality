@@ -1,45 +1,114 @@
+# Project RED X - Master Configuration File
+
 # Site settings
-title: Web3 Crypto Streaming Service
-email: contact@web3streaming.example
-description: Revolutionary decentralized content streaming platform powered by blockchain technology
+title: Project RED X
+description: A WebAssembly-powered graphics demo with Claude AI integration
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://username.github.io/web3-crypto-streaming-service" 
-twitter_username: web3streaming
-github_username:  username
+url: "https://idl3o.github.io/gh-pages" # the base hostname & protocol
+author: Project RED X Team
+email: contact@example.com
 
 # Build settings
 markdown: kramdown
-plugins:
-  - jekyll-feed
-  - jekyll-seo-tag
-  - jekyll-sitemap
-  - jekyll-paginate
+highlighter: rouge
+permalink: /:title/
+
+# Theme
+theme: minima
+remote_theme: jekyll/minima
+
+# SEO settings
+twitter:
+  username: projectredx
+  card: summary_large_image
+logo: /assets/images/logo.png
+social:
+  name: Project RED X
+  links:
+    - https://github.com/idl3o/gh-pages
+    - https://twitter.com/projectredx
+
+# Project settings
+project:
+  name: Project RED X
+  version: 1.0.0
+  repository: https://github.com/idl3o/gh-pages
+  documentation: https://idl3o.github.io/gh-pages/docs
+  license: MIT
+
+# Feature flags
+features:
+  educationPlatform: true
+  digitalAssets: true
+  cryptoStreaming: true
+  web3Integration: true
+  liveStreaming: false
+
+# Paths
+paths:
+  assets: /assets
+  images: /assets/images
+  css: /assets/css
+  js: /assets/js
+  docs: /docs
+  pages: /pages
 
 # Collections
 collections:
-  faqs:
+  posts:
     output: true
-    permalink: /faq/:name/
-  use_cases:
+  docs:
     output: true
-    permalink: /use-cases/:name/
-
-# Pagination
-paginate: 6
-paginate_path: "/blog/page:num/"
 
 # Default front matter
 defaults:
   -
     scope:
       path: ""
-      type: "posts"
     values:
-      layout: "post"
-      comments: true
+      layout: "default"
   -
     scope:
-      path: ""
-      type: "pages"
+      path: "docs"
+    values:
+      layout: "doc"
+  -
+    scope:
+      path: "pages"
     values:
       layout: "page"
+  -
+    scope:
+      path: "_posts"
+    values:
+      layout: "post"
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-redirect-from
+  - jekyll-titles-from-headings
+
+# Exclude from processing
+exclude:
+  - .git/
+  - .github/
+  - node_modules/
+  - vendor/
+  - Gemfile
+  - Gemfile.lock
+  - LICENSE
+  - README.md
+  - CNAME
+  - .gitignore
+  - .eslintrc.js
+  - .prettierrc
+  - jest.config.js
+  - package.json
+  - package-lock.json
+  - nodemon.json
+  - setup-env.bat
+  - windows-nvm-setup.md
+  - tests/
