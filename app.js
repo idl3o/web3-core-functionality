@@ -33,14 +33,14 @@ console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 // Create a simple HTTP server
 const server = http.createServer((req, res) => {
   console.log(`${req.method} ${req.url}`);
-  
+
   // Handle special case for root URL
   let filePath = req.url === '/' ? './index.html' : '.' + req.url;
-  
+
   // Get file extension for content type
   const extname = path.extname(filePath);
   let contentType = MIME_TYPES[extname] || 'application/octet-stream';
-  
+
   // Read and serve the file
   fs.readFile(filePath, (error, content) => {
     if (error) {
@@ -64,10 +64,28 @@ const server = http.createServer((req, res) => {
 });
 
 // Start the server
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
+  const localIp = getLocalIpAddress();
   console.log(`Server running at http://localhost:${PORT}/`);
+  console.log(`Access on local network at http://${localIp}:${PORT}/`);
   console.log('Press Ctrl+C to stop the server');
 });
+
+// Get local IP address for network access
+function getLocalIpAddress() {
+  const { networkInterfaces } = require('os');
+  const nets = networkInterfaces();
+
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      // Skip internal and non-IPv4 addresses
+      if (net.family === 'IPv4' && !net.internal) {
+        return net.address;
+      }
+    }
+  }
+  return 'unknown';
+}
 
 // Handle graceful shutdown
 process.on('SIGINT', () => {
