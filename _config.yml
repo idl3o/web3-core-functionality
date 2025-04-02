@@ -1,10 +1,10 @@
 # Project RED X - Master Configuration File
 
 # Site settings
-title: Project RED X
-description: A WebAssembly-powered graphics demo with Claude AI integration
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://idl3o.github.io/gh-pages" # the base hostname & protocol
+title: Web3 Crypto Streaming Service
+description: A decentralized streaming platform that returns control and revenue to creators
+baseurl: "/gh-pages" # the subpath of your site, e.g. /blog
+url: "https://idl3o.github.io" # the base hostname & protocol
 author: Project RED X Team
 email: contact@example.com
 lang: en-US
@@ -125,27 +125,20 @@ cdn:
 
 # Exclude from processing
 exclude:
-  - .git/
-  - .github/
-  - node_modules/
-  - vendor/
-  - Gemfile
-  - Gemfile.lock
-  - LICENSE
-  - README.md
-  - CNAME
-  - .gitignore
-  - .eslintrc.js
-  - .prettierrc
-  - jest.config.js
+  - node_modules
   - package.json
   - package-lock.json
-  - nodemon.json
-  - setup-env.bat
-  - windows-nvm-setup.md
-  - tests/
-  - scripts/
-  - temp/
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - .gitignore
+  - .github
+  - scripts
+  - tests
+  - vite.config.js
+  - run-*.cmd
+  - app.js
+  - red_x
 
 # Analytics
 analytics:
@@ -153,6 +146,7 @@ analytics:
   google:
     tracking_id: "UA-XXXXXXXX-X" # Replace with your tracking ID
 
-# Include files/folders that would otherwise be excluded by Jekyll
+# Include specific files
 include:
+  - .nojekyll # Tell GitHub not to process site with Jekyll
   - .well-known
