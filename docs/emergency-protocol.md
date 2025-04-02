@@ -41,6 +41,17 @@ This document outlines the step-by-step emergency procedures for responding to c
 - Secures compromised systems
 - Coordinates with external security if needed
 
+## On-Chain Emergency Governance Procedures
+
+### Emergency Governance Council
+
+The platform maintains a 5-member Emergency Governance Council with the following responsibilities:
+- Evaluate potential security threats
+- Initiate emergency governance actions
+- Oversee recovery operations
+
+Council members are elected every 6 months through quadratic voting by STREAM token holders.
+
 ## On-Chain Emergency Procedures
 
 ### Smart Contract Pause (Level 4-5)
@@ -52,10 +63,11 @@ function emergencyPause() external onlyEmergencyAdmin {
 }
 ```
 
-1. Access multi-signature wallet through hardware keys
+1. Access multi-signature wallet through hardware keys (3-of-5 required)
 2. Initiate emergency pause transaction
 3. Verify transaction success on blockchain explorer
 4. Communicate pause to all stakeholders
+5. Initiate emergency governance process for remediation
 
 ### Transaction Filtering (Level 3-4)
 1. Deploy emergency filter rules to API endpoints

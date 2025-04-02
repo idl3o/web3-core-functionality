@@ -1,6 +1,6 @@
 # Web3 Crypto Streaming Service: Whitepaper
 
-**Version 1.0.0**  
+**Version 1.0.0**
 **March 2025**
 
 ## Executive Summary
@@ -235,3 +235,64 @@ We invite content creators, viewers, developers, and investors to join us in bui
 ---
 
 **Disclaimer**: This whitepaper is for informational purposes only and does not constitute financial or investment advice. Token economics and technical specifications are subject to change based on regulatory requirements and technical optimization.
+
+---
+
+# Web3 Crypto Streaming Service: DAO Governance Framework
+
+## Executive Summary
+
+This document outlines the decentralized governance structure of the Web3 Crypto Streaming Service platform. By implementing a DAO (Decentralized Autonomous Organization) based governance model with advanced consensus mechanisms, we aim to create a self-sustaining ecosystem where content creators, viewers, and token holders collectively determine the platform's evolution.
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Governance Philosophy](#governance-philosophy)
+3. [Token-Based Governance Model](#token-based-governance-model)
+4. [Consensus Mechanisms](#consensus-mechanisms)
+5. [Proposal Framework](#proposal-framework)
+6. [Voting Mechanics](#voting-mechanics)
+7. [Execution & Implementation](#execution-implementation)
+8. [Risk Mitigation](#risk-mitigation)
+9. [Future Developments](#future-developments)
+10. [References](#references)
+
+## Introduction
+
+The Web3 Crypto Streaming Service operates as a decentralized platform that empowers content creators and consumers through blockchain technology and tokenization. Unlike traditional streaming platforms with centralized decision-making, our governance model distributes authority across all stakeholders, ensuring the platform evolves according to community needs while maintaining security, scalability, and user experience.
+
+## Governance Philosophy
+
+The platform governance is built on three core principles:
+
+1. **Inclusive Participation** - All stakeholders (creators, viewers, developers, and token holders) can participate in governance decisions proportional to their platform involvement.
+
+2. **Transparent Decision-making** - All governance activities, including proposals, discussions, voting, and implementations, are recorded on-chain and publicly accessible.
+
+3. **Progressive Decentralization** - The governance model follows a phased approach, gradually transitioning control from the founding team to the community as the ecosystem matures.
+
+## Token-Based Governance Model
+
+### Dual-Token System
+
+The platform employs a dual-token model for governance:
+
+1. **STREAM Token** - The primary governance token representing platform ownership and voting rights.
+2. **Creator Credits** - Non-transferable tokens earned by content creators based on contribution quality and viewer engagement.
+
+### Weighted Voting
+
+Voting power is calculated using a weighted formula that considers:
+
+- **Token Holdings** - Amount of STREAM tokens held or staked
+- **Creator Contribution** - Creator Credits accumulated through content creation
+- **Platform Engagement** - Viewing history, interaction metrics, and platform loyalty
+- **Time-lock Multiplier** - Increased voting power for tokens locked for longer periods
+
+## Consensus Mechanisms
+
+The governance system implements a hybrid consensus mechanism designed specifically for content platform governance:
+
+### 1. Reputation-Weighted Proof of Stake (RWPoS)
+
+The primary consensus mechanism combines traditional Proof of Stake with reputation metrics:
