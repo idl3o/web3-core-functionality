@@ -19,7 +19,9 @@
     "init": "node scripts/init-project.js",
     "fetch-resources": "node scripts/fetch-external-resources.js",
     "handshake": "node scripts/handshake-connector.js",
-    "sync-docs": "node scripts/google-docs-integration.js"
+    "sync-docs": "node scripts/google-docs-integration.js",
+    "gen:education": "node scripts/generate-educational-content.js",
+    "gen:fun": "node scripts/generate-fun-content.js"
   },
   "author": "Project RED X Team",
   "license": "MIT",
@@ -27,7 +29,10 @@
     "dotenv": "^16.3.1",
     "serve-static": "^1.15.0",
     "compression": "^1.7.4",
-    "googleapis": "^118.0.0"
+    "googleapis": "^118.0.0",
+    "ethers": "^5.7.2",
+    "canvas": "^2.11.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "eslint": "^8.46.0",
