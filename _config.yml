@@ -7,11 +7,15 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://idl3o.github.io/gh-pages" # the base hostname & protocol
 author: Project RED X Team
 email: contact@example.com
+lang: en-US
+timezone: UTC
 
 # Build settings
 markdown: kramdown
 highlighter: rouge
 permalink: /:title/
+encoding: utf-8
+incremental: false
 
 # Theme
 theme: minima
@@ -31,7 +35,7 @@ social:
 # Project settings
 project:
   name: Project RED X
-  version: 1.0.0
+  version: 1.0.1
   repository: https://github.com/idl3o/gh-pages
   documentation: https://idl3o.github.io/gh-pages/docs
   license: MIT
@@ -43,6 +47,8 @@ features:
   cryptoStreaming: true
   web3Integration: true
   liveStreaming: false
+  analyticsEnabled: true
+  betaSignupEnabled: true
 
 # Paths
 paths:
@@ -52,36 +58,44 @@ paths:
   js: /assets/js
   docs: /docs
   pages: /pages
+  data: /_data
 
 # Collections
 collections:
   posts:
     output: true
+    permalink: /blog/:year/:month/:day/:title/
   docs:
     output: true
+    permalink: /docs/:path/
+  examples:
+    output: true
+    permalink: /examples/:path/
 
 # Default front matter
 defaults:
-  -
-    scope:
+  - scope:
       path: ""
     values:
       layout: "default"
-  -
-    scope:
+  - scope:
       path: "docs"
     values:
       layout: "doc"
-  -
-    scope:
+      sidebar: true
+  - scope:
       path: "pages"
     values:
       layout: "page"
-  -
-    scope:
+  - scope:
       path: "_posts"
     values:
       layout: "post"
+      author: "Project RED X Team"
+  - scope:
+      path: "assets/images"
+    values:
+      image: true
 
 # Plugins
 plugins:
@@ -90,6 +104,24 @@ plugins:
   - jekyll-sitemap
   - jekyll-redirect-from
   - jekyll-titles-from-headings
+  - jekyll-include-cache
+
+# Performance optimization
+compress_html:
+  clippings: all
+  comments: ["<!-- ", " -->"]
+  endings: all
+  ignore:
+    envs: [development]
+  blanklines: false
+  profile: false
+  startings: [html, head, body]
+
+# CDN settings
+cdn:
+  enabled: true
+  provider: "jsdelivr"
+  baseurl: "https://cdn.jsdelivr.net/gh/idl3o/gh-pages@main"
 
 # Exclude from processing
 exclude:
@@ -112,3 +144,15 @@ exclude:
   - setup-env.bat
   - windows-nvm-setup.md
   - tests/
+  - scripts/
+  - temp/
+
+# Analytics
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "UA-XXXXXXXX-X" # Replace with your tracking ID
+
+# Include files/folders that would otherwise be excluded by Jekyll
+include:
+  - .well-known

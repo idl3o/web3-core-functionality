@@ -1,6 +1,6 @@
 {
   "name": "project-red-x",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A WebAssembly-powered graphics demo with Claude AI integration",
   "main": "app.js",
   "scripts": {
@@ -15,8 +15,12 @@
     "test": "jest",
     "build:wasm": "cd red_x && node ../scripts/build-wasm.js",
     "security": "npm audit fix",
-    "deploy": "node scripts/deploy-gh-pages.js",
-    "init": "node scripts/init-project.js",
+    "deploy": "node scripts/deploy-gh-pages.js deploy",
+    "deploy:status": "node scripts/deploy-gh-pages.js status",
+    "build": "node scripts/build-wasm.js && jekyll build",
+    "optimize-images": "imagemin assets/images/* --out-dir=assets/images",
+    "minify-css": "cleancss -o assets/css/main.min.css assets/css/main.css",
+    "predeploy": "npm run lint && npm run build",
     "fetch-resources": "node scripts/fetch-external-resources.js",
     "handshake": "node scripts/handshake-connector.js",
     "sync-docs": "node scripts/google-docs-integration.js",

@@ -54,7 +54,7 @@ This repository is a combination of our original work and contributions from [id
    ```
    # For Jekyll sites
    bundle install
-   
+
    # For Node.js sites
    npm install
    ```
@@ -63,7 +63,7 @@ This repository is a combination of our original work and contributions from [id
    ```
    # For Jekyll sites
    bundle exec jekyll serve
-   
+
    # For Node.js sites
    npm start
    ```
@@ -123,19 +123,36 @@ Get help: [Post in our discussion board](https://github.com/orgs/skills/discussi
 
 # Project RED X
 
-A WebAssembly-powered graphics demo with Claude AI integration, featuring a Web3 Crypto Streaming Service resource directory.
+A WebAssembly-powered graphics demo with Claude AI integration, featuring Web3 cryptocurrency streaming elements.
+
+![Project Banner](assets/images/project-banner.png)
+
+## Overview
+
+Project RED X serves as an integration hub between several technological domains:
+
+- **WebAssembly Graphics Engine** - Interactive visual experiences with Claude AI
+- **Web3 Cryptocurrency Framework** - Educational platform with token incentives
+- **Content Distribution System** - Token-gated content access with creator monetization
 
 ## Features
 
-- WebAssembly graphics demo
-- Claude AI integration
-- Comprehensive Web3 resource directory
-- Dark/light theme support
-- Responsive design
+- 🎮 WebAssembly graphics demonstration
+- 🧠 Claude AI integration for intelligent rendering
+- 📚 Educational platform with crypto token rewards
+- 🖼️ Transcendental digital asset generation
+- 💰 Web3 crypto streaming capabilities
 
-## Installation
+## Getting Started
 
-1. Clone the repository:
+### Prerequisites
+
+- Node.js 16.x
+- Ruby 3.x (for Jekyll)
+
+### Local Development
+
+1. Clone the repository
    ```
    git clone https://github.com/idl3o-redx/project-red-x.git
    cd project-red-x
