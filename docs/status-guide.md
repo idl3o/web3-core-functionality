@@ -33,6 +33,17 @@ The status page monitors the following key components:
 3. **Content Delivery Network** - Video and asset delivery performance
 4. **API Services** - API endpoint availability and response times
 5. **User Authentication** - Login and wallet connection services
+6. **Security Protection** - Digital health monitoring and threat protection
+
+## Digital Health Monitoring
+
+The platform includes comprehensive virus and malware protection that monitors:
+
+- **Smart Contract Security** - Protection against contract exploits and vulnerabilities
+- **Transaction Monitoring** - Detection of suspicious transactions and activity patterns
+- **Malware Protection** - Scanning for malicious code in uploaded content
+- **Phishing Defense** - Identification and blocking of phishing attempts
+- **DDoS Mitigation** - Protection against distributed denial of service attacks
 
 ## Interpreting Metrics
 
@@ -45,6 +56,11 @@ The status page monitors the following key components:
 * **Good:** > 98%
 * **Moderate:** 95-98%
 * **Poor:** < 95%
+
+### Threat Detection
+* **Normal:** 0-1 threats per day (automatically mitigated)
+* **Elevated:** 2-5 threats per day (requires monitoring)
+* **Critical:** >5 threats per day (immediate action required)
 
 ## Troubleshooting Common Issues
 
@@ -61,6 +77,12 @@ If CDN status shows degraded performance:
 1. Clear your browser cache
 2. Try a different browser
 3. Check if your region is experiencing CDN issues
+
+### Security Alerts
+If security status shows active threats:
+1. Avoid making large transactions until the issue is resolved
+2. Check the security page for specific threat information
+3. Follow any security advisories posted on the platform
 
 ## Historical Data
 

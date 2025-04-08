@@ -125,20 +125,38 @@ The platform includes a staking system providing multiple benefits:
 
 ## Governance System
 
-The STREAM token enables decentralized governance through:
+The STREAM token enables comprehensive decentralized governance through a multi-layered approach:
+
+### Consensus Mechanisms
+
+The platform employs four specialized consensus mechanisms:
+
+1. **Reputation-Weighted Proof of Stake (RWPoS)** - Combines token holdings with contributor reputation
+2. **Quadratic Voting** - Prevents large stakeholder dominance for community-focused decisions
+3. **Conviction Voting** - For resource allocation based on sustained support over time
+4. **Delegated Expertise** - Specialized voting for technical decisions requiring domain knowledge
 
 ### Proposal Process
 1. **Submission**: Token holders with 10,000+ STREAM can submit proposals
 2. **Discussion**: 3-day discussion period for community feedback
-3. **Voting**: 5-day voting period with quadratic voting mechanism
-4. **Execution**: Automated execution of approved proposals
+3. **Voting**: 5-day voting period with voting mechanism selected based on proposal type
+4. **Execution**: Automated execution of approved proposals via timelock controllers
 
-### Governable Parameters
-- Platform fee percentages
-- Creator reward distributions
-- Feature prioritization
-- Contract upgrades
-- Treasury allocations
+### Governance Parameters
+Each proposal type has defined thresholds and quorum requirements:
+
+| Proposal Type | Approval Threshold | Min. Participation | Voting System |
+|---------------|-------------------|-------------------|---------------|
+| Protocol Upgrades | 66.7% | 30% | RWPoS |
+| Parameter Updates | 60% | 20% | RWPoS |
+| Resource Allocation | 51% | 15% | Conviction |
+| Content Policies | 60% | 25% | Quadratic |
+| Emergency Actions | 75% | 10% | Delegated |
+
+### Risk Mitigation
+- **Timelocks**: Delay periods between approval and execution (1-7 days based on impact)
+- **Veto Power**: Emergency pause capability for malicious proposals
+- **Parameter Bounds**: Limits on magnitude of parameter changes per proposal
 
 ## Token Metrics and Analytics
 
@@ -147,8 +165,6 @@ The platform provides real-time analytics on:
 - **Token Circulation**: Amount of STREAM actively circulating
 - **Burn Rate**: Tokens burned through platform usage
 - **Creator Earnings**: Distribution of tokens to creators
-- **Staking Statistics**: Amount staked and average staking period
-- **Governance Participation**: Voting rates and proposal statistics
 
 ## Security Considerations
 
@@ -175,7 +191,7 @@ Planned enhancements to the token economy include:
 <div style="background: #f0f7ff; border-left: 4px solid #4361ee; padding: 1rem; margin-top: 2rem;">
   <h3 style="margin-top: 0;">Note on Tokenomics Evolution</h3>
   <p>
-    The token economic model is designed to evolve through community governance. Parameters 
+    The token economic model is designed to evolve through community governance. Parameters
     may change over time as the platform matures and the community makes decisions on its future direction.
   </p>
 </div>
