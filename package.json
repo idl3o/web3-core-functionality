@@ -43,7 +43,7 @@
     "serve-static": "^1.15.0",
     "compression": "^1.7.4",
     "googleapis": "^118.0.0",
-    "ethers": "^5.7.2",
+    "ethers": "^5.8.0",
     "canvas": "^2.11.0",
     "uuid": "^9.0.0",
     "chalk": "^4.1.2"
