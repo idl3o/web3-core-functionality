@@ -44,7 +44,7 @@
     "compression": "^1.7.4",
     "googleapis": "^118.0.0",
     "ethers": "^5.7.2",
-    "canvas": "^2.11.0",
+    "canvas": "^3.1.0",
     "uuid": "^9.0.0",
     "chalk": "^4.1.2"
   },
