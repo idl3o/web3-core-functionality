@@ -59,8 +59,9 @@
     "lint-staged": "^15.2.5",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.1",
-    "rimraf": "^5.0.1",
-    "vite": "^6.2.5"
+    "rimraf": "^6.0.1",
+    "vite": "^6.2.5",
+    "simple-git-hooks": "^2.9.0"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -73,7 +74,7 @@
     "micromatch": "^4.0.8"
   },
   "lint-staged": {
-    "*.js": [
+    "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ],

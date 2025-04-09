@@ -1,5 +1,8 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
 
+<<<<<<< HEAD
 # Run lint-staged directly without relying on npx
+=======
+# Direct call to lint-staged without Husky wrapper
+>>>>>>> main
 node ./node_modules/lint-staged/bin/lint-staged.js
