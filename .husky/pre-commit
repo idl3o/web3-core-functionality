@@ -1,8 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
-<<<<<<< HEAD
-# Run lint-staged directly without relying on npx
-=======
-# Direct call to lint-staged without Husky wrapper
->>>>>>> main
+# Direct reference to lint-staged executable instead of relying on npx
 node ./node_modules/lint-staged/bin/lint-staged.js
