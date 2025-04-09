@@ -44,7 +44,9 @@
     "**/obj": true,
     "**/node_modules": true,
     "**/dist": true,
-    "**/.git": true
+    "**/.git": true,
+    "**/bower_components": true,
+    "**/npm-shrinkwrap.json": true
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -64,5 +66,7 @@
     "activityBar.background": "#1a1a2e",
     "titleBar.activeBackground": "#4361ee",
     "titleBar.activeForeground": "#ffffff"
-  }
+  },
+  "npm.packageManager": "npm",
+  "npm.scriptExplorerExclude": ["^prepare$", "^preinstall$", "^postinstall$"]
 }

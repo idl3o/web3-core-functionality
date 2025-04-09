@@ -1,6 +1,6 @@
 /**
  * Protocol for On-chain Emergency Blockchain Control (POEBC)
- * 
+ *
  * This module provides emergency control capabilities for critical blockchain
  * incidents affecting the Web3 Crypto Streaming Service platform.
  */
@@ -14,14 +14,14 @@ class POEBCController {
     this.emergencyProviders = [];
     this.initialized = false;
   }
-  
+
   /**
    * Initialize the emergency system
    * @returns {Promise<boolean>} Success status
    */
   async initialize() {
     if (this.initialized) return true;
-    
+
     try {
       // Set up emergency fallback providers
       this.emergencyProviders = [
@@ -29,7 +29,7 @@ class POEBCController {
         this._createProvider('https://eth-backup-2.web3streaming.com'),
         this._createProvider('https://cloudflare-eth.com')
       ];
-      
+
       // Initialize contract interfaces for emergency control
       this.smartContractBackups = {
         streamToken: await this._loadContractInterface('StreamToken'),
@@ -37,19 +37,35 @@ class POEBCController {
         paymentProcessor: await this._loadContractInterface('PaymentProcessor'),
         governance: await this._loadContractInterface('Governance')
       };
-      
+
       // Set up recovery options
       this.recoveryOptions = [
-        { name: 'pauseAll', label: 'Pause All Contracts', level: 4, 
-          confirmation: 'This will pause all platform smart contracts. Confirm?' },
-        { name: 'filterTransactions', label: 'Enable Transaction Filtering', level: 3,
-          confirmation: 'This will filter incoming transactions based on risk profile. Confirm?' },
-        { name: 'switchProvider', label: 'Switch to Backup Provider', level: 2,
-          confirmation: 'This will switch to a backup node provider. Confirm?' },
-        { name: 'restoreState', label: 'Restore from Last Checkpoint', level: 4,
-          confirmation: 'This will initiate state restoration. THIS CANNOT BE UNDONE. Confirm?' }
+        {
+          name: 'pauseAll',
+          label: 'Pause All Contracts',
+          level: 4,
+          confirmation: 'This will pause all platform smart contracts. Confirm?'
+        },
+        {
+          name: 'filterTransactions',
+          label: 'Enable Transaction Filtering',
+          level: 3,
+          confirmation: 'This will filter incoming transactions based on risk profile. Confirm?'
+        },
+        {
+          name: 'switchProvider',
+          label: 'Switch to Backup Provider',
+          level: 2,
+          confirmation: 'This will switch to a backup node provider. Confirm?'
+        },
+        {
+          name: 'restoreState',
+          label: 'Restore from Last Checkpoint',
+          level: 4,
+          confirmation: 'This will initiate state restoration. THIS CANNOT BE UNDONE. Confirm?'
+        }
       ];
-      
+
       this.initialized = true;
       console.log('POEBC emergency system initialized and standing by');
       return true;
@@ -58,7 +74,7 @@ class POEBCController {
       return false;
     }
   }
-  
+
   /**
    * Activate the emergency protocol
    * @param {number} level Emergency level (1-5)
@@ -69,29 +85,31 @@ class POEBCController {
     if (!this.initialized) {
       await this.initialize();
     }
-    
+
     if (!this._verifyAuthToken(authToken)) {
       throw new Error('POEBC-AUTH-ERROR: Invalid authorization token');
     }
-    
+
     if (level < 1 || level > 5) {
       throw new Error('POEBC-PARAM-ERROR: Level must be between 1-5');
     }
-    
+
     // Set authorization level based on verified credentials
     this.authLevel = this._getAuthLevel(authToken);
-    
+
     // Check if auth level is sufficient for requested emergency level
     if (this.authLevel < level) {
-      throw new Error(`POEBC-ACCESS-ERROR: Auth level ${this.authLevel} insufficient for emergency level ${level}`);
+      throw new Error(
+        `POEBC-ACCESS-ERROR: Auth level ${this.authLevel} insufficient for emergency level ${level}`
+      );
     }
-    
+
     // Change system state to active
     this.activationState = 'active';
-    
+
     // Log activation
     this._logEmergencyEvent('activation', { level, activator: this._getAuthIdentity(authToken) });
-    
+
     // Return available recovery options for this level
     return {
       status: 'activated',
@@ -100,7 +118,7 @@ class POEBCController {
       availableOptions: this.recoveryOptions.filter(option => option.level <= level)
     };
   }
-  
+
   /**
    * Execute a recovery action
    * @param {string} actionName Name of the recovery action
@@ -112,20 +130,22 @@ class POEBCController {
     if (this.activationState !== 'active') {
       throw new Error('POEBC-STATE-ERROR: System not in active state');
     }
-    
+
     if (!this._verifyAuthToken(authToken)) {
       throw new Error('POEBC-AUTH-ERROR: Invalid authorization token');
     }
-    
+
     const action = this.recoveryOptions.find(opt => opt.name === actionName);
     if (!action) {
       throw new Error('POEBC-ACTION-ERROR: Unknown action');
     }
-    
+
     if (this.authLevel < action.level) {
-      throw new Error(`POEBC-ACCESS-ERROR: Auth level ${this.authLevel} insufficient for action level ${action.level}`);
+      throw new Error(
+        `POEBC-ACCESS-ERROR: Auth level ${this.authLevel} insufficient for action level ${action.level}`
+      );
     }
-    
+
     // Execute the appropriate action
     let result;
     switch (actionName) {
@@ -144,18 +164,18 @@ class POEBCController {
       default:
         throw new Error('POEBC-ACTION-ERROR: Implementation error');
     }
-    
+
     // Log action execution
-    this._logEmergencyEvent('action', { 
-      action: actionName, 
-      params, 
+    this._logEmergencyEvent('action', {
+      action: actionName,
+      params,
       executor: this._getAuthIdentity(authToken),
-      result 
+      result
     });
-    
+
     return result;
   }
-  
+
   /**
    * Deactivate the emergency protocol
    * @param {string} authToken Authorization token
@@ -165,29 +185,32 @@ class POEBCController {
     if (!this._verifyAuthToken(authToken)) {
       throw new Error('POEBC-AUTH-ERROR: Invalid authorization token');
     }
-    
+
     if (this.activationState !== 'active') {
       throw new Error('POEBC-STATE-ERROR: System not in active state');
     }
-    
+
     // Verify authorization for deactivation
     const authLevel = this._getAuthLevel(authToken);
-    if (authLevel < 4) { // Require high auth level to deactivate
-      throw new Error('POEBC-ACCESS-ERROR: Insufficient privileges to deactivate emergency protocol');
+    if (authLevel < 4) {
+      // Require high auth level to deactivate
+      throw new Error(
+        'POEBC-ACCESS-ERROR: Insufficient privileges to deactivate emergency protocol'
+      );
     }
-    
+
     // Change system state
     this.activationState = 'standby';
-    
+
     // Log deactivation
     this._logEmergencyEvent('deactivation', { deactivator: this._getAuthIdentity(authToken) });
-    
+
     return {
       status: 'deactivated',
       timestamp: Date.now()
     };
   }
-  
+
   /**
    * Pause all smart contracts
    * @param {object} params Action parameters
@@ -197,10 +220,10 @@ class POEBCController {
   async _executePauseAll(params) {
     // This would connect to the actual contracts in production
     // For now we'll simulate the action
-    
+
     const contracts = Object.keys(this.smartContractBackups);
     const results = {};
-    
+
     for (const contract of contracts) {
       try {
         // In production: await this.smartContractBackups[contract].pause();
@@ -209,14 +232,14 @@ class POEBCController {
         results[contract] = `error: ${error.message}`;
       }
     }
-    
+
     return {
       action: 'pauseAll',
       success: !Object.values(results).some(r => r.includes('error')),
       results
     };
   }
-  
+
   /**
    * Enable transaction filtering
    * @param {object} params Filtering parameters
@@ -227,7 +250,7 @@ class POEBCController {
     // In production this would configure API gateways and nodes
     const filterTypes = params.types || ['suspicious', 'high-value', 'unverified-source'];
     const threshold = params.threshold || 'medium';
-    
+
     return {
       action: 'filterTransactions',
       success: true,
@@ -235,7 +258,7 @@ class POEBCController {
       threshold
     };
   }
-  
+
   /**
    * Switch to backup provider
    * @param {object} params Provider parameters
@@ -251,17 +274,17 @@ class POEBCController {
         error: 'Invalid provider index'
       };
     }
-    
+
     // In production, this would reconfigure the web3 provider
     const provider = this.emergencyProviders[providerIndex];
-    
+
     return {
       action: 'switchProvider',
       success: true,
       provider: provider.connection.url
     };
   }
-  
+
   /**
    * Restore blockchain state from checkpoint
    * @param {object} params Restoration parameters
@@ -277,9 +300,9 @@ class POEBCController {
         error: 'Checkpoint ID required'
       };
     }
-    
+
     // In production this would interact with backup systems
-    
+
     return {
       action: 'restoreState',
       success: true,
@@ -288,7 +311,7 @@ class POEBCController {
       estimatedCompletion: new Date(Date.now() + 10 * 60 * 1000).toISOString()
     };
   }
-  
+
   /**
    * Load a contract interface
    * @param {string} contractName Name of the contract
@@ -304,7 +327,7 @@ class POEBCController {
       getState: async () => ({ status: 'simulated' })
     };
   }
-  
+
   /**
    * Create an emergency provider
    * @param {string} url Provider URL
@@ -313,12 +336,12 @@ class POEBCController {
    */
   _createProvider(url) {
     // In production, this would create an ethers/web3 provider
-    return { 
+    return {
       connection: { url },
       isOperational: true
     };
   }
-  
+
   /**
    * Verify authorization token
    * @param {string} token Auth token
@@ -329,7 +352,7 @@ class POEBCController {
     // In production, this would verify JWT or other auth mechanism
     return token && token.startsWith('poebc-');
   }
-  
+
   /**
    * Get authorization level from token
    * @param {string} token Auth token
@@ -343,7 +366,7 @@ class POEBCController {
     if (token === 'poebc-operator') return 3;
     return 1;
   }
-  
+
   /**
    * Get identity from auth token
    * @param {string} token Auth token
@@ -356,7 +379,7 @@ class POEBCController {
     if (token === 'poebc-operator') return 'operator@web3streaming.com';
     return 'unknown';
   }
-  
+
   /**
    * Log emergency event
    * @param {string} type Event type
@@ -369,10 +392,10 @@ class POEBCController {
       timestamp: new Date().toISOString(),
       ...data
     };
-    
+
     // In production, this would log to secure storage and alert systems
     console.log('EMERGENCY EVENT:', event);
-    
+
     // Send to monitoring systems if available
     if (window.emergencyMonitor) {
       window.emergencyMonitor.captureEvent(event);
@@ -380,21 +403,25 @@ class POEBCController {
   }
 }
 
-// Create singleton instance
+// Create and export singleton instance
 const poebcController = new POEBCController();
+export default poebcController;
 
 // Initialize when document is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  // Only initialize in admin pages or when explicitly requested
-  const isAdminPage = window.location.pathname.includes('/admin/') || 
-                      window.location.pathname.includes('/emergency/');
-                      
-  if (isAdminPage) {
-    poebcController.initialize().catch(err => {
-      console.error('POEBC initialization error:', err);
-    });
-  }
-});
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    // Only initialize in admin pages or when explicitly requested
+    const isAdminPage =
+      window.location.pathname.includes('/admin/') ||
+      window.location.pathname.includes('/emergency/');
 
-// Make available globally for emergency access
-window.poebcController = poebcController;
+    if (isAdminPage) {
+      poebcController.initialize().catch(err => {
+        console.error('POEBC initialization error:', err);
+      });
+    }
+  });
+
+  // Make available globally for emergency access
+  window.poebcController = poebcController;
+}

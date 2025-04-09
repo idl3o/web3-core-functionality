@@ -2,90 +2,32 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy to'
-        required: true
-        default: 'github-pages'
-        type: choice
-        options:
-          - github-pages
-          - staging
+    branches:
+      - main
+
+# Prevent concurrent deployments
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+        cache: 'npm'
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.1'
-          bundler-cache: true
+    # Use npm ci instead of npm install for more reliable dependency installation
+    - run: npm ci --no-optional
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '16'
-          cache: 'npm'
+    - run: npm run build
 
-      - name: Install dependencies
-        run: |
-          npm ci
-          bundle install
-
-      - name: Build site
-        run: |
-          npm run build
-          bundle exec jekyll build
-        env:
-          JEKYLL_ENV: production
-
-      - name: Run tests
-        run: npm test
-
-      - name: Optimize assets
-        run: |
-          npm run optimize-images
-          npm run minify-css
-        continue-on-error: true
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: _site
-          clean: true
-          silent: false
-          commit-message: "Deploy: ${{ github.event.head_commit.message || 'Manual deployment' }}"
-
-      - name: Create deployment status
-        if: success()
-        run: |
-          echo "Deployment completed successfully!"
-          echo "Site is available at: https://idl3o.github.io/gh-pages/"
-
-  notify:
-    needs: build-and-deploy
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Notify about deployment
-        run: |
-          if [ "${{ needs.build-and-deploy.result }}" == "success" ]; then
-            echo "✅ Deployment successful - https://idl3o.github.io/gh-pages/"
-          else
-            echo "❌ Deployment failed"
-          fi
+    - name: Deploy
+      run: npm run deploy
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
-# Direct call to lint-staged without Husky wrapper
+# Direct reference to lint-staged executable instead of relying on npx
 node ./node_modules/lint-staged/bin/lint-staged.js
