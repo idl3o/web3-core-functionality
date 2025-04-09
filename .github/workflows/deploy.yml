@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+# Prevent concurrent deployments
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,11 +19,11 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'  # Ensure that you are using a compatible Node.js version
+        node-version: '16'
+        cache: 'npm'
 
-    - run: npm install --no-optional  # Skip optional dependencies like canvas
-
-    - run: npm update  # Ensures all dependencies are up-to-date
+    # Use npm ci instead of npm install for more reliable dependency installation
+    - run: npm ci --no-optional
 
     - run: npm run build
 
