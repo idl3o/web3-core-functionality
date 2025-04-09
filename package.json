@@ -11,7 +11,6 @@
     "format": "prettier --write \"**/*.{js,html,css,json,md}\"",
     "clean": "rimraf node_modules package-lock.json",
     "reinstall": "npm run clean && npm install",
-    "prepare": "husky install || echo 'Husky not installed, skipping'",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -43,7 +42,7 @@
     "serve-static": "^2.2.0",
     "compression": "^1.7.4",
     "googleapis": "^118.0.0",
-    "ethers": "^5.7.2",
+    "ethers": "^5.8.0",
     "canvas": "^3.1.0",
     "uuid": "^11.1.0",
     "chalk": "^4.1.2"
@@ -52,24 +51,37 @@
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.0.0",
-    "husky": "^9.1.7",
     "jest": "^29.6.2",
     "lint-staged": "^15.5.0",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.1",
     "rimraf": "^6.0.1",
-    "vite": "^6.2.5"
+    "vite": "^6.2.5",
+    "simple-git-hooks": "^2.9.0"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
   "lint-staged": {
-    "*.js": [
+    "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ],
     "*.{html,css,json,md}": [
       "prettier --write"
     ]
+  },
+  "optionalDependencies": {
+    "canvas": "^2.11.0"
+  },
+  "overrides": {
+    "glob": "^10.3.10",
+    "gauge": "^5.0.1",
+    "npmlog": "^8.0.0",
+    "are-we-there-yet": "^3.0.1",
+    "micromatch": "^4.0.8"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
   }
 }
