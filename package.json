@@ -11,7 +11,6 @@
     "format": "prettier --write \"**/*.{js,html,css,json,md}\"",
     "clean": "rimraf node_modules package-lock.json",
     "reinstall": "npm run clean && npm install",
-    "prepare": "husky install || echo 'Husky not installed, skipping'",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -55,7 +54,7 @@
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.0.0",
-    "husky": "^9.1.7",
+    "simple-git-hooks": "^2.9.0",
     "jest": "^29.6.2",
     "lint-staged": "^15.2.5",
     "nodemon": "^3.0.1",
@@ -81,5 +80,8 @@
     "*.{html,css,json,md}": [
       "prettier --write"
     ]
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
   }
 }

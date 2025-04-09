@@ -1,4 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx lint-staged
+# Run lint-staged directly without relying on npx
+node ./node_modules/lint-staged/bin/lint-staged.js
