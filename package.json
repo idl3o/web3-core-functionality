@@ -44,9 +44,11 @@
     "compression": "^1.7.4",
     "googleapis": "^118.0.0",
     "ethers": "^5.8.0",
-    "canvas": "^2.11.0",
     "uuid": "^9.0.0",
     "chalk": "^4.1.2"
+  },
+  "optionalDependencies": {
+    "canvas": "^2.11.0"
   },
   "devDependencies": {
     "eslint": "^9.24.0",
@@ -61,7 +63,7 @@
     "vite": "^6.2.5"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": "16.x"
   },
   "lint-staged": {
     "*.js": [

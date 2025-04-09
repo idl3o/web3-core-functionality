@@ -14,10 +14,14 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
-    - run: npm install
-    - run: npm update
+        node-version: '16'  # Ensure that you are using a compatible Node.js version
+
+    - run: npm install --no-optional  # Skip optional dependencies like canvas
+
+    - run: npm update  # Ensures all dependencies are up-to-date
+
     - run: npm run build
+
     - name: Deploy
       run: npm run deploy
       env:
