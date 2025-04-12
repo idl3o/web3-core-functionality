@@ -16,6 +16,7 @@ highlighter: rouge
 permalink: /:title/
 encoding: utf-8
 incremental: false
+future: true
 
 # Theme
 theme: minima
