@@ -16,18 +16,34 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '16'
         cache: 'npm'
 
-    # Use npm ci instead of npm install for more reliable dependency installation
-    - run: npm ci --no-optional
+    - name: Install dependencies
+      run: |
+        if [ -f "package-lock.json" ]; then
+          npm ci --no-optional
+        else
+          npm install --no-optional
+          # Generate a package-lock.json for future runs
+          npm install --package-lock-only --no-optional
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add package-lock.json
+          git commit -m "Add package-lock.json [skip ci]" || echo "No changes to commit"
+          git push || echo "Could not push changes"
+        fi
 
-    - run: npm run build
+    - name: Build website
+      run: npm run build
 
     - name: Deploy
-      run: npm run deploy
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages
+        folder: _site
+        clean: true
