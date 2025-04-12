@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Announcing Web3 Crypto Streaming Service"
+categories: announcement web3 blockchain
+author: Project RED X Team
+---
 # Announcing Web3 Crypto Streaming Service
 
 We're thrilled to officially announce our Web3 Crypto Streaming Service, a revolutionary platform that combines the power of blockchain technology with high-quality media streaming. After months of development, we're ready to share our vision with the world.
