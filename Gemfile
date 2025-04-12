@@ -1,26 +1,25 @@
 source "https://rubygems.org"
 
-gem "jekyll", "~> 4.2.0"
-gem "minima", "~> 2.5.1"
+# Use GitHub Pages - this will manage all dependencies properly
+gem "github-pages", group: :jekyll_plugins
 
+# Plugins explicitly mentioned in _config.yml should be listed here
 group :jekyll_plugins do
-  gem "jekyll-feed", "~> 0.12"
-  gem "jekyll-seo-tag", "~> 2.7.1"
-  gem "jekyll-sitemap", "~> 1.4.0"
-  gem "jekyll-redirect-from", "~> 0.16.0"
-  gem "jekyll-titles-from-headings", "~> 0.5.3"
-  gem "jekyll-include-cache", "~> 0.2.1"
+  gem "jekyll-feed"
+  gem "jekyll-seo-tag"
+  gem "jekyll-sitemap"
+  gem "jekyll-redirect-from"
+  gem "jekyll-titles-from-headings"
+  gem "jekyll-include-cache"
+  gem "jekyll-remote-theme"
 end
 
-# Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
-# and associated library.
-platforms :mingw, :x64_mingw, :mswin, :jruby do
+# Windows-specific gems only loaded on Windows
+platforms :mingw, :x64_mingw, :mswin do
   gem "tzinfo", "~> 1.2"
   gem "tzinfo-data"
+  gem "wdm", "~> 0.1.1"
 end
 
-# Performance-booster for watching directories on Windows
-gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
-
-# Lock Jekyll to v4.2 (GitHub Pages uses Jekyll 3.9, but we can build locally and deploy)
+# Lock webrick for Ruby 3.0+ compatibility
 gem "webrick", "~> 1.7"
