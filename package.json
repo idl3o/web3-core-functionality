@@ -41,7 +41,7 @@
   "author": "Project RED X Team",
   "license": "MIT",
   "dependencies": {
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.5.0",
     "serve-static": "^2.2.0",
     "compression": "^1.7.4",
     "googleapis": "^118.0.0",
