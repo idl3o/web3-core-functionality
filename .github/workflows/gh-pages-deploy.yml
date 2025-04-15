@@ -62,11 +62,29 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JEKYLL_ENV: production
 
+      # Debug step to verify _site directory
+      - name: Debug _site directory
+        run: |
+          echo "Checking if _site directory exists..."
+          if [ -d "_site" ]; then
+            echo "_site directory exists"
+            echo "Contents of _site directory:"
+            ls -la _site
+          else
+            echo "ERROR: _site directory does not exist!"
+            echo "Contents of current directory:"
+            ls -la
+            echo "Searching for build output directories:"
+            find . -type d -name "_site" -o -name "dist" -o -name "build" -o -name "public"
+          fi
+
       # Alternative deployment method using GitHub Pages Action
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
           path: '_site'
+          # Ensure the path exists before uploading
+          if-no-files-found: error
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v3
