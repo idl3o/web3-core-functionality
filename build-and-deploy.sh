@@ -36,10 +36,26 @@ if [ -f "package.json" ]; then
     # Use perl instead of sed for better cross-platform compatibility
     perl -i -pe 's/"predeploy":\s*".*"/"predeploy": "npm run build"/' package.json
     perl -i -pe 's/"build":\s*".*"/"build": "npm run build:vite \&\& npm run build:jekyll"/' package.json
+    perl -i -pe 's/"build:vite":\s*".*"/"build:vite": "NODE_OPTIONS=--openssl-legacy-provider vite build"/' package.json
 fi
 
-# Run the build
-npm run build || { echo "Warning: Build had issues but continuing..."; }
+# Try full build first
+if npm run build; then
+    echo "Build completed successfully!"
+else
+    echo "Full build failed. Falling back to Jekyll-only build..."
+    # Try Jekyll build without Vite
+    if bundle exec jekyll build; then
+        echo "Jekyll build completed successfully!"
+    else
+        echo "Error: Both build methods failed"
+        # Restore original package.json
+        if [ -f "package.json.bak" ]; then
+            mv package.json.bak package.json
+        fi
+        exit 1
+    fi
+fi
 
 # Restore original package.json
 if [ -f "package.json.bak" ]; then

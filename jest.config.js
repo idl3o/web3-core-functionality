@@ -16,8 +16,10 @@ module.exports = {
   // An array of regexp pattern strings that are matched against all test paths
   testPathIgnorePatterns: [
     '/node_modules/',
+    '/_site/',
     '/dist/',
-    '/.github/'
+    '/vendor/',
+    '/.jekyll-cache/'
   ],
 
   // Indicates whether each individual test should be reported during the run
@@ -40,7 +42,7 @@ module.exports = {
   ],
 
   // A list of reporter names that Jest uses when writing coverage reports
-  coverageReporters: ['text', 'lcov', 'clover'],
+  coverageReporters: ['text', 'lcov'],
 
   // The maximum amount of workers used to run your tests
   maxWorkers: '50%',
@@ -63,11 +65,19 @@ module.exports = {
   setupFiles: [],
 
   // Setup files that will run after the test framework is instantiated
-  setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 
   // The test results processor used by Jest
   // testResultsProcessor: undefined,
 
   // Display individual test results with the test suite hierarchy
-  displayIndividualTestResults: true
+  displayIndividualTestResults: true,
+
+  // Add file extensions Jest should look for
+  moduleFileExtensions: ['js', 'jsx', 'json', 'node'],
+
+  // Transform files with babel-jest
+  transform: {
+    '^.+\\.(js|jsx)$': 'babel-jest'
+  }
 };

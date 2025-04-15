@@ -10,7 +10,18 @@ module.exports = [
       globals: {
         ...globals.browser,
         ...globals.node,
-        ...globals.es2021
+        ...globals.es2021,
+        // Add Jest/Mocha testing globals
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        before: 'readonly',
+        after: 'readonly',
+        jest: 'readonly',
+        cy: 'readonly'
       },
       parserOptions: {
         allowImportExportEverywhere: true,
