@@ -46,7 +46,7 @@
     "compression": "^1.7.4",
     "googleapis": "^118.0.0",
     "ethers": "^5.8.0",
-    "uuid": "^9.0.0",
+    "uuid": "^11.1.0",
     "chalk": "^4.1.2",
     "rimraf": "^5.0.1"
   },
