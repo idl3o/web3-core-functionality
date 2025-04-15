@@ -36,8 +36,7 @@ Visit our [GitHub Pages site](https://idl3o.github.io/gh-pages) to learn more or
 ## Contact
 
 - GitHub: [@idl3o](https://github.com/idl3o)
-- Twitter/X: [@idl3.modsias](https://twitter.com/idl3.modsias)
-- Email: x@idl3.modsias
+- Twitter/X: [@modsias](https://x.com/modsias)
 
 ---
 
