@@ -1,10 +1,10 @@
 # Project RED X - Master Configuration File
 
 # Site settings
-title: Web3 Crypto Streaming Service
-description: A decentralized streaming platform that returns control and revenue to creators
+title: Your Name
+description: Developer & Designer
 baseurl: "/gh-pages" # the subpath of your site, e.g. /blog
-url: "https://idl3o.github.io" # the base hostname & protocol
+url: "https://yourusername.github.io"
 author: Project RED X Team
 email: contact@example.com
 lang: en-US
@@ -17,10 +17,12 @@ permalink: /:title/
 encoding: utf-8
 incremental: false
 future: true
+remote_theme: pages-themes/minimal@v0.2.0
+plugins:
+  - jekyll-remote-theme
 
 # Theme
 theme: minima
-remote_theme: jekyll/minima
 
 # SEO settings
 twitter:
@@ -99,7 +101,6 @@ defaults:
       image: true
 
 # Plugins
-plugins:
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-sitemap
@@ -126,12 +127,13 @@ cdn:
 
 # Exclude from processing
 exclude:
-  - node_modules
-  - package.json
-  - package-lock.json
-  - README.md
   - Gemfile
   - Gemfile.lock
+  - node_modules
+  - vendor
+  - README.md
+  - package.json
+  - package-lock.json
   - .gitignore
   - .github
   - scripts
