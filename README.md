@@ -1,52 +1,44 @@
-# GitHub Pages Project
+# Web3 Crypto Streaming Service
 
-Welcome to this GitHub Pages repository! This project is set up to deploy a website using GitHub Pages with automatic builds and deployments through GitHub Actions.
+A decentralized streaming platform that returns control and revenue to creators through blockchain technology.
 
-[![Deploy to GitHub Pages](https://github.com/idl3o/gh-pages/actions/workflows/deploy.yml/badge.svg)](https://github.com/idl3o/gh-pages/actions/workflows/deploy.yml)
+## About Idl3o
 
-## 🚀 Quick Start
+Idl3o is the lead developer of Team MODSIAS, specializing in blockchain integration, distributed systems, and Web3 technologies. With expertise in creating decentralized applications that bridge content creation and cryptocurrency, Idl3o focuses on building equitable platforms that empower creators.
 
-1. **Clone this repository**
-   ```bash
-   git clone https://github.com/idl3o/gh-pages.git
-   cd gh-pages
-   ```
+## Project Overview
 
-2. **Install dependencies**
-   ```bash
-   ./update-dependencies.sh
-   ```
+Web3 Crypto Streaming Service is a revolutionary platform that combines blockchain technology with high-quality media streaming. Our mission is to create a more equitable ecosystem for creators and viewers by:
 
-3. **Make changes to your content**
-   - Edit files in the root directory for simple pages
-   - Add posts in the `_posts` directory
-   - Modify templates in the `_layouts` and `_includes` directories
+- Providing creators with 90% of generated revenue
+- Ensuring content ownership through blockchain verification
+- Enabling direct creator-to-viewer relationships
+- Implementing transparent governance through our DAO structure
 
-4. **Test your changes locally**
-   ```bash
-   bundle exec jekyll serve
-   ```
-   Then visit `http://localhost:4000` in your browser.
+## Key Features
 
-5. **Deploy your changes**
-   ```bash
-   ./build-and-deploy.sh
-   ```
-   Or simply push to the main branch to trigger automatic deployment.
+- **Decentralized Storage Layer**: Content distributed across IPFS for censorship resistance
+- **Smart Contract Layer**: Transparent, auditable contracts managing all platform interactions
+- **STREAM Token**: Native utility token powering the ecosystem
+- **GitHub Integration**: Version control and collaboration tools for content management
 
-## 📂 Repository Structure
+## Tech Stack
 
-- `index.html`: Main landing page
-- `assets/`: Contains CSS, JavaScript, and images
-- `_config.yml`: Jekyll configuration
-- `_posts/`: Contains blog posts
-- `_layouts/`: Contains layout templates
-- `_includes/`: Contains reusable components
+- Blockchain: Ethereum/Polygon smart contracts
+- Storage: IPFS-based content addressing
+- Frontend: React/TypeScript progressive web application
+- Backend: Node.js with decentralized architecture
 
-## Deployment
+## Getting Started
 
-The site is automatically deployed from the `main` branch using GitHub Actions.
+Visit our [GitHub Pages site](https://idl3o.github.io/gh-pages) to learn more or join our beta program.
 
-## License
+## Contact
 
-MIT © Your Name
+- GitHub: [@idl3o](https://github.com/idl3o)
+- Twitter/X: [@idl3.modsias](https://twitter.com/idl3.modsias)
+- Email: x@idl3.modsias
+
+---
+
+© 2024 Team MODSIAS | Project Demo
