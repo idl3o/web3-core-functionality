@@ -36,7 +36,13 @@
     "cfig:set": "node scripts/cfig.js set",
     "cfig:list": "node scripts/cfig.js list",
     "cfig:features": "node scripts/cfig.js features",
-    "cfig:env": "node scripts/cfig.js env"
+    "cfig:env": "node scripts/cfig.js env",
+    "consolidated": "./scripts/consolidated-build.sh",
+    "branches": "node scripts/branch-manager.js",
+    "branches:status": "node scripts/branch-manager.js status",
+    "branches:merge": "node scripts/branch-manager.js merge",
+    "branches:cleanup": "node scripts/branch-manager.js cleanup",
+    "clean:duplicates": "node scripts/clean-duplicates.js"
   },
   "author": "Project RED X Team",
   "license": "MIT",
