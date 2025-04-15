@@ -1,0 +1,30 @@
+[user]
+	name = idl3o
+	email = modsias23@gmail.com
+[core]
+	editor = vim
+	autocrlf = input
+	excludesFile = ~/.gitignore_global
+[init]
+	defaultBranch = main
+[pull]
+	rebase = false
+[push]
+	default = current
+[color]
+	ui = auto
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	visual = !gitk
+[merge]
+	tool = vimdiff
+[commit]
+	template = ~/.gitmessage
+[credential]
+	helper = cache --timeout=3600

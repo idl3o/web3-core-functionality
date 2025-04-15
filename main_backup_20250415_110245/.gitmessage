@@ -1,0 +1,16 @@
+# [type]: Subject line (try to keep under 50 characters)
+
+# Multi-line description of commit (try to wrap at 72 characters)
+
+# Types:
+# feat:     (new feature)
+# fix:      (bug fix)
+# docs:     (changes to documentation)
+# style:    (formatting, missing semi colons, etc; no code change)
+# refactor: (refactoring production code)
+# perf:     (performance improvements)
+# test:     (adding missing tests, refactoring tests)
+# chore:    (updating build tasks, package manager configs, etc)
+
+# Resolves: #123
+# See also: #456, #789

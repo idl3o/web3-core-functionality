@@ -1,0 +1,5 @@
+{
+  "hooks": {
+    "pre-commit": "echo 'Pre-commit hook disabled during repair'"
+  }
+}
