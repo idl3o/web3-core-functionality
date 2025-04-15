@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Updated to v4
+        uses: actions/checkout@v4
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -20,7 +20,9 @@ jobs:
           bundler-cache: true
 
       - name: Update RubyGems
-        run: gem update --system
+        run: |
+          gem update --system --no-document
+          gem --version # Verify the updated version
 
       - name: Setup Node.js
         uses: actions/setup-node@v4 # Updated to v4

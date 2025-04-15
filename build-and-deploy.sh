@@ -29,37 +29,60 @@ fi
 
 # Build the project
 echo "Building project..."
-# Modify package.json scripts dynamically to skip linting for build
-if [ -f "package.json" ]; then
-    echo "Temporarily modifying package.json to skip linting..."
-    cp package.json package.json.bak
-    # Use perl instead of sed for better cross-platform compatibility
-    perl -i -pe 's/"predeploy":\s*".*"/"predeploy": "npm run build"/' package.json
-    perl -i -pe 's/"build":\s*".*"/"build": "npm run build:vite \&\& npm run build:jekyll"/' package.json
-    perl -i -pe 's/"build:vite":\s*".*"/"build:vite": "NODE_OPTIONS=--openssl-legacy-provider vite build"/' package.json
-fi
-
-# Try full build first
-if npm run build; then
-    echo "Build completed successfully!"
-else
-    echo "Full build failed. Falling back to Jekyll-only build..."
-    # Try Jekyll build without Vite
-    if bundle exec jekyll build; then
-        echo "Jekyll build completed successfully!"
-    else
-        echo "Error: Both build methods failed"
-        # Restore original package.json
-        if [ -f "package.json.bak" ]; then
-            mv package.json.bak package.json
+# Detect GitHub Actions environment
+if [ -n "$GITHUB_ACTIONS" ]; then
+    echo "Running in GitHub Actions environment..."
+    # GitHub Actions specific build process
+    if [ -f "package.json" ]; then
+        # No need to modify package.json in GitHub Actions
+        # Just run the appropriate commands directly
+        npm ci || npm install  # Prefer ci in CI environments
+        if npm run build; then
+            echo "Build completed successfully!"
+        elif bundle exec jekyll build; then
+            echo "Jekyll build completed successfully!"
+        else
+            echo "Error: All build methods failed"
+            exit 1
         fi
-        exit 1
+    else
+        # Jekyll-only project
+        bundle install
+        bundle exec jekyll build
     fi
-fi
+else
+    # Local development build process
+    if [ -f "package.json" ]; then
+        echo "Temporarily modifying package.json to skip linting..."
+        cp package.json package.json.bak
+        # Use perl instead of sed for better cross-platform compatibility
+        perl -i -pe 's/"predeploy":\s*".*"/"predeploy": "npm run build"/' package.json
+        perl -i -pe 's/"build":\s*".*"/"build": "npm run build:vite \&\& npm run build:jekyll"/' package.json
+        perl -i -pe 's/"build:vite":\s*".*"/"build:vite": "NODE_OPTIONS=--openssl-legacy-provider vite build"/' package.json
+    fi
 
-# Restore original package.json
-if [ -f "package.json.bak" ]; then
-    mv package.json.bak package.json
+    # Try full build first
+    if npm run build; then
+        echo "Build completed successfully!"
+    else
+        echo "Full build failed. Falling back to Jekyll-only build..."
+        # Try Jekyll build without Vite
+        if bundle exec jekyll build; then
+            echo "Jekyll build completed successfully!"
+        else
+            echo "Error: Both build methods failed"
+            # Restore original package.json
+            if [ -f "package.json.bak" ]; then
+                mv package.json.bak package.json
+            fi
+            exit 1
+        fi
+    fi
+
+    # Restore original package.json
+    if [ -f "package.json.bak" ]; then
+        mv package.json.bak package.json
+    fi
 fi
 
 # Deploy to GitHub Pages

@@ -20,7 +20,9 @@ jobs:
           bundler-cache: true
 
       - name: Update RubyGems
-        run: gem update --system
+        run: |
+          gem update --system --no-document
+          gem --version # Verify the updated version
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
