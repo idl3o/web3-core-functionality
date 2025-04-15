@@ -1,0 +1,7 @@
+_site/**
+.jekyll-cache/**
+vendor/**
+node_modules/**
+dist/**
+main_backup_*/**
+*.min.js

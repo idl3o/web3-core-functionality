@@ -22,9 +22,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: main # Explicitly checkout main branch
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'package.json'
+
+      # Create package-lock.json to avoid the dependency error
+      - name: Generate package-lock.json
+        run: npm install --package-lock-only
 
       - name: Setup Java JDK
         uses: actions/setup-java@v3
@@ -55,6 +68,8 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./_site
 
   deploy:
     environment:

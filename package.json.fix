@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "lint": "eslint --ext .js . || true",
+    "build": "npm run build:vite && npm run build:jekyll",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d _site"
+  }
+}

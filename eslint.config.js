@@ -1,8 +1,8 @@
-import globals from 'globals';
-import js from '@eslint/js';
-import prettier from 'eslint-config-prettier';
+const globals = require('globals');
+const js = require('@eslint/js');
+const prettier = require('eslint-config-prettier');
 
-export default [
+module.exports = [
   {
     languageOptions: {
       ecmaVersion: 2022,
@@ -34,7 +34,14 @@ export default [
       'no-var': 'warn',
       'no-case-declarations': 'off' // Turn off no-case-declarations rule
     },
-    ignores: ['node_modules/**', '_site/**', '.jekyll-cache/**', 'vendor/**']
+    ignores: [
+      'node_modules/**',
+      '_site/**',
+      '.jekyll-cache/**',
+      'vendor/**',
+      'dist/**',
+      'main_backup_*/**'
+    ]
   },
   prettier
 ];

@@ -116,7 +116,11 @@ node_modules/
 npm-debug.log
 yarn-debug.log
 yarn-error.log
-package-lock.json
+
+# Keep lock files for GitHub Actions
+!package-lock.json
+!yarn.lock
+!npm-shrinkwrap.json
 
 # Build output
 build/

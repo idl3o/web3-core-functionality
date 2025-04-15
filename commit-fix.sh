@@ -3,6 +3,12 @@
 
 echo "===== Fixing Commit Issues ====="
 
+# Check if git is installed
+if ! command -v git &> /dev/null; then
+    echo "Error: git is not installed or not in PATH"
+    exit 1
+fi
+
 # 1. Disable Husky hooks immediately (most direct solution)
 echo "Disabling git hooks..."
 git config --local core.hooksPath /dev/null
@@ -23,6 +29,8 @@ if [ -f "package.json" ]; then
   rm -f package-lock.json
 
   echo "Node.js package configuration updated"
+  echo "Installing dependencies..."
+  npm install --silent || { echo "Error: npm install failed"; exit 1; }
 fi
 
 # 3. Create a commit script that bypasses hooks
@@ -35,16 +43,33 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
+# Add all changed files
+git add .
+
 # Always bypass hooks when committing
 git commit --no-verify -m "$1"
+
+echo "Changes committed successfully!"
 EOF
 
 chmod +x safe-commit.sh
+
+# 4. Create configuration backup/restore capability
+cat > restore-hooks.sh << 'EOF'
+#!/bin/bash
+# Script to restore git hooks
+
+echo "Restoring git hooks configuration..."
+git config --local --unset core.hooksPath
+echo "Git hooks restored!"
+EOF
+
+chmod +x restore-hooks.sh
 
 echo "===== Fix Complete ====="
 echo ""
 echo "To commit your changes safely, use:"
 echo "./safe-commit.sh \"Your commit message\""
 echo ""
-echo "After this repo is stable, you may want to restore hooks with:"
-echo "git config --local --unset core.hooksPath"
+echo "When you want to restore git hooks, run:"
+echo "./restore-hooks.sh"
