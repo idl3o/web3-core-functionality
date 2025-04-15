@@ -28,9 +28,9 @@ const rl = readline.createInterface({
 function exec(command) {
   try {
     return execSync(command).toString().trim();
-  } catch (error) {
+  } catch (_error) {
     console.error(`Error executing command: ${command}`);
-    console.error(error.message);
+    console.error(_error.message);
     return null;
   }
 }
@@ -90,7 +90,7 @@ function mergeBranches(branches) {
     try {
       exec(`git merge --no-ff ${branch} -m "Merge branch '${branch}' into ${config.mainBranch}"`);
       console.log(`✅ Successfully merged ${branch}`);
-    } catch (error) {
+    } catch (_error) {
       console.error(`❌ Failed to merge ${branch}`);
       exec('git merge --abort');
     }
@@ -139,10 +139,11 @@ function main() {
     case 'status':
       listBranches();
       break;
-    case 'merge':
+    case 'merge': {
       const branchesToMerge = args.slice(1);
       mergeBranches(branchesToMerge);
       break;
+    }
     case 'cleanup':
       cleanupBranches();
       break;
