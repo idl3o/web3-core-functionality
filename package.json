@@ -44,7 +44,7 @@
     "dotenv": "^16.3.1",
     "serve-static": "^2.2.0",
     "compression": "^1.7.4",
-    "googleapis": "^118.0.0",
+    "googleapis": "^148.0.0",
     "ethers": "^5.8.0",
     "uuid": "^11.1.0",
     "chalk": "^4.1.2",
