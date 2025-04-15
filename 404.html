@@ -3,74 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found | Project RED X</title>
+    <title>Page Not Found - Web3 Crypto Streaming Service</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon">
+    <meta name="description" content="Page not found - Web3 Crypto Streaming Service">
     <style>
-        :root {
-            --primary: #f00;
-            --dark-bg: #111827;
-            --text: #374151;
-            --dark-text: #f3f4f6;
-            --light-bg: #f9fafb;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--light-bg);
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
+        .error-container {
             text-align: center;
-            padding: 0 20px;
+            padding: 4rem 1rem;
+            max-width: 800px;
+            margin: 0 auto;
         }
-        
-        body.dark-mode {
-            background-color: var(--dark-bg);
-            color: var(--dark-text);
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin: 0;
+            line-height: 1;
+            text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
         }
-        
-        h1 {
-            color: var(--primary);
-            font-size: 5rem;
-            margin-bottom: 0;
+
+        .error-message {
+            font-size: 2rem;
+            margin: 1rem 0 2rem 0;
+            color: var(--secondary-color);
         }
-        
-        p {
-            font-size: 1.25rem;
-            max-width: 500px;
-            margin: 1rem 0 2rem;
+
+        .error-details {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--light-text);
         }
-        
-        .btn {
-            background-color: var(--primary);
+
+        .back-home {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            background-color: var(--accent-color);
             color: white;
-            padding: 0.75rem 1.5rem;
             text-decoration: none;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
         }
-        
-        .btn:hover {
-            transform: translateY(-2px);
+
+        .back-home:hover {
+            background-color: #3651d4;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.4);
+            text-decoration: none;
+        }
+
+        .orbit-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 2rem auto;
+        }
+
+        .planet {
+            position: absolute;
+            left: 60px;
+            top: 60px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            box-shadow: 0 0 20px rgba(67, 97, 238, 0.6);
+        }
+
+        .orbit {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 180px;
+            height: 180px;
+            border: 2px dashed rgba(67, 97, 238, 0.3);
+            border-radius: 50%;
+            animation: orbit-spin 8s linear infinite;
+        }
+
+        .satellite {
+            position: absolute;
+            top: -10px;
+            left: 85px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            box-shadow: 0 0 10px rgba(44, 62, 80, 0.6);
+        }
+
+        @keyframes orbit-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
     </style>
+    <!-- Ensure proper navigation regardless of deployment path -->
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            // Get the current base URL for GitHub Pages
+            const baseUrl = window.location.pathname.split('/').slice(0, -1).join('/');
+            const homeUrl = baseUrl || '/';
+
+            // Update all navigation links to use absolute paths
+            document.querySelectorAll('a[href="/"]').forEach(link => {
+                link.setAttribute('href', homeUrl);
+            });
+
+            // Make sure the back home button works correctly
+            document.getElementById('back-home-button').setAttribute('href', homeUrl);
+        });
+    </script>
 </head>
 <body>
-    <h1>404</h1>
-    <p>Oops! The page you're looking for doesn't exist or has been moved.</p>
-    <a href="/" class="btn">Back to Home</a>
-    
-    <script>
-        // Check for dark mode preference
-        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-        if (localStorage.getItem('theme') === 'dark' || 
-            (localStorage.getItem('theme') !== 'light' && prefersDarkScheme.matches)) {
-            document.body.classList.add('dark-mode');
-        }
-    </script>
+    <!-- Navigation -->
+    <div class="navigation">
+        <div class="container nav-container">
+            <a href="/" class="logo">Web3 Crypto Streaming</a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/#features">Features</a></li>
+                    <li><a href="/#architecture">Architecture</a></li>
+                    <li><a href="/#tech">Tech Stack</a></li>
+                    <li><a href="/#token">Token</a></li>
+                    <li><a href="/java/">Java API</a></li>
+                    <li><a href="/docs/">Docs</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 404 Content -->
+    <div class="container">
+        <div class="error-container">
+            <div class="orbit-container">
+                <div class="orbit">
+                    <div class="satellite"></div>
+                </div>
+                <div class="planet"></div>
+            </div>
+
+            <h1 class="error-code">404</h1>
+            <p class="error-message">Page Not Found</p>
+            <p class="error-details">
+                The page you're looking for seems to have drifted into another blockchain.
+                Don't worry, our network is still intact!
+            </p>
+
+            <a href="/" id="back-home-button" class="back-home">Back to Home</a>
+
+            <p style="margin-top: 3rem;">
+                If you believe this is an error with our site, please
+                <a href="https://github.com/idl3o/gh-pages/issues/new" target="_blank">report it on GitHub</a>.
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>Web3 Crypto Streaming Service</h3>
+                    <p>Revolutionizing content distribution through blockchain technology.</p>
+                </div>
+
+                <div>
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="/docs/whitepaper.html">Whitepaper</a></li>
+                        <li><a href="/docs/">Documentation</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://twitter.com/modsias">Twitter</a></li>
+                        <li><a href="https://discord.gg/web3streaming">Discord</a></li>
+                        <li><a href="https://t.me/web3streaming">Telegram</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/legal/terms.html">Terms of Service</a></li>
+                        <li><a href="/legal/privacy.html">Privacy Policy</a></li>
+                        <li><a href="/legal/token-disclaimer.html">Token Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Team MODSIAS | <a href="/sitemap.html">Sitemap</a></p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
