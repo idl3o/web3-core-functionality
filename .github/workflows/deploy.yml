@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:  # Allow manual triggering
 
 # Prevent concurrent deployments
 concurrency:
@@ -26,20 +27,9 @@ jobs:
         node-version: '16'
         cache: 'npm'
 
-    - name: Generate package-lock.json if missing
-      run: |
-        if [ ! -f "package-lock.json" ]; then
-          echo "No package-lock.json found, generating one now..."
-          npm install --package-lock-only
-        fi
-
+    # Simplified dependency installation to avoid the lock file error
     - name: Install dependencies
-      run: |
-        if [ -f "package-lock.json" ]; then
-          npm ci || npm install
-        else
-          npm install
-        fi
+      run: npm install
 
     - name: Setup Ruby for Jekyll
       uses: ruby/setup-ruby@v1
