@@ -1,14 +1,17 @@
 # Project RED X - Master Configuration File
 
 # Site settings
-title: Your Name
-description: Developer & Designer
-baseurl: "" # Empty baseurl to deploy at root domain
-url: "https://yourusername.github.io"
-author: Project RED X Team
-email: contact@example.com
-lang: en-US
-timezone: UTC
+title: Project Demo
+description: Team MODSIAS Official Website
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://idl3o.github.io/gh-pages"
+
+# Author information
+author:
+  name: Idl3o
+  email: x@idl3.modsias
+  github: idl3o
+  twitter: idl3.modsias
 
 # Build settings
 markdown: kramdown
@@ -26,6 +29,18 @@ plugins:
   - jekyll-redirect-from
   - jekyll-titles-from-headings
   - jekyll-include-cache
+include: ["_pages"]
+exclude:
+  - README.md
+  - LICENSE
+  - Gemfile
+  - Gemfile.lock
+  - REPOSITORY_MERGE_GUIDE.md
+  - CONSOLIDATION.md
+  - package.json
+  - package-lock.json
+  - node_modules
+  - vendor
 
 # Theme
 theme: minima
@@ -48,6 +63,12 @@ project:
   repository: https://github.com/idl3o/gh-pages
   documentation: https://idl3o.github.io/gh-pages/docs
   license: MIT
+
+# Team information
+team:
+  name: MODSIAS
+  project: Demo
+  repository: https://github.com/idl3o/gh-pages
 
 # Feature flags
 features:
