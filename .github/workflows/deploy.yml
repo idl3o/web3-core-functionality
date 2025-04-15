@@ -26,14 +26,20 @@ jobs:
         node-version: '16'
         cache: 'npm'
 
-    - name: Install Node dependencies
+    - name: Generate package-lock.json if missing
+      run: |
+        if [ ! -f "package-lock.json" ]; then
+          echo "No package-lock.json found, generating one now..."
+          npm install --package-lock-only
+        fi
+
+    - name: Install dependencies
       run: |
         if [ -f "package-lock.json" ]; then
-          npm ci --no-optional || npm install --no-optional
+          npm ci || npm install
         else
-          npm install --no-optional
+          npm install
         fi
-      continue-on-error: true
 
     - name: Setup Ruby for Jekyll
       uses: ruby/setup-ruby@v1
