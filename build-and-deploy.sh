@@ -39,7 +39,7 @@ if [ -n "$GITHUB_ACTIONS" ]; then
         npm ci || npm install  # Prefer ci in CI environments
         if npm run build; then
             echo "Build completed successfully!"
-        elif bundle exec jekyll build; then
+        elif bundle config set --local deployment 'true' && bundle install && bundle exec jekyll build --trace; then
             echo "Jekyll build completed successfully!"
         else
             echo "Error: All build methods failed"
@@ -47,8 +47,9 @@ if [ -n "$GITHUB_ACTIONS" ]; then
         fi
     else
         # Jekyll-only project
+        bundle config set --local deployment 'true'
         bundle install
-        bundle exec jekyll build
+        bundle exec jekyll build --trace
     fi
 else
     # Local development build process
@@ -67,7 +68,7 @@ else
     else
         echo "Full build failed. Falling back to Jekyll-only build..."
         # Try Jekyll build without Vite
-        if bundle exec jekyll build; then
+        if bundle install && bundle exec jekyll build; then
             echo "Jekyll build completed successfully!"
         else
             echo "Error: Both build methods failed"
