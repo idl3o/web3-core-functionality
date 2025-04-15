@@ -1,19 +1,47 @@
-# GitHub Pages Portfolio
+# GitHub Pages Project
 
-This repository contains my portfolio website built with GitHub Pages.
+Welcome to this GitHub Pages repository! This project is set up to deploy a website using GitHub Pages with automatic builds and deployments through GitHub Actions.
 
-## Development
+[![Deploy to GitHub Pages](https://github.com/idl3o/gh-pages/actions/workflows/deploy.yml/badge.svg)](https://github.com/idl3o/gh-pages/actions/workflows/deploy.yml)
 
-This portfolio is built using:
-- HTML/CSS for styling
-- Jekyll for site generation
-- GitHub Actions for automated deployment
+## 🚀 Quick Start
 
-## Structure
+1. **Clone this repository**
+   ```bash
+   git clone https://github.com/idl3o/gh-pages.git
+   cd gh-pages
+   ```
+
+2. **Install dependencies**
+   ```bash
+   ./update-dependencies.sh
+   ```
+
+3. **Make changes to your content**
+   - Edit files in the root directory for simple pages
+   - Add posts in the `_posts` directory
+   - Modify templates in the `_layouts` and `_includes` directories
+
+4. **Test your changes locally**
+   ```bash
+   bundle exec jekyll serve
+   ```
+   Then visit `http://localhost:4000` in your browser.
+
+5. **Deploy your changes**
+   ```bash
+   ./build-and-deploy.sh
+   ```
+   Or simply push to the main branch to trigger automatic deployment.
+
+## 📂 Repository Structure
 
 - `index.html`: Main landing page
 - `assets/`: Contains CSS, JavaScript, and images
 - `_config.yml`: Jekyll configuration
+- `_posts/`: Contains blog posts
+- `_layouts/`: Contains layout templates
+- `_includes/`: Contains reusable components
 
 ## Deployment
 

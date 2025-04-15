@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Updated to v4
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -20,14 +20,18 @@ jobs:
           bundler-cache: true
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # Updated to v4
         with:
           node-version: '18'
           cache: 'npm'
 
       - name: Install dependencies
         run: |
-          npm ci || npm install
+          # Install with retry logic
+          for i in 1 2 3; do
+            npm ci || npm install && break || echo "Retry $i..."
+            sleep 5
+          done
           bundle install
 
       - name: Build Jekyll site
@@ -35,18 +39,17 @@ jobs:
         env:
           JEKYLL_ENV: production
 
-      # Using direct deployment instead of the potentially problematic jekyll action
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@v4.4.3 # Updated to specific version
         with:
           folder: _site
           branch: gh-pages
           clean: true
           single-commit: true
 
-      # Use upload-artifact@v3 as specified in the error message
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # Updated to v4
         with:
           name: site-artifact
           path: _site
+          retention-days: 7 # Added retention period

@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Updated to v4
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -23,18 +23,29 @@ jobs:
           bundler-cache: true
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # Updated to v4
         with:
           node-version: '18'
           cache: 'npm'
 
       - name: Install Dependencies
         run: |
-          npm ci || npm install
-          # Explicitly install vite-plugin-node-polyfills and other critical dependencies
-          npm install --save-dev vite-plugin-node-polyfills crypto-js jsdom
+          # Verify npm registry accessibility
+          npm ping || echo "Warning: npm registry might be slow or unavailable"
+
+          # Install with fallbacks and retry logic
+          npm ci || npm install || (sleep 5 && npm install --no-fund --no-audit)
+
+          # Install critical dependencies with retry logic
+          echo "Installing critical dependencies..."
+          for i in 1 2 3; do
+            npm install --save-dev vite-plugin-node-polyfills crypto-js jsdom && break || echo "Retry $i..."
+            sleep 5
+          done
+
           echo "Verifying vite-plugin-node-polyfills installation..."
           npm list vite-plugin-node-polyfills || echo "Warning: vite-plugin-node-polyfills not installed correctly"
+
           bundle install
 
       - name: Fix HTML and CSS Errors
@@ -119,21 +130,22 @@ jobs:
           JEKYLL_ENV: production
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@v4.4.3 # Updated to specific version
         with:
-          folder: _site # The folder the action should deploy
-          branch: gh-pages # The branch the action should deploy to
-          clean: true # Automatically remove deleted files
-          single-commit: true # Create a single commit instead of maintaining history
+          folder: _site
+          branch: gh-pages
+          clean: true
+          single-commit: true
           git-config-name: GitHub Actions
           git-config-email: github-actions@github.com
           commit-message: "Deploy website - ${GITHUB_SHA}"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # Updated to v4
         with:
           name: site-artifact
           path: _site
+          retention-days: 7 # Added retention period
 
       - name: Deployment Results
         run: |
