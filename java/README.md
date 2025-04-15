@@ -1,74 +1,97 @@
-# Web3 Crypto Streaming Service - Java Serverless Integration
+# Web3 Streaming Service - Java Implementation
 
-This module provides Java-based serverless functions for interacting with the Web3 Crypto Streaming Service platform, particularly focused on STREAM token operations.
+This directory contains the Java server-side components of the Web3 Crypto Streaming Service. These components handle token operations, content verification, and blockchain interactions through AWS Lambda functions.
 
-## Overview
+## Project Structure
 
-The Java serverless integration enables:
+```
+java/
+├── README.md                  # This file
+├── index.html                 # API documentation page
+├── serverless-function/       # AWS Lambda function code
+│   ├── pom.xml                # Maven configuration
+│   ├── template.yaml          # AWS SAM template
+│   └── src/
+│       └── main/
+│           └── java/
+│               └── io/
+│                   └── web3streaming/
+│                       ├── handlers/     # Lambda handlers
+│                       ├── models/       # Data models
+│                       ├── services/     # Business logic
+│                       └── utils/        # Helper classes
+└── javadocs/                  # Generated JavaDocs
+```
 
-- Token balance checking via REST API endpoints
-- Content registration and verification
-- User authentication via Web3 wallets
-- Transaction history and analytics
+## Key Components
 
-## Requirements
+### TokenBalanceHandler
 
-- Java 17 or higher
-- AWS CLI (for deployment to AWS Lambda)
-- Maven 3.8+
-- An Ethereum wallet with STREAM tokens for testing
+This Lambda handler processes API Gateway events to retrieve token balances from the blockchain.
 
-## Quick Start
+```java
+public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent event, Context context) {
+    String address = extractAddressFromEvent(event);
+    try {
+        BigInteger balance = tokenService.getBalance(address);
+        return createSuccessResponse(balance);
+    } catch (Exception e) {
+        return createErrorResponse(e);
+    }
+}
+```
 
-### Local Development
+### StreamTokenService
+
+Service class for interacting with the STREAM token contract:
+
+```java
+public BigInteger getBalance(String address) throws Web3StreamingException {
+    try {
+        ERC20Contract contract = ERC20Contract.load(
+            tokenContractAddress,
+            web3j,
+            credentials,
+            new DefaultGasProvider()
+        );
+        return contract.balanceOf(address).send();
+    } catch (Exception e) {
+        throw new Web3StreamingException("Failed to retrieve token balance", e);
+    }
+}
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Java 17+
+- Maven
+- AWS CLI (for deployment)
+- AWS SAM CLI (for local testing)
+
+### Local Testing
 
 ```bash
+# Navigate to the serverless function directory
 cd serverless-function
+
+# Build the project
 mvn clean package
+
+# Run local API with SAM
 sam local start-api
 ```
 
 ### Deployment
 
+The functions are automatically deployed via GitHub Actions when changes are pushed to the main branch. For manual deployment:
+
 ```bash
 cd serverless-function
-mvn clean package
-aws s3 mb s3://web3-streaming-deployment-bucket --region your-region
-sam deploy --stack-name web3-streaming-lambda --s3-bucket web3-streaming-deployment-bucket --capabilities CAPABILITY_IAM
+sam deploy --guided
 ```
 
-## API Endpoints
+## API Reference
 
-Once deployed, the following endpoints are available:
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/token/balance/{address}` | GET | Get STREAM token balance for an address |
-| `/content/register` | POST | Register new content on the platform |
-| `/content/access/{contentId}` | GET | Check access rights for content |
-| `/transaction/history/{address}` | GET | Get transaction history for an address |
-
-## Integration with Smart Contracts
-
-The Java serverless functions interact with the platform's smart contracts using Web3j. See [StreamAccessContract](../docs/contracts/stream-access.html) for the contract interfaces.
-
-## Configuration
-
-Environment variables for Lambda functions:
-
-- `ETHEREUM_NETWORK`: Mainnet, Goerli, or Polygon
-- `CONTRACT_ADDRESS`: Address of the deployed StreamToken contract
-- `WEB3_PROVIDER_URL`: URL of the Ethereum node provider
-
-## Example Usage
-
-```java
-// Example code to check token balance
-StreamTokenClient client = new StreamTokenClient(Web3jProvider.getWeb3j());
-BigInteger balance = client.getTokenBalance("0x1234567890123456789012345678901234567890");
-System.out.println("Token balance: " + balance);
-```
-
-## Monitoring and Logging
-
-All serverless functions are integrated with AWS CloudWatch for monitoring and logging.
+For detailed API documentation, visit the [Java API documentation page](./index.html).
