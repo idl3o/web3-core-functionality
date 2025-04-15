@@ -1,26 +1,36 @@
 {
   "name": "web3-crypto-streaming-service",
-  "version": "0.1.0",
-  "private": true,
-  "description": "A decentralized streaming platform that returns control and revenue to creators",
+  "version": "1.0.0",
+  "description": "A decentralized streaming platform that returns control and revenue to creators through blockchain technology",
+  "main": "index.js",
   "scripts": {
-    "start": "jekyll serve",
-    "build": "jekyll build",
-    "build:vite": "echo 'Vite build placeholder'",
-    "build:jekyll": "JEKYLL_ENV=production jekyll build",
-    "deploy": "gh-pages -d _site"
-  },
-  "dependencies": {
-    "chart.js": "^3.9.1",
-    "web3": "^1.8.2"
-  },
-  "devDependencies": {
-    "gh-pages": "^5.0.0"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo \"Static HTML site - no build required\"",
+    "start": "npx http-server . -o",
+    "dev": "npx http-server . -o"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/idl3o/gh-pages.git"
+    "url": "git+https://github.com/idl3o/gh-pages.git"
   },
+  "keywords": [
+    "web3",
+    "crypto",
+    "streaming",
+    "blockchain",
+    "decentralized"
+  ],
   "author": "Idl3o",
-  "homepage": "https://idl3o.github.io/gh-pages"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/idl3o/gh-pages/issues"
+  },
+  "homepage": "https://github.com/idl3o/gh-pages#readme",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.44.0",
+    "prettier": "^3.0.0"
+  }
 }

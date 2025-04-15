@@ -83,39 +83,29 @@ jobs:
             --capabilities CAPABILITY_IAM
 
   # Build and deploy the GitHub Pages site
-  build-and-deploy-pages:
+  deploy-pages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      # Simple HTML validation step (optional)
+      - name: HTML validation
+        uses: Cyb3r-Jak3/html5validator-action@v7.2.0
         with:
-          ruby-version: '3.2'
-          bundler-cache: true
+          root: .
+          format: text
+          log_level: INFO
 
-      - name: Install dependencies
-        run: |
-          gem install bundler
-          bundle install
-
-      - name: Build site
-        run: bundle exec jekyll build
-        env:
-          JEKYLL_ENV: production
-
+      # Deploy static HTML site to GitHub Pages
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
-          publish_branch: gh-pages
-          cname: ${{ secrets.CNAME }}
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Deploy to GitHub Pages: ${{ github.event.head_commit.message }}'
+          folder: '.'        # Deploy the root directory as-is (no build step needed)
+          branch: gh-pages   # The branch to deploy to
+          clean: true        # Automatically remove deleted files from the deploy branch
+          commit-message: 'Deploy static HTML site to GitHub Pages'
 
   # Security scanning
   security-scan:
@@ -138,4 +128,3 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
-```

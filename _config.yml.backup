@@ -1,0 +1,10 @@
+# Jekyll configuration - kept for reference only
+# This file is not used anymore as we're using static HTML with .nojekyll approach
+
+theme: jekyll-theme-cayman
+title: Web3 Crypto Streaming Service
+description: Decentralized streaming platform that returns control and revenue to creators through blockchain technology
+baseurl: ""
+url: ""
+show_downloads: false
+google_analytics:

@@ -24,32 +24,17 @@ jobs:
       - name: Run Java tests
         run: cd java/serverless-function && mvn -B test
 
-  validate-gh-pages:
+  validate-static-site:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
-
-      - name: Install dependencies
-        run: |
-          gem install bundler
-          bundle install
-
-      - name: Build site
-        run: bundle exec jekyll build
-        env:
-          JEKYLL_ENV: production
-
+      # HTML validation
       - name: HTML validation
         uses: Cyb3r-Jak3/html5validator-action@v7.2.0
         with:
-          root: ./_site/
+          root: .
           format: text
           log_level: INFO
 
@@ -64,10 +49,18 @@ jobs:
           cd java/serverless-function
           mvn org.owasp:dependency-check-maven:check
 
+      # Only run npm audit if package.json exists
+      - name: Check for package.json
+        id: check_package
+        run: |
+          if [ -f "package.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: JavaScript dependency security check
-        uses: snyk/actions/node@master
-        continue-on-error: true
-        with:
-          args: --all-projects
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        if: steps.check_package.outputs.exists == 'true'
+        run: |
+          npm audit || true
+        continue-on-error: true  # Continue even if npm audit finds issues
