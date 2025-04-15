@@ -47,7 +47,7 @@
     "googleapis": "^148.0.0",
     "ethers": "^5.8.0",
     "uuid": "^11.1.0",
-    "chalk": "^4.1.2",
+    "chalk": "^5.4.1",
     "rimraf": "^5.0.1"
   },
   "optionalDependencies": {
