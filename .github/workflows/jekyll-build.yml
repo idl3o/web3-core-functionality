@@ -1,0 +1,52 @@
+name: Jekyll Build and Deploy
+
+on:
+  workflow_dispatch: # Allow manual triggering only as fallback
+
+permissions:
+  contents: write # Needed for gh-pages deployment
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci || npm install
+          bundle install
+
+      - name: Build Jekyll site
+        run: bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+
+      # Using direct deployment instead of the potentially problematic jekyll action
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: _site
+          branch: gh-pages
+          clean: true
+          single-commit: true
+
+      # Use upload-artifact@v3 as specified in the error message
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: site-artifact
+          path: _site

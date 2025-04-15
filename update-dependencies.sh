@@ -3,8 +3,12 @@
 
 echo "===== Installing Required Dependencies ====="
 
-# Install Vite plugins and polyfills
-npm install --save-dev vite-plugin-node-polyfills crypto-js
+# Ensure Vite is installed first
+npm install --save-dev vite@latest
+
+# Install Vite plugins and polyfills - ensure these critical dependencies are installed correctly
+echo "Installing critical Vite plugins..."
+npm install --save-dev vite-plugin-node-polyfills@latest crypto-js@latest
 
 # Install testing dependencies
 npm install --save-dev jest babel-jest @babel/core @babel/preset-env jest-fetch-mock
@@ -21,6 +25,10 @@ if [ -f "package.json" ]; then
   if ! grep -q '"test"' package.json; then
     perl -i -pe 's/("scripts":\s*\{)/\1\n    "test": "jest",/' package.json
   fi
+  # Add postinstall script to ensure plugin is always available
+  if ! grep -q '"postinstall"' package.json; then
+    perl -i -pe 's/("scripts":\s*\{)/\1\n    "postinstall": "npm install --no-save vite-plugin-node-polyfills@latest crypto-js@latest",/' package.json
+  fi
 fi
 
 # Create a simplified build command that bypasses Vite if needed
@@ -35,6 +43,28 @@ EOF
 
 chmod +x jekyll-only-build.sh
 
+# Create a Vite-specific build script
+cat > vite-build.sh << 'EOF'
+#!/bin/bash
+# Script to build only the Vite portion with enhanced error handling
+
+echo "===== Building with Vite ====="
+# Install the required plugin if missing
+if ! npm list vite-plugin-node-polyfills &>/dev/null; then
+  echo "Installing missing vite-plugin-node-polyfills..."
+  npm install --no-save vite-plugin-node-polyfills@latest
+fi
+
+# Set legacy provider for Node
+export NODE_OPTIONS=--openssl-legacy-provider
+
+# Run Vite build
+npx vite build
+echo "Vite build complete! Files in dist directory"
+EOF
+
+chmod +x vite-build.sh
+
 echo "===== Dependencies Updated ====="
 echo ""
 echo "To build with the updated configuration, run:"
@@ -42,6 +72,9 @@ echo "npm run build"
 echo ""
 echo "If Vite continues to have issues, use the Jekyll-only build:"
 echo "./jekyll-only-build.sh"
+echo ""
+echo "To build only with Vite (for testing):"
+echo "./vite-build.sh"
 echo ""
 echo "To format and fix linting issues, run:"
 echo "./format-and-lint.sh"

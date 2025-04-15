@@ -7,9 +7,11 @@
     "build:jekyll": "bundle exec jekyll build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d _site",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "npm install --no-save vite-plugin-node-polyfills@latest crypto-js@latest"
   },
   "devDependencies": {
+    "vite": "^4.5.1",
     "vite-plugin-node-polyfills": "^0.21.0",
     "crypto-js": "^4.2.0",
     "eslint": "^8.55.0",
@@ -20,5 +22,8 @@
     "@babel/core": "^7.23.5",
     "@babel/preset-env": "^7.23.5",
     "jest-fetch-mock": "^3.0.3"
+  },
+  "dependencies": {
+    "gh-pages": "^6.1.0"
   }
 }
