@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Serverless Integration | Web3 Crypto Streaming Service</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Web3 Crypto Streaming Service - Java Serverless Integration</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>Overview</h2>
+            <p>This module provides Java-based serverless functions for interacting with the Web3 Crypto Streaming Service platform, particularly focused on STREAM token operations.</p>
+
+            <p>The Java serverless integration enables:</p>
+            <ul>
+                <li>Token balance checking via REST API endpoints</li>
+                <li>Content registration and verification</li>
+                <li>User authentication via Web3 wallets</li>
+                <li>Transaction history and analytics</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>API Endpoints</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>/token/balance/{address}</td>
+                        <td>GET</td>
+                        <td>Get STREAM token balance for an address</td>
+                    </tr>
+                    <tr>
+                        <td>/content/register</td>
+                        <td>POST</td>
+                        <td>Register new content on the platform</td>
+                    </tr>
+                    <tr>
+                        <td>/content/access/{contentId}</td>
+                        <td>GET</td>
+                        <td>Check access rights for content</td>
+                    </tr>
+                    <tr>
+                        <td>/transaction/history/{address}</td>
+                        <td>GET</td>
+                        <td>Get transaction history for an address</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Documentation</h2>
+            <p>See the <a href="README.md">README.md</a> for detailed documentation.</p>
+            <p>For source code, check the <a href="https://github.com/idl3o/gh-pages">GitHub repository</a>.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Team MODSIAS | Project Demo</p>
+    </footer>
+</body>
+</html>

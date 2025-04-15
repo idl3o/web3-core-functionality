@@ -2,9 +2,9 @@
 
 # Site settings
 title: Web3 Crypto Streaming Service
-description: A decentralized platform by Team MODSIAS that returns control and revenue to creators
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://idl3o.github.io/gh-pages"
+description: A decentralized streaming platform that returns control and revenue to creators through blockchain technology.
+baseurl: "/gh-pages"
+url: "https://idl3o.github.io"
 
 # Author information
 author:
@@ -39,9 +39,10 @@ exclude:
   - package-lock.json
   - node_modules
   - vendor
+  - java/serverless-function/target
 
 # Theme settings
-remote_theme: pages-themes/minimal@v0.2.0
+remote_theme: pages-themes/cayman@v0.2.0
 plugins:
   - jekyll-remote-theme
 
@@ -161,6 +162,7 @@ exclude:
   - run-*.cmd
   - app.js
   - red_x
+  - java/serverless-function/target
 
 # Analytics
 analytics:
