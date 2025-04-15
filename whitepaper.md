@@ -1,8 +1,7 @@
 ---
 layout: default
-title: Whitepaper
-description: Technical whitepaper for Web3 Crypto Streaming Service
-permalink: /whitepaper/
+title: Web3 Crypto Streaming Service Whitepaper
+description: A detailed overview of our decentralized content streaming platform
 ---
 
 # Web3 Crypto Streaming Service Whitepaper
@@ -35,7 +34,7 @@ Web3 Crypto Streaming Service addresses these challenges through:
 
 ## 2. Architecture
 
-Our platform consists of four key layers:
+Our platform architecture consists of four interconnected layers:
 
 ### 2.1 Blockchain Layer
 
@@ -65,64 +64,40 @@ Our platform consists of four key layers:
 
 ## 3. Token Economics
 
-The STREAM token is central to our ecosystem:
+The STREAM token serves multiple purposes within our ecosystem:
 
-### 3.1 Utility Functions
+- **Value Transfer**: Enables direct micropayments between viewers and creators
+- **Governance**: Token holders participate in platform decision-making
+- **Staking**: Validators stake tokens to secure the network
+- **Incentives**: Rewards encourage network participation and content curation
 
-- **Access**: Subscription payments and content purchases
-- **Staking**: Node operators stake tokens to participate in content delivery
-- **Governance**: Voting rights for platform development decisions
-- **Incentives**: Rewards for creators based on engagement metrics
-- **Fee Reduction**: Discounted platform fees when using STREAM tokens
+### 3.1 Token Distribution
 
-### 3.2 Distribution
+Our initial token allocation is designed for long-term sustainability:
 
-- **Total Supply**: 1,000,000,000 STREAM tokens
-- **Initial Distribution**:
-  - 30% - Public sale
-  - 25% - Platform development
-  - 20% - Creator incentives
-  - 15% - Team and advisors (vested over 2 years)
-  - 10% - Community and ecosystem growth
+- 30% - Community Treasury (vested over 5 years)
+- 25% - Development Team and Early Contributors (4-year vesting with 1-year cliff)
+- 20% - Ecosystem Development and Partnerships
+- 15% - Public Sale
+- 10% - Liquidity Provision
 
-### 3.3 Tokenomics Model
+### 3.2 Tokenomics Model
 
-- **Deflationary Mechanism**: 1% of all transaction fees are burned
-- **Staking Rewards**: Annual yield for token stakers supporting the network
-- **Creator Pool**: 5% of new blocks allocated to creator rewards
-- **DAO Treasury**: Platform fees directed to decentralized governance treasury
+The STREAM token implements several mechanisms for stability and value accrual:
 
-## 4. Implementation Roadmap
+- **Transaction Fee Sharing**: 70% to creators, 20% to node operators, 10% to treasury
+- **Staking Rewards**: Variable APY based on network utilization
+- **Governance Weighting**: Voting power increases with token lock duration
+- **Deflation Mechanism**: Token burn from premium features and subscription fees
 
-Our development plan is divided into four phases:
+## 4. Technical Implementation
 
-### 4.1 Phase 1: Foundation (Q4 2023)
+Our platform combines proven technologies with innovative approaches:
 
-- Core smart contracts deployment
-- Web application beta launch
-- Initial creator onboarding
-- Basic wallet integration
-
-### 4.2 Phase 2: Expansion (Q1-Q2 2024)
-
-- STREAM token launch
-- Mobile application development
-- Enhanced creator tools
-- Expanded payment options
-
-### 4.3 Phase 3: Decentralization (Q3-Q4 2024)
-
-- Decentralized node network
-- DAO governance implementation
-- Cross-chain integration
-- Advanced recommendation system
-
-### 4.4 Phase 4: Ecosystem (2025+)
-
-- Developer SDK and API
-- Third-party application support
-- Industry partnerships
-- Hardware integrations
+- **Smart Contract Framework**: Solidity-based contracts with formal verification
+- **Content Distribution**: Hybrid approach using IPFS and optimized edge caching
+- **Client Applications**: Web and mobile interfaces with wallet integration
+- **Creator Tools**: Dashboard for content management and analytics
 
 ## 5. Governance
 
@@ -137,16 +112,8 @@ The platform will transition to a decentralized autonomous organization (DAO):
 
 Web3 Crypto Streaming Service represents a fundamental shift in how digital content is distributed and monetized. By combining blockchain's transparency and efficiency with high-performance streaming technology, we aim to create a more equitable ecosystem for creators and viewers alike.
 
-## References
-
-1. Buterin, V. (2014). "Ethereum: A Next-Generation Smart Contract and Decentralized Application Platform"
-2. Filecoin: A Decentralized Storage Network
-3. WebRTC: Web Real-Time Communication
-4. Token Engineering Fundamentals
-5. Content Delivery Networks: Architecture and Practical Applications
-
 ---
 
-*Disclaimer: This whitepaper is for informational purposes only and does not constitute investment advice or an offer to sell securities. The STREAM token is a utility token designed for use within our platform ecosystem.*
-
-[Download PDF Version](/assets/documents/whitepaper.pdf)
+**Contact**: [x@idl3.modsias](mailto:x@idl3.modsias)
+**GitHub**: [@idl3o](https://github.com/idl3o)
+**Team**: MODSIAS

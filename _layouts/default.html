@@ -1,15 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-{% include head.html %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description }}">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Chart.js for Token Distribution -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+
+  {% if page.custom_css %}
+    {% for css_file in page.custom_css %}
+    <link rel="stylesheet" href="{{ '/assets/css/' | append: css_file | append: '.css' | relative_url }}">
+    {% endfor %}
+  {% endif %}
+
+  {% seo %}
+</head>
 <body>
-    {% include header.html %}
-    
-    <div class="page-content">
-        <div class="wrapper">
-            {{ content }}
+  <header>
+    <nav class="container">
+      <div class="logo">
+        <a href="{{ '/' | relative_url }}">{{ site.title }}</a>
+      </div>
+      <ul class="nav-links">
+        <li><a href="{{ '/#about' | relative_url }}">About</a></li>
+        <li><a href="{{ '/#features' | relative_url }}">Features</a></li>
+        <li><a href="{{ '/whitepaper' | relative_url }}">Whitepaper</a></li>
+        <li><a href="{{ '/#team' | relative_url }}">Team</a></li>
+        <li><a href="{{ '/docs' | relative_url }}">Docs</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    {{ content }}
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>{{ site.title }}</h3>
+          <p>{{ site.description }}</p>
         </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="{{ '/' | relative_url }}">Home</a></li>
+            <li><a href="{{ '/whitepaper' | relative_url }}">Whitepaper</a></li>
+            <li><a href="{{ '/docs' | relative_url }}">Documentation</a></li>
+            <li><a href="{{ '/team' | relative_url }}">Team</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Connect</h3>
+          <ul class="social-list">
+            <li><a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> GitHub</a></li>
+            <li><a href="https://twitter.com/{{ site.author.twitter }}" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i> Twitter</a></li>
+            <li><a href="mailto:{{ site.author.email }}"><i class="fas fa-envelope"></i> Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; {{ 'now' | date: "%Y" }} Team {{ site.team.name }} | {{ site.team.project }}</p>
+        <p>Built by <a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noopener noreferrer">{{ site.author.name }}</a></p>
+      </div>
     </div>
-    
-    {% include footer.html %}
+  </footer>
+
+  <!-- Main JavaScript -->
+  <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
+
+  {% if page.custom_js %}
+    {% for js_file in page.custom_js %}
+    <script src="{{ '/assets/js/' | append: js_file | append: '.js' | relative_url }}"></script>
+    {% endfor %}
+  {% endif %}
 </body>
 </html>

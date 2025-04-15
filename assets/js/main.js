@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initAnimations();
     initWalletConnect();
     loadHomepageStats(); // Load homepage statistics
-    
+
     // Add scroll event listener for header
     window.addEventListener('scroll', handleHeaderScroll);
 
@@ -24,6 +24,27 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.classList.toggle('flymode-active');
         });
     }
+
+    // Mobile menu toggle
+    const mobileMenuButton = document.createElement('button');
+    mobileMenuButton.classList.add('mobile-menu-button');
+    mobileMenuButton.innerHTML = '<i class="fas fa-bars"></i>';
+
+    const nav = document.querySelector('nav');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (nav && navLinks && window.innerWidth <= 768) {
+        nav.insertBefore(mobileMenuButton, navLinks);
+
+        mobileMenuButton.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+        });
+    }
+
+    // Add current year to copyright notices
+    document.querySelectorAll('.copyright-year').forEach(element => {
+        element.textContent = new Date().getFullYear();
+    });
 });
 
 /**
@@ -31,25 +52,25 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function initThemeSwitcher() {
     const themeSwitcher = document.getElementById('theme-switcher');
-    
+
     if (!themeSwitcher) return;
-    
+
     // Check for saved theme preference or respect OS preference
     const savedTheme = localStorage.getItem('theme');
     const prefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+
     if (savedTheme === 'dark' || (!savedTheme && prefersDarkTheme)) {
         document.documentElement.setAttribute('data-theme', 'dark');
         if (themeSwitcher.querySelector('input')) {
             themeSwitcher.querySelector('input').checked = true;
         }
     }
-    
+
     // Theme switch event handler
     themeSwitcher.addEventListener('click', function() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
+
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
     });
@@ -62,30 +83,30 @@ function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const targetId = this.getAttribute('href');
-            
+
             // Skip if it's just "#" or empty
             if (targetId === '#' || !targetId) return;
-            
+
             const targetElement = document.querySelector(targetId);
-            
+
             if (targetElement) {
                 e.preventDefault();
-                
+
                 // Close mobile menu if open
                 const navLinks = document.querySelector('.nav-links');
                 const menuToggle = document.querySelector('.menu-toggle');
-                
+
                 if (navLinks && navLinks.classList.contains('active')) {
                     navLinks.classList.remove('active');
                     if (menuToggle) menuToggle.classList.remove('active');
                 }
-                
+
                 // Scroll to the target element
-                targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80, // Account for header height
+                    behavior: 'smooth'
                 });
-                
+
                 // Update URL without scrolling
                 history.pushState(null, null, targetId);
             }
@@ -98,9 +119,9 @@ function initSmoothScroll() {
  */
 function handleHeaderScroll() {
     const header = document.querySelector('.site-header');
-    
+
     if (!header) return;
-    
+
     if (window.scrollY > 50) {
         header.classList.add('scrolled');
     } else {
@@ -114,9 +135,9 @@ function handleHeaderScroll() {
 function initAnimations() {
     // Only run if IntersectionObserver is supported
     if (!('IntersectionObserver' in window)) return;
-    
+
     const animatedElements = document.querySelectorAll('.animate-on-scroll');
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -128,7 +149,7 @@ function initAnimations() {
     }, {
         threshold: 0.1
     });
-    
+
     animatedElements.forEach(element => {
         observer.observe(element);
     });
@@ -142,44 +163,44 @@ function initWalletConnect() {
     const walletStatus = document.getElementById('wallet-status');
     const walletAddress = document.getElementById('wallet-address');
     const walletBalance = document.getElementById('wallet-balance');
-    
+
     if (!connectButton) return;
-    
+
     connectButton.addEventListener('click', async function() {
         // Check if Web3 is available
         if (window.ethereum) {
             try {
                 // Request account access
                 const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                
+
                 // Get the first account
                 const account = accounts[0];
-                
+
                 // Show wallet info
                 if (walletStatus) walletStatus.classList.remove('hidden');
                 if (connectButton) connectButton.classList.add('hidden');
-                
+
                 // Format and display account address
                 if (walletAddress) {
                     const formattedAddress = `${account.substring(0, 6)}...${account.substring(account.length - 4)}`;
                     walletAddress.textContent = formattedAddress;
                 }
-                
+
                 // Get and display balance
                 if (walletBalance) {
                     const balance = await window.ethereum.request({
                         method: 'eth_getBalance',
                         params: [account, 'latest']
                     });
-                    
+
                     const etherBalance = parseInt(balance, 16) / 1e18;
                     walletBalance.textContent = `${etherBalance.toFixed(4)} ETH`;
                 }
-                
+
                 // Store connection in session
                 sessionStorage.setItem('walletConnected', 'true');
                 sessionStorage.setItem('walletAddress', account);
-                
+
             } catch (error) {
                 console.error('Error connecting wallet:', error);
                 alert('Failed to connect wallet. Please try again.');
@@ -188,15 +209,15 @@ function initWalletConnect() {
             alert('Web3 wallet not detected. Please install MetaMask or another Web3 wallet.');
         }
     });
-    
+
     // Check if wallet was previously connected in this session
     if (sessionStorage.getItem('walletConnected') === 'true') {
         const savedAddress = sessionStorage.getItem('walletAddress');
-        
+
         if (savedAddress && walletAddress) {
             const formattedAddress = `${savedAddress.substring(0, 6)}...${savedAddress.substring(savedAddress.length - 4)}`;
             walletAddress.textContent = formattedAddress;
-            
+
             if (walletStatus) walletStatus.classList.remove('hidden');
             if (connectButton) connectButton.classList.add('hidden');
         }

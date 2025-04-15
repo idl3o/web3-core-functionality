@@ -1,8 +1,8 @@
 # Project RED X - Master Configuration File
 
 # Site settings
-title: Project Demo
-description: Team MODSIAS Official Website
+title: Web3 Crypto Streaming Service
+description: A decentralized platform by Team MODSIAS that returns control and revenue to creators
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://idl3o.github.io/gh-pages"
 
@@ -20,9 +20,7 @@ permalink: /:title/
 encoding: utf-8
 incremental: false
 future: true
-remote_theme: pages-themes/minimal@v0.2.0
 plugins:
-  - jekyll-remote-theme
   - jekyll-feed
   - jekyll-seo-tag
   - jekyll-sitemap
@@ -42,8 +40,10 @@ exclude:
   - node_modules
   - vendor
 
-# Theme
-theme: minima
+# Theme settings
+remote_theme: pages-themes/minimal@v0.2.0
+plugins:
+  - jekyll-remote-theme
 
 # SEO settings
 twitter:
@@ -67,7 +67,7 @@ project:
 # Team information
 team:
   name: MODSIAS
-  project: Demo
+  project: Web3 Crypto Streaming Service
   repository: https://github.com/idl3o/gh-pages
 
 # Feature flags
