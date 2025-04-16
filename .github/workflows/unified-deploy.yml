@@ -22,6 +22,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Environment Diagnostics
+        run: |
+          echo "GitHub Actions Runner Information:"
+          echo "OS: $(uname -a)"
+          echo "Disk space:"
+          df -h
+          echo "Node version: $(node -v)"
+          echo "NPM version: $(npm -v)"
+          echo "Repository structure:"
+          find . -type f -not -path "*/node_modules/*" -not -path "*/\.git/*" | sort
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -29,25 +40,42 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
+        id: install
+        continue-on-error: true
         run: |
           npm ci
           echo "Node.js dependencies installed successfully"
+
+      - name: Recovery for Installation Failure
+        if: steps.install.outcome == 'failure'
+        run: |
+          echo "Installation with npm ci failed, attempting with npm install"
+          rm -rf node_modules package-lock.json
+          npm install
+          echo "Recovery installation completed"
 
       - name: Run URL Validation
         id: url-check
         continue-on-error: true
         run: |
-          npm install cheerio node-fetch@2
+          npm install cheerio node-fetch@2 --no-save
           node scripts/url-checker.js
           echo "URL validation completed"
 
       - name: Build Static Site
+        id: build
         run: |
           echo "Building static HTML files..."
-          # No build step required since we're using plain HTML
-          # This step can be modified if a build process is added later
+          # Create a build summary file for debugging
+          echo "# Build Summary" > build-summary.md
+          echo "Generated at: $(date)" >> build-summary.md
+          echo "## Files included:" >> build-summary.md
+          find . -type f -name "*.html" | sort >> build-summary.md
+          echo "## Assets:" >> build-summary.md
+          find ./assets -type f | sort >> build-summary.md
 
       - name: Deploy to GitHub Pages
+        id: deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
@@ -72,6 +100,35 @@ jobs:
             404.html
             assets/
             java/
+            build-summary.md
+          retention-days: 7
+
+      - name: Generate Deployment Report
+        if: always()
+        run: |
+          mkdir -p reports
+          echo "# Deployment Report" > reports/deployment-report.md
+          echo "Generated at: $(date)" >> reports/deployment-report.md
+          echo "## Workflow Status" >> reports/deployment-report.md
+          echo "Install: ${{ steps.install.outcome }}" >> reports/deployment-report.md
+          echo "URL Check: ${{ steps.url-check.outcome }}" >> reports/deployment-report.md
+          echo "Build: ${{ steps.build.outcome }}" >> reports/deployment-report.md
+          echo "Deploy: ${{ steps.deploy.outcome }}" >> reports/deployment-report.md
+          echo "## Repository Info" >> reports/deployment-report.md
+          echo "Commit: ${{ github.sha }}" >> reports/deployment-report.md
+          echo "Branch: ${{ github.ref_name }}" >> reports/deployment-report.md
+
+          if [ "${{ steps.url-check.outcome }}" == "failure" ]; then
+            echo "### ⚠️ URL Validation Issues" >> reports/deployment-report.md
+            echo "Some URLs failed validation. Review the logs for details." >> reports/deployment-report.md
+          fi
+
+      - name: Upload Deployment Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-report
+          path: reports/
           retention-days: 7
 
       - name: Report Deployment Status
@@ -83,9 +140,9 @@ jobs:
           else
             echo "❌ Deployment encountered issues"
             echo "Please check the logs for more details"
+            echo "A deployment report has been generated and uploaded as an artifact"
 
             if [ "${{ steps.url-check.outcome }}" == "failure" ]; then
               echo "⚠️ URL validation failed. There are broken links in the website."
             fi
           fi
-```
