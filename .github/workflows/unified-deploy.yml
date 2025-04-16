@@ -1,0 +1,91 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual trigger'
+        required: false
+        default: 'Manual deployment'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+          echo "Node.js dependencies installed successfully"
+
+      - name: Run URL Validation
+        id: url-check
+        continue-on-error: true
+        run: |
+          npm install cheerio node-fetch@2
+          node scripts/url-checker.js
+          echo "URL validation completed"
+
+      - name: Build Static Site
+        run: |
+          echo "Building static HTML files..."
+          # No build step required since we're using plain HTML
+          # This step can be modified if a build process is added later
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: .
+          clean: true
+          clean-exclude: |
+            .git
+            .github
+            CNAME
+          commit-message: |
+            Deploy site update
+
+            ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.reason || format('Auto-deploy from commit {0}', github.sha) }}
+
+      - name: Upload Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: website-files
+          path: |
+            index.html
+            404.html
+            assets/
+            java/
+          retention-days: 7
+
+      - name: Report Deployment Status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Deployment completed successfully"
+            echo "View your site at https://idl3o.github.io/gh-pages/"
+          else
+            echo "❌ Deployment encountered issues"
+            echo "Please check the logs for more details"
+
+            if [ "${{ steps.url-check.outcome }}" == "failure" ]; then
+              echo "⚠️ URL validation failed. There are broken links in the website."
+            fi
+          fi
+```

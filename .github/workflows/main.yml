@@ -1,130 +1,33 @@
-name: Build and Deploy
+name: CI/CD Pipeline (Legacy)
+
+# This workflow is kept for reference and backward compatibility
+# Please use unified-deploy.yml for actual deployments
 
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  # Disable automatic triggering to avoid conflicts with unified-deploy.yml
   workflow_dispatch:
     inputs:
-      deploy_environment:
-        description: 'Environment to deploy to'
+      reason:
+        description: 'Reason to run legacy workflow'
         required: true
-        default: 'staging'
-        type: choice
-        options:
-          - staging
-          - production
+        default: 'Legacy deployment'
 
 jobs:
-  # Build and test the Java serverless functions
-  build-java:
+  notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
-
-      - name: Build with Maven
-        run: cd java/serverless-function && mvn -B package --file pom.xml
-
-      - name: Run Java tests
-        run: cd java/serverless-function && mvn -B test
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: java-lambda-package
-          path: java/serverless-function/target/*.jar
-          retention-days: 5
-
-  # Deploy Java serverless functions to AWS (only on specific branches)
-  deploy-serverless:
-    needs: build-java
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: java-lambda-package
-          path: java/serverless-function/target/
-
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Set up AWS SAM
-        uses: aws-actions/setup-sam@v2
-
-      - name: Deploy with SAM
+      - name: Notify About Legacy Workflow
         run: |
-          cd java/serverless-function
-          sam deploy --stack-name web3-streaming-lambda \
-            --no-confirm-changeset \
-            --no-fail-on-empty-changeset \
-            --capabilities CAPABILITY_IAM
+          echo "⚠️ This is a legacy workflow that has been replaced by unified-deploy.yml"
+          echo "Please use the 'Build and Deploy to GitHub Pages' workflow instead."
+          exit 1
 
-  # Build and deploy the GitHub Pages site
-  deploy-pages:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  # Legacy jobs are commented out to prevent execution
+  # build:
+  #   runs-on: ubuntu-latest
+  #   ...
 
-      # Simple HTML validation step (optional)
-      - name: HTML validation
-        uses: Cyb3r-Jak3/html5validator-action@v7.2.0
-        with:
-          root: .
-          format: text
-          log_level: INFO
-
-      # Deploy static HTML site to GitHub Pages
-      - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: '.'        # Deploy the root directory as-is (no build step needed)
-          branch: gh-pages   # The branch to deploy to
-          clean: true        # Automatically remove deleted files from the deploy branch
-          commit-message: 'Deploy static HTML site to GitHub Pages'
-
-  # Security scanning
-  security-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          ignore-unfixed: true
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   ...
