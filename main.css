@@ -81,7 +81,7 @@ a:hover {
 .navigation {
   background-color: var(--background-dark);
   padding: 15px 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -127,7 +127,10 @@ a:hover {
   background-color: #121225;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   margin-bottom: 1rem;
 }
 
@@ -178,7 +181,7 @@ p {
   background-color: var(--background-dark);
   border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Footer */
@@ -194,7 +197,8 @@ p {
   gap: 2rem;
 }
 
-.footer h3, .footer h4 {
+.footer h3,
+.footer h4 {
   color: var(--primary-color);
 }
 
@@ -209,7 +213,7 @@ p {
 .footer-bottom {
   margin-top: 40px;
   padding-top: 20px;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   text-align: center;
 }
 
@@ -220,10 +224,11 @@ table {
   margin: 1rem 0 2rem;
 }
 
-table th, table td {
+table th,
+table td {
   padding: 0.75rem;
   text-align: left;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 table th {
@@ -235,7 +240,7 @@ table th {
   .footer-grid {
     grid-template-columns: 1fr 1fr;
   }
-  
+
   .grid {
     grid-template-columns: 1fr;
   }
@@ -245,15 +250,15 @@ table th {
   .footer-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .nav-container {
     flex-direction: column;
   }
-  
+
   .main-nav ul {
     margin-top: 15px;
   }
-  
+
   .main-nav ul li {
     margin-left: 10px;
     margin-right: 10px;

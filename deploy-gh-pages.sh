@@ -10,17 +10,26 @@ cd "$(dirname "$0")"
 BUILD_DIR="./build"
 mkdir -p $BUILD_DIR
 
+# Create assets directory structure in build
+mkdir -p $BUILD_DIR/assets/css
+mkdir -p $BUILD_DIR/assets/js
+mkdir -p $BUILD_DIR/assets/images
+
 # Copy root HTML files
 cp index.html $BUILD_DIR/
-cp 404.html $BUILD_DIR/
-cp url-launcher.html $BUILD_DIR/
-cp team.html $BUILD_DIR/
-cp status.html $BUILD_DIR/
+cp 404.html $BUILD_DIR/ 2>/dev/null || :
+cp url-launcher.html $BUILD_DIR/ 2>/dev/null || :
+cp team.html $BUILD_DIR/ 2>/dev/null || :
+cp status.html $BUILD_DIR/ 2>/dev/null || :
 cp streaming.html $BUILD_DIR/
-cp main.css $BUILD_DIR/
-cp Streaming.sol $BUILD_DIR/
 
-# Copy any other Web3 streaming-related files if they exist
+# Copy assets
+cp -r assets/css/* $BUILD_DIR/assets/css/ 2>/dev/null || :
+cp -r assets/js/* $BUILD_DIR/assets/js/ 2>/dev/null || :
+cp -r assets/images/* $BUILD_DIR/assets/images/ 2>/dev/null || :
+
+# Copy any smart contracts
+cp Streaming.sol $BUILD_DIR/ 2>/dev/null || :
 if [ -f "StreamToken.sol" ]; then
     cp StreamToken.sol $BUILD_DIR/
 fi
@@ -94,7 +103,7 @@ else
     mkdir -p ../build/red_x/js
     # Create minimal required JS files
     echo "// Fallback file created by deployment script" > ../build/red_x/js/link-extractor.js
-    
+
     # Create a simple link extractor
     cat > ../build/red_x/js/link-extractor.js << 'EOL'
 class LinkExtractor {
@@ -184,13 +193,13 @@ if [ -f "red_x/js/utils/compression.js" ]; then
     const fs = require('fs');
     const path = require('path');
     const Compressor = require('./red_x/js/utils/compression');
-    
+
     async function optimizeWasm() {
       try {
         const wasmPath = './build/red_x/index.wasm';
         const wasmBuffer = fs.readFileSync(wasmPath);
         console.log('Original WASM size:', (wasmBuffer.length / 1024).toFixed(2), 'KB');
-        
+
         // Create compressed version
         const optimizedPath = './build/red_x/index.wasm.br';
         await Compressor.compressFile(wasmPath, optimizedPath, {
@@ -198,7 +207,7 @@ if [ -f "red_x/js/utils/compression.js" ]; then
           level: 9,
           isWasm: true
         });
-        
+
         const compressedSize = fs.statSync(optimizedPath).size;
         console.log('Compressed WASM size:', (compressedSize / 1024).toFixed(2), 'KB');
         console.log('Compression ratio:', ((1 - compressedSize / wasmBuffer.length) * 100).toFixed(2), '%');
@@ -206,7 +215,7 @@ if [ -f "red_x/js/utils/compression.js" ]; then
         console.error('WASM optimization failed:', err);
       }
     }
-    
+
     optimizeWasm();
   " || echo "WASM optimization skipped"
 fi

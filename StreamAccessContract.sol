@@ -22,7 +22,7 @@ contract StreamAccessContract {
         uint256 royaltyPercent;  // Creator royalty percentage (out of 100)
         string contentHash;      // IPFS or content identifier hash
     }
-    
+
     /**
      * @dev Access struct to track user access
      * @custom:entity-type Access
@@ -31,31 +31,31 @@ contract StreamAccessContract {
         bool hasAccess;          // Whether user has access
         uint256 expirationTime;  // When access expires (0 for permanent)
     }
-    
+
     /**
      * @dev Content mapping: contentId => Content
      * @notice Stores all registered content details
      */
     mapping(bytes32 => Content) public contents;
-    
+
     /**
      * @dev Access mapping: contentId => user => Access
      * @notice Tracks which users have access to which content
      */
     mapping(bytes32 => mapping(address => Access)) public userAccess;
-    
+
     /**
      * @dev Platform fee percentage (out of 100)
      * @notice Current percentage fee taken by the platform
      */
     uint256 public platformFeePercent = 10;
-    
+
     /**
      * @dev Platform wallet to receive fees
      * @notice The wallet address where platform fees are sent
      */
     address payable public platformWallet;
-    
+
     // Events
     /**
      * @dev Emitted when new content is registered
@@ -65,7 +65,7 @@ contract StreamAccessContract {
      * @param price The access price set for the content
      */
     event ContentRegistered(bytes32 indexed contentId, address indexed creator, bool isPremium, uint256 price);
-    
+
     /**
      * @dev Emitted when access is granted to a user
      * @param contentId The unique identifier of the content
@@ -73,14 +73,14 @@ contract StreamAccessContract {
      * @param expirationTime When the access expires (0 = permanent)
      */
     event AccessGranted(bytes32 indexed contentId, address indexed user, uint256 expirationTime);
-    
+
     /**
      * @dev Emitted when content price is updated
      * @param contentId The unique identifier of the content
      * @param newPrice The new price for accessing the content
      */
     event ContentPriceUpdated(bytes32 indexed contentId, uint256 newPrice);
-    
+
     /**
      * @dev Emitted when a creator receives a royalty payment
      * @param contentId The unique identifier of the content
@@ -88,7 +88,7 @@ contract StreamAccessContract {
      * @param amount The amount paid to the creator
      */
     event RoyaltyPaid(bytes32 indexed contentId, address indexed creator, uint256 amount);
-    
+
     /**
      * @dev Emitted when platform fee is paid
      * @param contentId The unique identifier of the content
@@ -104,7 +104,7 @@ contract StreamAccessContract {
     constructor(address payable _platformWallet) {
         platformWallet = _platformWallet;
     }
-    
+
     /**
      * @notice Register new streaming content
      * @dev Creates a new content entry in the contents mapping
@@ -134,7 +134,7 @@ contract StreamAccessContract {
     ) external {
         require(!contents[contentId].exists, "Content already registered");
         require(royaltyPercent <= 100, "Royalty cannot exceed 100%");
-        
+
         contents[contentId] = Content({
             creator: msg.sender,
             price: price,
@@ -143,7 +143,7 @@ contract StreamAccessContract {
             royaltyPercent: royaltyPercent,
             contentHash: contentHash
         });
-        
+
         // If free content, grant access to creator automatically
         if (price == 0) {
             userAccess[contentId][msg.sender] = Access({
@@ -151,10 +151,10 @@ contract StreamAccessContract {
                 expirationTime: 0 // Permanent access
             });
         }
-        
+
         emit ContentRegistered(contentId, msg.sender, isPremium, price);
     }
-    
+
     /**
      * @notice Purchase access to content
      * @dev Processes payment, splits fees, and grants access to content
@@ -166,31 +166,31 @@ contract StreamAccessContract {
         Content memory content = contents[contentId];
         require(content.exists, "Content does not exist");
         require(msg.value >= content.price, "Insufficient payment");
-        
+
         // Calculate platform fee and creator payment
         uint256 platformFee = (msg.value * platformFeePercent) / 100;
         uint256 creatorPayment = msg.value - platformFee;
-        
+
         // Pay platform fee
         platformWallet.transfer(platformFee);
         emit PlatformFeePaid(contentId, platformFee);
-        
+
         // Pay creator royalty
         payable(content.creator).transfer(creatorPayment);
         emit RoyaltyPaid(contentId, content.creator, creatorPayment);
-        
+
         // Calculate access expiration
         uint256 expirationTime = duration > 0 ? block.timestamp + duration : 0;
-        
+
         // Grant access
         userAccess[contentId][msg.sender] = Access({
             hasAccess: true,
             expirationTime: expirationTime
         });
-        
+
         emit AccessGranted(contentId, msg.sender, expirationTime);
     }
-    
+
     /**
      * @notice Check if a user has access to content
      * @dev Verifies access status considering expiration time
@@ -200,20 +200,20 @@ contract StreamAccessContract {
      */
     function hasAccess(bytes32 contentId, address user) public view returns (bool) {
         Access memory access = userAccess[contentId][user];
-        
+
         if (!access.hasAccess) {
             return false;
         }
-        
+
         // If expiration is 0, access is permanent
         if (access.expirationTime == 0) {
             return true;
         }
-        
+
         // Otherwise, check if access has expired
         return block.timestamp <= access.expirationTime;
     }
-    
+
     /**
      * @notice Grant free access to a user (creator only)
      * @dev Allows content creators to grant access to specific users
@@ -226,19 +226,19 @@ contract StreamAccessContract {
         Content memory content = contents[contentId];
         require(content.exists, "Content does not exist");
         require(msg.sender == content.creator, "Only creator can grant access");
-        
+
         // Calculate expiration
         uint256 expirationTime = duration > 0 ? block.timestamp + duration : 0;
-        
+
         // Grant access
         userAccess[contentId][user] = Access({
             hasAccess: true,
             expirationTime: expirationTime
         });
-        
+
         emit AccessGranted(contentId, user, expirationTime);
     }
-    
+
     /**
      * @notice Update content price (creator only)
      * @dev Allows content creators to change their content's price
@@ -250,11 +250,11 @@ contract StreamAccessContract {
         Content storage content = contents[contentId];
         require(content.exists, "Content does not exist");
         require(msg.sender == content.creator, "Only creator can update price");
-        
+
         content.price = newPrice;
         emit ContentPriceUpdated(contentId, newPrice);
     }
-    
+
     /**
      * @notice Update platform fee percentage (platform wallet only)
      * @dev Allows the platform to adjust its fee percentage
@@ -267,7 +267,7 @@ contract StreamAccessContract {
         require(newFeePercent <= 30, "Fee cannot exceed 30%");
         platformFeePercent = newFeePercent;
     }
-    
+
     /**
      * @notice Get content details
      * @dev Retrieves all metadata for a specific content
@@ -287,7 +287,7 @@ contract StreamAccessContract {
     ) {
         Content memory content = contents[contentId];
         require(content.exists, "Content does not exist");
-        
+
         return (
             content.creator,
             content.price,

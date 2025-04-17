@@ -15,7 +15,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract StreamingToken is ERC20, Ownable {
     /// @dev Number of streaming credits received per ETH sent
     uint256 public constant CREDITS_PER_ETH = 100;
-    
+
     /**
      * @dev Mapping to track when a user's access to specific content expires
      * @notice Format: address => contentId => timestampExpiry
@@ -25,7 +25,7 @@ contract StreamingToken is ERC20, Ownable {
     /// @dev Events emitted by the contract
     /// @notice Emitted when a user starts streaming content
     event StreamStarted(address indexed user, string contentId, uint256 expiryTime);
-    
+
     /// @notice Emitted when a user purchases streaming credits
     event CreditsPurchased(address indexed user, uint256 amount, uint256 ethValue);
 
@@ -38,7 +38,7 @@ contract StreamingToken is ERC20, Ownable {
     /**
      * @notice Purchase streaming credits using ETH
      * @dev Mints new tokens to the sender based on the ETH value sent
-     * @custom:example 
+     * @custom:example
      * To purchase 100 credits, send 1 ETH:
      * ```
      * contract.purchaseCredits({value: ethers.utils.parseEther("1.0")})
