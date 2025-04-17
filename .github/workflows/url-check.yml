@@ -34,4 +34,3 @@ jobs:
         with:
           name: url-check-results
           path: url-check-results.json
-```
