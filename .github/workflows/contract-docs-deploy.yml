@@ -2,13 +2,13 @@ name: Smart Contract Documentation Deployment
 
 on:
   push:
-    branches: [main]
+    branches: [temp-check-actions, 001]
     paths:
       - '**.sol'
       - 'docs/contracts/**'
       - '.github/workflows/contract-docs-deploy.yml'
   pull_request:
-    branches: [main]
+    branches: [temp-check-actions, 001]
     paths:
       - '**.sol'
       - 'docs/contracts/**'
@@ -178,7 +178,7 @@ jobs:
   deploy-docs:
     needs: generate-docs
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/temp-check-actions' && github.event_name != 'pull_request'
 
     # Define permissions
     permissions:
