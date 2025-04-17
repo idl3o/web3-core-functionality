@@ -16,6 +16,20 @@ cp 404.html $BUILD_DIR/
 cp url-launcher.html $BUILD_DIR/
 cp team.html $BUILD_DIR/
 cp status.html $BUILD_DIR/
+cp streaming.html $BUILD_DIR/
+cp main.css $BUILD_DIR/
+cp Streaming.sol $BUILD_DIR/
+
+# Copy any other Web3 streaming-related files if they exist
+if [ -f "StreamToken.sol" ]; then
+    cp StreamToken.sol $BUILD_DIR/
+fi
+if [ -f "StreamPayment.sol" ]; then
+    cp StreamPayment.sol $BUILD_DIR/
+fi
+if [ -f "StreamAccessContract.sol" ]; then
+    cp StreamAccessContract.sol $BUILD_DIR/
+fi
 
 # Check if npm is available
 if ! command -v npm &> /dev/null; then
