@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web3 Education Library</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/education.css">
+  <style>
+    /* Library-specific styles */
+    .library-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .library-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .library-header h1 {
+      font-size: 2.5rem;
+      color: #0066cc;
+      margin-bottom: 10px;
+    }
+
+    .library-header p {
+      font-size: 1.2rem;
+      color: #666;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .topic-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .topic-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .topic-image {
+      height: 160px;
+      width: 100%;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .topic-details {
+      padding: 20px;
+    }
+
+    .topic-details h3 {
+      margin-top: 0;
+      color: #333;
+      font-size: 1.5rem;
+    }
+
+    .topic-details p {
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .lesson-list {
+      margin-top: 15px;
+      padding-left: 0;
+    }
+
+    .lesson-item {
+      list-style: none;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .lesson-item:last-child {
+      border-bottom: none;
+    }
+
+    .lesson-title {
+      color: #0066cc;
+      text-decoration: none;
+      display: block;
+      flex-grow: 1;
+      cursor: pointer;
+    }
+
+    .lesson-title:hover {
+      text-decoration: underline;
+    }
+
+    .lesson-duration {
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    .content-viewer {
+      display: none;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      margin-top: 20px;
+    }
+
+    .back-button {
+      background-color: #f5f5f5;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .back-button:hover {
+      background-color: #eaeaea;
+    }
+
+    /* Loading indicator */
+    .content-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .loader-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #0066cc;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      z-index: 1001;
+      display: none;
+    }
+
+    .notification.info {
+      background-color: #0066cc;
+    }
+
+    .notification.success {
+      background-color: #28a745;
+    }
+
+    .notification.error {
+      background-color: #dc3545;
+    }
+
+    .notification.warning {
+      background-color: #ffc107;
+      color: #333;
+    }
+
+    /* Wallet connection */
+    .wallet-section {
+      display: flex;
+      justify-content: flex-end;
+      padding: 10px 0;
+    }
+
+    .connect-wallet-btn {
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .wallet-connected {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      background-color: #e8f4ff;
+      border-radius: 5px;
+      color: #0066cc;
+    }
+    
+    .wallet-address {
+      font-size: 0.9rem;
+      font-family: monospace;
+    }
+
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .topic-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .library-header h1 {
+        font-size: 2rem;
+      }
+    }
+
+    /* Code highlighting */
+    .code-example {
+      background-color: #f8f9fa;
+      border-radius: 5px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+
+    pre code {
+      display: block;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 10px;
+      background: #f1f1f1;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="library-container">
+    <header class="library-header">
+      <h1>Web3 Education Library</h1>
+      <p>Explore our comprehensive collection of educational content on blockchain, Web3, smart contracts, and decentralized finance.</p>
+    </header>
+
+    <div class="wallet-section">
+      <button id="wallet-btn" class="connect-wallet-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 7h-1V6a3 3 0 0 0-3-3H5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-8a3 3 0 0 0-3-3zm-1 2v1h-4V9h4zm-6-6v6H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h7zm7 16H5a1 1 0 0 1-1-1v-7h15v7a1 1 0 0 1-1 1z" fill="currentColor"/>
+        </svg>
+        Connect Wallet
+      </button>
+      <div id="wallet-info" class="wallet-connected" style="display: none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="#0066cc"/>
+        </svg>
+        <span>Connected:</span>
+        <span id="wallet-address" class="wallet-address">0x1234...5678</span>
+        <button id="disconnect-btn" style="background: none; border: none; color: #ff6b6b; cursor: pointer;">Disconnect</button>
+      </div>
+    </div>
+
+    <div id="topic-grid" class="topic-grid" aria-label="Educational Topics">
+      <!-- Topics will be dynamically generated here -->
+    </div>
+
+    <button id="back-button" class="back-button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
+      </svg>
+      Back to Topics
+    </button>
+
+    <div id="content-viewer" class="content-viewer" role="region" aria-live="polite">
+      <!-- Content will be dynamically loaded here -->
+    </div>
+
+    <div id="notification" class="notification"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/wallet-connector.js"></script>
+  <script src="assets/js/contract-manager.js"></script>
+  <script src="assets/js/education/content-library.js"></script>
+  <script src="assets/js/education/interactive-demos.js"></script>
+
+  <!-- Initialize -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize wallet connector
+      const walletConnector = new WalletConnector({
+        supportedNetworks: [1, 5, 56, 97],
+        preferredNetwork: 5 // Goerli testnet
+      });
+
+      // Initialize contract manager
+      const contractManager = new ContractManager({
+        walletConnector: walletConnector
+      });
+
+      // Initialize the content library
+      const contentLibrary = new ContentLibrary({
+        walletConnector: walletConnector,
+        contractManager: contractManager,
+        topicGrid: document.getElementById('topic-grid'),
+        contentViewer: document.getElementById('content-viewer'),
+        backButton: document.getElementById('back-button'),
+        notificationElement: document.getElementById('notification')
+      });
+
+      // Load topics
+      contentLibrary.loadTopics();
+
+      // Set up back button
+      document.getElementById('back-button').addEventListener('click', function() {
+        contentLibrary.showTopics();
+      });
+
+      // Set up wallet button
+      document.getElementById('wallet-btn').addEventListener('click', async function() {
+        try {
+          await walletConnector.connect();
+          updateWalletUI();
+        } catch (error) {
+          console.error('Failed to connect wallet:', error);
+          showNotification('Failed to connect wallet. Please try again.', 'error');
+        }
+      });
+
+      // Set up disconnect button
+      document.getElementById('disconnect-btn').addEventListener('click', async function() {
+        try {
+          await walletConnector.disconnect();
+          updateWalletUI();
+        } catch (error) {
+          console.error('Failed to disconnect wallet:', error);
+        }
+      });
+
+      // Update wallet UI on page load
+      updateWalletUI();
+
+      // Wallet event listener
+      walletConnector.addEventListener('connectionChanged', updateWalletUI);
+
+      // Function to update wallet UI
+      async function updateWalletUI() {
+        const isConnected = walletConnector.isConnected();
+        document.getElementById('wallet-btn').style.display = isConnected ? 'none' : 'flex';
+        document.getElementById('wallet-info').style.display = isConnected ? 'flex' : 'none';
+        
+        if (isConnected) {
+          const address = await walletConnector.getAddress();
+          const shortAddress = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+          document.getElementById('wallet-address').textContent = shortAddress;
+        }
+      }
+
+      // Show notification
+      function showNotification(message, type = 'info') {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = `notification ${type}`;
+        notification.style.display = 'block';
+        
+        setTimeout(() => {
+          notification.style.display = 'none';
+        }, 5000);
+      }
+    });
+  </script>
+
+  <!-- Optional: Add syntax highlighting library if needed -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+</body>
+</html>

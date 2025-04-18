@@ -745,6 +745,105 @@ class ContentLibrary {
   }
   
   /**
+   * Show the topic grid and hide the content viewer
+   */
+  showTopics() {
+    // Hide the content viewer
+    if (this.contentViewerElement) {
+      this.contentViewerElement.style.display = 'none';
+      this.contentViewerElement.setAttribute('aria-hidden', 'true');
+    }
+    
+    // Show the topic grid
+    if (this.topicGridElement) {
+      this.topicGridElement.style.display = 'grid';
+      this.topicGridElement.setAttribute('aria-hidden', 'false');
+    }
+    
+    // Hide back button
+    if (this.backButtonElement) {
+      this.backButtonElement.style.display = 'none';
+      this.backButtonElement.setAttribute('aria-hidden', 'true');
+    }
+    
+    // Reset current content
+    this.currentContent = null;
+    
+    // Scroll to the top
+    window.scrollTo(0, 0);
+    
+    // Announce to screen readers
+    this._announceToScreenReader('Showing topic list');
+  }
+
+  /**
+   * Render the topic grid with all available topics
+   */
+  renderTopicGrid() {
+    if (!this.topicGridElement || !this.topics || this.topics.length === 0) return;
+    
+    // Clear existing content
+    this.topicGridElement.innerHTML = '';
+    
+    // Create topic cards
+    this.topics.forEach(topic => {
+      const topicElement = document.createElement('div');
+      topicElement.className = 'topic-card';
+      topicElement.setAttribute('data-topic-id', topic.id);
+      
+      // Create topic content
+      topicElement.innerHTML = `
+        <div class="topic-image" style="background-image: url('${topic.image || 'assets/images/default-topic.jpg'}')"></div>
+        <div class="topic-details">
+          <h3>${topic.title}</h3>
+          <p>${topic.description || ''}</p>
+          <ul class="lesson-list" aria-label="Lessons for ${topic.title}">
+            ${topic.lessons.map(lesson => `
+              <li class="lesson-item">
+                <span class="lesson-title" 
+                      data-topic-id="${topic.id}" 
+                      data-lesson-id="${lesson.id}" 
+                      tabindex="0" 
+                      role="button">
+                  ${lesson.title}
+                </span>
+                <span class="lesson-duration">${lesson.duration}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+      
+      // Add to grid
+      this.topicGridElement.appendChild(topicElement);
+      
+      // Add event listeners for lessons
+      const lessonTitles = topicElement.querySelectorAll('.lesson-title');
+      lessonTitles.forEach(lessonTitle => {
+        lessonTitle.addEventListener('click', () => {
+          const topicId = lessonTitle.getAttribute('data-topic-id');
+          const lessonId = lessonTitle.getAttribute('data-lesson-id');
+          this.loadLesson(topicId, lessonId);
+        });
+        
+        // Keyboard accessibility
+        lessonTitle.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            const topicId = lessonTitle.getAttribute('data-topic-id');
+            const lessonId = lessonTitle.getAttribute('data-lesson-id');
+            this.loadLesson(topicId, lessonId);
+          }
+        });
+      });
+    });
+    
+    // Show the topic grid
+    this.topicGridElement.style.display = 'grid';
+    this.topicGridElement.setAttribute('aria-hidden', 'false');
+  }
+  
+  /**
    * Initialize syntax highlighting for code examples
    */
   _initializeSyntaxHighlighting() {
@@ -1045,4 +1144,3 @@ if (typeof window !== 'undefined') {
 // For use in Node.js environment
 if (typeof module !== 'undefined') {
   module.exports = ContentLibrary;
-}
