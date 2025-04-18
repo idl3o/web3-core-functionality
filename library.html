@@ -6,6 +6,11 @@
   <title>Web3 Education Library</title>
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/education.css">
+  <link rel="shortcut icon" href="assets/images/favicon.ico" type="image/x-icon" />
+  <meta
+    name="description"
+    content="Comprehensive educational resources on blockchain, Web3, smart contracts, and decentralized finance"
+  />
   <style>
     /* Library-specific styles */
     .library-container {
@@ -271,9 +276,37 @@
       background: #f1f1f1;
       border-radius: 5px;
     }
+    
+    .section {
+      padding: 3rem 0;
+    }
+    
+    .section-alt {
+      padding: 3rem 0;
+      background-color: #f8f9fa;
+    }
   </style>
 </head>
 <body>
+  <!-- Navigation -->
+  <div class="navigation">
+    <div class="container nav-container">
+      <a href="/" class="logo">Web3 Crypto Streaming</a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="index.html#architecture">Architecture</a></li>
+          <li><a href="index.html#tech">Tech Stack</a></li>
+          <li><a href="index.html#token">Token</a></li>
+          <li><a href="index.html#roadmap">Roadmap</a></li>
+          <li><a href="streaming.html">Demo Player</a></li>
+          <li><a href="library.html"><strong>Education</strong></a></li>
+          <li><a href="docs/">Docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
   <div class="library-container">
     <header class="library-header">
       <h1>Web3 Education Library</h1>
@@ -314,6 +347,78 @@
 
     <div id="notification" class="notification"></div>
   </div>
+
+  <!-- Education Features Section -->
+  <section class="section-alt">
+    <div class="container">
+      <h2 class="center-text">Educational Features</h2>
+      
+      <div class="grid">
+        <div class="card">
+          <h3>Interactive Learning</h3>
+          <p>Engage with interactive demos and code examples that bring blockchain concepts to life.</p>
+        </div>
+        
+        <div class="card">
+          <h3>Comprehensive Curriculum</h3>
+          <p>From Web3 basics to advanced smart contract development, our curriculum covers all aspects of blockchain technology.</p>
+        </div>
+        
+        <div class="card">
+          <h3>Progress Tracking</h3>
+          <p>Track your learning journey with progress indicators and completion achievements.</p>
+        </div>
+        
+        <div class="card">
+          <h3>Web3 Integration</h3>
+          <p>Experience blockchain technology directly by connecting your wallet and interacting with live contracts.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h3>Web3 Crypto Streaming Service</h3>
+          <p>Revolutionizing content distribution through blockchain technology.</p>
+        </div>
+
+        <div>
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="web3-streaming-service-whitepaper.md">Whitepaper</a></li>
+            <li><a href="docs/">Documentation</a></li>
+            <li><a href="blog/">Blog</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Community</h4>
+          <ul>
+            <li><a href="https://twitter.com/modsias">Twitter</a></li>
+            <li><a href="https://discord.gg/web3streaming">Discord</a></li>
+            <li><a href="https://t.me/web3streaming">Telegram</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="terms.md">Terms of Service</a></li>
+            <li><a href="privacy.md">Privacy Policy</a></li>
+            <li><a href="docs/token-disclaimer.html">Token Disclaimer</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Team MODSIAS | <a href="sitemap.html">Sitemap</a></p>
+      </div>
+    </div>
+  </footer>
 
   <!-- Scripts -->
   <script src="assets/js/wallet-connector.js"></script>
