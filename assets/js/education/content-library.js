@@ -37,6 +37,260 @@ class ContentLibrary {
   }
   
   /**
+   * Update content access when wallet connection status changes
+   * Checks current content and updates UI if premium content is being viewed
+   */
+  async _updateContentAccess() {
+    console.debug('Wallet connection changed, updating content access');
+    
+    // If currently viewing premium content, verify access
+    if (this.currentContent && this.currentContent.lesson && this.currentContent.lesson.isPremium) {
+      const hasAccess = await this._checkPremiumAccess();
+      
+      if (hasAccess) {
+        // User now has access, refresh content if in premium content message view
+        const premiumMessage = document.getElementById('premium-content-message');
+        if (premiumMessage) {
+          // Hide premium message and show content
+          this._hideLoadingIndicator();
+          this.showContent(
+            this.currentContent.content, 
+            this.currentContent.lesson, 
+            this.currentContent.topic
+          );
+          this._showNotification('Access granted to premium content!', 'success');
+        }
+      } else {
+        // User lost access, show premium content message
+        this._showPremiumContentMessage(this.currentContent.lesson);
+      }
+    }
+  }
+  
+  /**
+   * Check if user has access to premium content
+   * @returns {Promise<boolean>} True if user has access
+   */
+  async _checkPremiumAccess() {
+    try {
+      // If no wallet connection or contract manager, no access
+      if (!this.walletConnector || !this.contractManager) {
+        console.debug('No wallet or contract manager available');
+        return false;
+      }
+      
+      // Check if wallet is connected
+      if (!this.walletConnector.isConnected()) {
+        console.debug('Wallet not connected');
+        return false;
+      }
+      
+      // Get wallet address
+      const address = await this.walletConnector.getAddress();
+      if (!address) {
+        console.debug('Could not get wallet address');
+        return false;
+      }
+      
+      // Check if user has the required educational content token
+      // This uses the StreamToken contract for checking access
+      try {
+        const hasAccess = await this.contractManager.checkStreamAccess('education_premium');
+        console.debug('Premium access check result:', hasAccess);
+        return hasAccess;
+      } catch (error) {
+        console.error('Error checking token access:', error);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error checking premium access:', error);
+      return false;
+    }
+  }
+  
+  /**
+   * Shows premium content access message with wallet connection options
+   * @param {Object} lesson Lesson that requires premium access
+   */
+  _showPremiumContentMessage(lesson) {
+    if (!this.contentViewerElement) return;
+    
+    // Show the correct UI state
+    if (this.topicGridElement) {
+      this.topicGridElement.style.display = 'none';
+      this.topicGridElement.setAttribute('aria-hidden', 'true');
+    }
+    
+    // Show the content viewer with premium content message
+    this.contentViewerElement.style.display = 'block';
+    this.contentViewerElement.setAttribute('aria-hidden', 'false');
+    
+    // Show back button
+    if (this.backButtonElement) {
+      this.backButtonElement.style.display = 'block';
+      this.backButtonElement.setAttribute('aria-hidden', 'false');
+    }
+    
+    // Build the premium content message UI
+    this.contentViewerElement.innerHTML = `
+      <div id="premium-content-message" class="premium-content-message">
+        <h2>Premium Content: ${lesson.title}</h2>
+        <div class="premium-content-image">
+          <img src="assets/images/premium-content.jpg" alt="Premium content illustration" />
+        </div>
+        <p class="premium-message">
+          This is premium content that requires wallet authentication to access.
+        </p>
+        <div class="premium-content-options">
+          <div class="access-options">
+            <h3>Streaming Access</h3>
+            <div class="access-info">
+              <p><strong>Content ID:</strong> education_premium</p>
+              <p><strong>Your Credits:</strong> <span id="token-balance">0</span> STRM</p>
+              <p><strong>Stream Status:</strong> <span id="stream-status">Not started</span></p>
+              <p><strong>Time Remaining:</strong> <span id="time-remaining">-</span></p>
+            </div>
+          </div>
+          <div class="wallet-actions">
+            ${!this.walletConnector?.isConnected() ? 
+              `<button id="connect-wallet-btn" class="primary-btn">Connect Wallet</button>` : 
+              `<button id="start-stream-btn" class="primary-btn">Start Streaming (1 Credit)</button>`
+            }
+            <button id="purchase-credits-btn" class="secondary-btn">Purchase Credits (0.01 ETH)</button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Set up event listeners for the buttons
+    const connectWalletBtn = document.getElementById('connect-wallet-btn');
+    if (connectWalletBtn) {
+      connectWalletBtn.addEventListener('click', async () => {
+        try {
+          this._showLoadingIndicator('Connecting wallet...');
+          await this.walletConnector.connect();
+          
+          // Check access again
+          const hasAccess = await this._checkPremiumAccess();
+          if (hasAccess) {
+            // User has access, load the premium content
+            this._hideLoadingIndicator();
+            this._loadLesson(this.currentContent.topic.id, lesson.id);
+          } else {
+            // Update UI to show purchase options instead of connect
+            this._hideLoadingIndicator();
+            this._showPremiumContentMessage(lesson);
+            
+            // Update token balance if available
+            this._updateTokenBalance();
+          }
+        } catch (error) {
+          console.error('Error connecting wallet:', error);
+          this._hideLoadingIndicator();
+          this._showNotification('Failed to connect wallet. Please try again.', 'error');
+        }
+      });
+    }
+    
+    const startStreamBtn = document.getElementById('start-stream-btn');
+    if (startStreamBtn) {
+      startStreamBtn.addEventListener('click', async () => {
+        try {
+          this._showLoadingIndicator('Starting stream...');
+          
+          // Request access via contract
+          await this.contractManager.startStreaming('education_premium');
+          
+          // Verify access
+          const hasAccess = await this._checkPremiumAccess();
+          if (hasAccess) {
+            // User has access, load the premium content
+            this._hideLoadingIndicator();
+            const expiry = await this.contractManager.getStreamExpiry('education_premium');
+            this._showNotification(`Stream started! Valid for ${this._formatStreamDuration(expiry)}`, 'success');
+            this._loadLesson(this.currentContent.topic.id, lesson.id);
+          } else {
+            this._hideLoadingIndicator();
+            this._showNotification('Could not start stream. Please check your token balance.', 'error');
+          }
+        } catch (error) {
+          console.error('Error starting stream:', error);
+          this._hideLoadingIndicator();
+          this._showNotification('Failed to start stream. Please try again.', 'error');
+        }
+      });
+    }
+    
+    const purchaseCreditsBtn = document.getElementById('purchase-credits-btn');
+    if (purchaseCreditsBtn) {
+      purchaseCreditsBtn.addEventListener('click', async () => {
+        try {
+          if (!this.walletConnector?.isConnected()) {
+            await this.walletConnector.connect();
+          }
+          
+          this._showLoadingIndicator('Purchasing credits...');
+          await this.contractManager.purchaseCredits();
+          this._hideLoadingIndicator();
+          this._showNotification('Credits purchased successfully!', 'success');
+          
+          // Update token balance
+          await this._updateTokenBalance();
+          
+          // Refresh premium content message
+          this._showPremiumContentMessage(lesson);
+        } catch (error) {
+          console.error('Error purchasing credits:', error);
+          this._hideLoadingIndicator();
+          this._showNotification('Failed to purchase credits. Please try again.', 'error');
+        }
+      });
+    }
+    
+    // Update token balance if wallet is connected
+    if (this.walletConnector?.isConnected()) {
+      this._updateTokenBalance();
+    }
+  }
+  
+  /**
+   * Format stream duration from expiry time
+   * @param {number} expiryTime Expiry timestamp
+   * @returns {string} Formatted duration
+   */
+  _formatStreamDuration(expiryTime) {
+    const now = Math.floor(Date.now() / 1000);
+    const remainingSecs = expiryTime - now;
+    
+    if (remainingSecs <= 0) return 'Expired';
+    
+    const hours = Math.floor(remainingSecs / 3600);
+    const minutes = Math.floor((remainingSecs % 3600) / 60);
+    const seconds = Math.floor(remainingSecs % 60);
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`;
+    } else {
+      return `${minutes}m ${seconds}s`;
+    }
+  }
+  
+  /**
+   * Update token balance display
+   */
+  async _updateTokenBalance() {
+    try {
+      const balanceEl = document.getElementById('token-balance');
+      if (balanceEl && this.contractManager) {
+        const balance = await this.contractManager.getTokenBalance();
+        balanceEl.textContent = balance || '0';
+      }
+    } catch (error) {
+      console.error('Error updating token balance:', error);
+    }
+  }
+  
+  /**
    * Load all topics and render the topic grid
    */
   async loadTopics() {
@@ -50,6 +304,16 @@ class ContentLibrary {
           const response = await fetch(`${this.apiEndpoint}/topics`);
           if (response.ok) {
             this.topics = await response.json();
+            
+            // Set all content to free
+            this.topics.forEach(topic => {
+              if (topic.lessons) {
+                topic.lessons.forEach(lesson => {
+                  lesson.isPremium = false;
+                });
+              }
+            });
+            
             // Cache the topics in localStorage
             localStorage.setItem('web3EduTopics', JSON.stringify(this.topics));
           } else {
@@ -89,6 +353,14 @@ class ContentLibrary {
     if (cachedTopics) {
       try {
         this.topics = JSON.parse(cachedTopics);
+        // Set all content to free
+        this.topics.forEach(topic => {
+          if (topic.lessons) {
+            topic.lessons.forEach(lesson => {
+              lesson.isPremium = false;
+            });
+          }
+        });
         return;
       } catch (e) {
         console.error('Failed to parse cached topics', e);
@@ -129,7 +401,7 @@ class ContentLibrary {
             title: 'Web3 Architecture Deep Dive',
             contentPath: 'assets/content/web3-basics/web3-architecture.json',
             duration: '20 min',
-            isPremium: true
+            isPremium: false
           }
         ]
       },
@@ -165,7 +437,7 @@ class ContentLibrary {
             title: 'Security Best Practices',
             contentPath: 'assets/content/smart-contracts/security-best-practices.json',
             duration: '25 min',
-            isPremium: true
+            isPremium: false
           }
         ]
       },
@@ -201,7 +473,7 @@ class ContentLibrary {
             title: 'Building a DeFi App',
             contentPath: 'assets/content/defi/building-defi-app.json',
             duration: '30 min',
-            isPremium: true
+            isPremium: false
           }
         ]
       }
