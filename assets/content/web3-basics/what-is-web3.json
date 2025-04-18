@@ -14,12 +14,16 @@
       "videoUrl": "https://example.com/videos/web3-evolution.mp4"
     },
     {
-      "title": "Key Components of Web3",
-      "html": "<p>Web3 is built on several foundational components:</p><ul><li><strong>Blockchain</strong>: Distributed, immutable ledgers that record transactions and state changes</li><li><strong>Smart Contracts</strong>: Self-executing programs that run on blockchain networks</li><li><strong>Cryptocurrencies</strong>: Digital currencies used for transactions and incentives</li><li><strong>Digital Wallets</strong>: Tools for managing cryptographic keys and digital assets</li><li><strong>Decentralized Applications (dApps)</strong>: Applications that run on blockchain networks</li><li><strong>Tokens</strong>: Digital assets representing value or utility on blockchain networks</li></ul>"
+      "title": "Core Components of Web3",
+      "html": "<p>Web3 is built on several foundational technologies and concepts:</p><ul><li><strong>Blockchain</strong>: A distributed, immutable ledger that records transactions across many computers.</li><li><strong>Cryptocurrencies</strong>: Digital currencies that use cryptography for security and operate on decentralized networks.</li><li><strong>Smart Contracts</strong>: Self-executing contracts with the terms directly written into code.</li><li><strong>Decentralized Applications (dApps)</strong>: Applications that run on a blockchain network rather than a single computer.</li><li><strong>Tokens</strong>: Digital assets that can represent anything from currency to voting rights to real-world assets.</li><li><strong>Wallets</strong>: Software or hardware that stores the private keys needed to access and manage cryptocurrencies and interact with dApps.</li></ul>"
     },
     {
-      "title": "Web3 Use Cases",
-      "html": "<p>Web3 technologies are being applied to a wide range of use cases:</p><ul><li>Decentralized Finance (DeFi)</li><li>Digital Identity and Authentication</li><li>Content Creation and Monetization</li><li>Supply Chain Tracking</li><li>Digital Art and Collectibles (NFTs)</li><li>Decentralized Autonomous Organizations (DAOs)</li><li>Gaming and Virtual Worlds</li></ul><p>Each of these applications leverages the unique properties of blockchain technology to create new possibilities and business models.</p>"
+      "title": "Web3 vs. Traditional Web Architecture",
+      "html": "<p>Let's compare the architecture of traditional web applications with Web3 applications:</p><table class='comparison-table'><thead><tr><th>Feature</th><th>Traditional Web (Web2)</th><th>Web3</th></tr></thead><tbody><tr><td>Data Storage</td><td>Centralized servers and databases</td><td>Distributed blockchain nodes</td></tr><tr><td>Authentication</td><td>Username/password, OAuth</td><td>Cryptographic signatures</td></tr><tr><td>Business Logic</td><td>Server-side code</td><td>Smart contracts</td></tr><tr><td>Hosting</td><td>Cloud providers</td><td>Distributed network</td></tr><tr><td>State Management</td><td>Database transactions</td><td>Blockchain consensus</td></tr><tr><td>Trust Model</td><td>Trust the service provider</td><td>Trust the code (trustless)</td></tr></tbody></table>"
+    },
+    {
+      "title": "Why Web3 Matters",
+      "html": "<p>Web3 represents a paradigm shift in how we interact with digital services:</p><ul><li><strong>User Sovereignty</strong>: Users own their data and digital assets.</li><li><strong>Censorship Resistance</strong>: No central authority can remove content or block users.</li><li><strong>Permissionless Innovation</strong>: Anyone can build and deploy Web3 applications without gatekeepers.</li><li><strong>Native Payments</strong>: Built-in payment infrastructure without intermediaries.</li><li><strong>Global Accessibility</strong>: Services available to anyone with internet access, regardless of location or status.</li></ul><p>While Web3 is still evolving, it represents a significant shift in how we think about internet services, digital ownership, and online interactions.</p>"
     }
   ],
   "interactive": null,

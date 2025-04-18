@@ -10,12 +10,14 @@ class ContentLibrary {
   constructor(options = {}) {
     this.walletConnector = options.walletConnector;
     this.contractManager = options.contractManager;
+    this.interactiveDemos = options.interactiveDemos;
     this.topicGridElement = options.topicGrid;
     this.contentViewerElement = options.contentViewer;
     this.backButtonElement = options.backButton;
     
     this.topics = [];
     this.currentContent = null;
+    this.currentDemo = null;
     
     // Track user progress in localStorage
     this.userProgress = this._loadUserProgress();
@@ -305,7 +307,7 @@ class ContentLibrary {
       ${content.interactive ? `
         <div class="interactive-demo">
           <h3>Interactive Demo</h3>
-          <div id="interactive-container" data-demo-id="${content.interactive.id}">
+          <div id="interactive-container" data-demo-id="${content.interactive.id}" data-demo-type="${content.interactive.type}">
             Loading interactive demo...
           </div>
         </div>
@@ -330,8 +332,28 @@ class ContentLibrary {
       });
     }
     
+    // Set up next lesson button
+    const nextLessonBtn = document.getElementById('next-lesson-btn');
+    if (nextLessonBtn) {
+      // Find the index of the current lesson
+      const currentIndex = topic.lessons.findIndex(l => l.id === lesson.id);
+      if (currentIndex >= 0 && currentIndex < topic.lessons.length - 1) {
+        // There is a next lesson in this topic
+        const nextLesson = topic.lessons[currentIndex + 1];
+        nextLessonBtn.addEventListener('click', () => {
+          this.loadLesson(topic.id, nextLesson.id);
+        });
+      } else {
+        // This is the last lesson in the topic
+        nextLessonBtn.textContent = 'Back to Topics';
+        nextLessonBtn.addEventListener('click', () => {
+          this.showTopics();
+        });
+      }
+    }
+    
     // Initialize interactive demo if present
-    if (content.interactive) {
+    if (content.interactive && this.interactiveDemos) {
       this._initializeInteractiveDemo(content.interactive);
     }
     
@@ -442,253 +464,292 @@ class ContentLibrary {
   }
   
   /**
-   * Fetch lesson content - in a real app, this would make an API call
-   * For now, we'll simulate fetching content
-   */
-  async _fetchLessonContent(contentPath) {
-    // For this example, we'll return a hardcoded content structure
-    // based on the lesson ID embedded in the contentPath
-    
-    const lessonId = contentPath.split('/').pop().replace('.json', '');
-    
-    // Simple content mapping - in a real app, this would fetch from API/files
-    const contentMap = {
-      'what-is-web3': {
-        title: 'What is Web3?',
-        sections: [
-          {
-            title: 'Introduction to Web3',
-            html: `
-              <p>Web3 represents the next evolution of the internet, built on decentralized blockchain technology.</p>
-              <p>Unlike Web2 (the current internet), which is dominated by centralized platforms and services, Web3 aims to redistribute power to users through decentralized applications (dApps), smart contracts, and token-based economics.</p>
-              <p>In this lesson, we'll explore the fundamental concepts behind Web3, its key technologies, and how it differs from previous iterations of the web.</p>
-            `,
-            videoUrl: null,
-          },
-          {
-            title: 'Web1, Web2, and Web3',
-            html: `
-              <p><strong>Web1 (1990s-early 2000s)</strong>: The read-only web. Static websites with minimal interaction.</p>
-              <p><strong>Web2 (mid-2000s-present)</strong>: The read-write web. Interactive platforms, social media, and cloud services controlled by centralized entities.</p>
-              <p><strong>Web3 (emerging)</strong>: The read-write-own web. Users have ownership over their data and digital assets through blockchain and cryptography.</p>
-              <p>The key difference is that Web3 enables true ownership and peer-to-peer interaction without intermediaries.</p>
-            `,
-            videoUrl: 'https://example.com/videos/web3-evolution.mp4',
-            codeExample: null
-          }
-        ],
-        interactive: null
-      },
-      
-      'blockchain-fundamentals': {
-        title: 'Blockchain Fundamentals',
-        sections: [
-          {
-            title: 'What is a Blockchain?',
-            html: `
-              <p>At its core, a blockchain is a distributed ledger that records transactions across many computers.</p>
-              <p>Each block contains a list of transactions, a timestamp, and a reference to the previous block, forming a chain of blocks—hence the name "blockchain."</p>
-              <p>This structure makes the blockchain immutable, as changing any information would require altering all subsequent blocks.</p>
-            `,
-            videoUrl: null
-          },
-          {
-            title: 'Consensus Mechanisms',
-            html: `
-              <p>Blockchain networks use consensus mechanisms to agree on the state of the ledger without central authority.</p>
-              <p>The two most common consensus mechanisms are:</p>
-              <ul>
-                <li><strong>Proof of Work (PoW)</strong>: Miners solve complex mathematical puzzles to validate transactions and create new blocks. Used by Bitcoin and (formerly) Ethereum.</li>
-                <li><strong>Proof of Stake (PoS)</strong>: Validators stake cryptocurrency to participate in block validation. More energy-efficient than PoW. Used by Ethereum 2.0, Cardano, and Solana.</li>
-              </ul>
-            `,
-            videoUrl: 'https://example.com/videos/consensus-mechanisms.mp4',
-            codeExample: null
-          }
-        ],
-        interactive: {
-          id: 'blockchain-demo',
-          type: 'block-explorer'
-        }
-      },
-      
-      'solidity-intro': {
-        title: 'Introduction to Solidity',
-        sections: [
-          {
-            title: 'What is Solidity?',
-            html: `
-              <p>Solidity is an object-oriented, high-level programming language designed specifically for writing smart contracts on blockchain platforms like Ethereum.</p>
-              <p>Created in 2014, Solidity allows developers to implement complex business logic, create tokens, and build decentralized applications (dApps).</p>
-            `,
-            videoUrl: null
-          },
-          {
-            title: 'Basic Solidity Syntax',
-            html: `
-              <p>Here's a simple Solidity contract that demonstrates the basic structure and syntax:</p>
-            `,
-            videoUrl: null,
-            codeExample: `// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-
-contract SimpleStorage {
-    // State variable to store a number
-    uint256 private storedData;
-    
-    // Event to notify clients about the change
-    event DataChanged(uint256 newValue);
-    
-    // Store a new value
-    function set(uint256 x) public {
-        storedData = x;
-        emit DataChanged(x);
-    }
-    
-    // Return the stored value
-    function get() public view returns (uint256) {
-        return storedData;
-    }
-}`
-          }
-        ],
-        interactive: {
-          id: 'solidity-playground',
-          type: 'code-editor'
-        }
-      }
-    };
-    
-    // Return the appropriate content or a default
-    return contentMap[lessonId] || {
-      title: 'Lesson Content',
-      sections: [
-        {
-          title: 'Content Coming Soon',
-          html: '<p>This lesson content is being developed and will be available soon.</p>',
-          videoUrl: null
-        }
-      ],
-      interactive: null
-    };
-  }
-  
-  /**
-   * Initialize interactive demos based on type
+   * Initialize an interactive demo using the InteractiveDemos component
    */
   _initializeInteractiveDemo(interactive) {
+    if (!this.interactiveDemos) {
+      console.warn('InteractiveDemos component is not available');
+      return;
+    }
+    
     const container = document.getElementById('interactive-container');
     if (!container) return;
     
-    switch (interactive.type) {
-      case 'block-explorer':
-        this._renderBlockExplorerDemo(container);
-        break;
-      case 'code-editor':
-        this._renderCodeEditorDemo(container);
-        break;
-      default:
-        container.innerHTML = 'Interactive demo not available';
+    try {
+      // Initialize the demo using the InteractiveDemos helper
+      this.currentDemo = this.interactiveDemos.initializeDemo(
+        interactive.type, 
+        'interactive-container', 
+        interactive.id,
+        interactive.config || {},
+        this._handleDemoInteraction.bind(this)
+      );
+      
+      // Add controls for the interactive demo if specified
+      if (interactive.controls) {
+        this._addDemoControls(container, interactive.controls);
+      }
+      
+      // Set up event listeners for demo interaction
+      container.addEventListener('demo-completed', (e) => {
+        this._handleDemoCompletion(e.detail);
+      });
+      
+      container.addEventListener('demo-error', (e) => {
+        this._handleDemoError(e.detail);
+      });
+      
+      // Track demo usage in user progress
+      if (!this.userProgress.interactiveUsage) {
+        this.userProgress.interactiveUsage = {};
+      }
+      
+      if (!this.userProgress.interactiveUsage[interactive.id]) {
+        this.userProgress.interactiveUsage[interactive.id] = {
+          startedAt: Date.now(),
+          completions: 0,
+          lastUsed: Date.now()
+        };
+      } else {
+        this.userProgress.interactiveUsage[interactive.id].lastUsed = Date.now();
+      }
+      
+      this._saveUserProgress();
+    } catch (error) {
+      console.error('Failed to initialize interactive demo:', error);
+      container.innerHTML = `
+        <div class="demo-error">
+          <p>Failed to load interactive demo. Please try refreshing the page.</p>
+          <p>Error: ${error.message}</p>
+        </div>
+      `;
     }
   }
   
   /**
-   * Render a simple block explorer demo
+   * Add interactive controls to a demo container
    */
-  _renderBlockExplorerDemo(container) {
-    container.innerHTML = `
-      <div class="block-explorer">
-        <div class="block-chain">
-          <div class="block">
-            <div class="block-header">Block #1</div>
-            <div class="block-content">
-              <div>Prev Hash: 0000</div>
-              <div>Hash: 8a721...</div>
-              <div>TX: 1 transaction</div>
-            </div>
-          </div>
-          <div class="block-connector">→</div>
-          <div class="block">
-            <div class="block-header">Block #2</div>
-            <div class="block-content">
-              <div>Prev Hash: 8a721...</div>
-              <div>Hash: 3e519...</div>
-              <div>TX: 2 transactions</div>
-            </div>
-          </div>
-          <div class="block-connector">→</div>
-          <div class="block">
-            <div class="block-header">Block #3</div>
-            <div class="block-content">
-              <div>Prev Hash: 3e519...</div>
-              <div>Hash: 7d2f1...</div>
-              <div>TX: 3 transactions</div>
-            </div>
-          </div>
-        </div>
-        <div class="demo-controls">
-          <button id="add-block-btn">Add Block</button>
-          <button id="try-tamper-btn">Attempt Tamper</button>
-        </div>
-      </div>
-    `;
+  _addDemoControls(container, controls) {
+    const controlsDiv = document.createElement('div');
+    controlsDiv.className = 'demo-controls';
     
-    // Add event listeners for demo buttons
-    document.getElementById('add-block-btn').addEventListener('click', () => {
-      alert('In a real implementation, this would add a new block to the chain.');
-    });
+    if (controls.reset) {
+      const resetBtn = document.createElement('button');
+      resetBtn.className = 'demo-control-btn reset';
+      resetBtn.textContent = 'Reset Demo';
+      resetBtn.addEventListener('click', () => this._resetDemo());
+      controlsDiv.appendChild(resetBtn);
+    }
     
-    document.getElementById('try-tamper-btn').addEventListener('click', () => {
-      alert('In a real implementation, this would show how tampering breaks the chain integrity.');
-    });
+    if (controls.fullscreen) {
+      const fullscreenBtn = document.createElement('button');
+      fullscreenBtn.className = 'demo-control-btn fullscreen';
+      fullscreenBtn.textContent = 'Fullscreen';
+      fullscreenBtn.addEventListener('click', () => this._toggleFullscreen(container));
+      controlsDiv.appendChild(fullscreenBtn);
+    }
+    
+    if (controls.custom && Array.isArray(controls.custom)) {
+      controls.custom.forEach(customControl => {
+        const customBtn = document.createElement('button');
+        customBtn.className = `demo-control-btn ${customControl.className || ''}`;
+        customBtn.textContent = customControl.label;
+        customBtn.addEventListener('click', () => {
+          if (this.currentDemo && typeof this.currentDemo[customControl.action] === 'function') {
+            this.currentDemo[customControl.action](customControl.params);
+          }
+        });
+        controlsDiv.appendChild(customBtn);
+      });
+    }
+    
+    if (controlsDiv.children.length > 0) {
+      container.parentNode.insertBefore(controlsDiv, container.nextSibling);
+    }
   }
   
   /**
-   * Render a simple code editor demo
+   * Handle interactions from the demo
    */
-  _renderCodeEditorDemo(container) {
-    container.innerHTML = `
-      <div class="code-editor">
-        <textarea id="code-editor-textarea" rows="10" style="width: 100%">// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-
-contract MyToken {
-    string public name = "MyToken";
-    string public symbol = "MTK";
-    uint256 public totalSupply = 1000000;
+  _handleDemoInteraction(type, data) {
+    if (!this.currentDemo || !this.currentContent) return;
     
-    mapping(address => uint256) public balanceOf;
+    console.log(`Demo interaction: ${type}`, data);
     
-    constructor() {
-        balanceOf[msg.sender] = totalSupply;
-    }
-    
-    function transfer(address to, uint256 amount) external returns (bool) {
-        require(balanceOf[msg.sender] >= amount, "Not enough tokens");
+    // Handle different interaction types
+    switch (type) {
+      case 'state-change':
+        // Update user progress based on demo state changes
+        if (this.userProgress.interactiveUsage && 
+            this.userProgress.interactiveUsage[this.currentContent.interactive.id]) {
+          this.userProgress.interactiveUsage[this.currentContent.interactive.id].state = data;
+          this._saveUserProgress();
+        }
+        break;
         
-        balanceOf[msg.sender] -= amount;
-        balanceOf[to] += amount;
-        return true;
+      case 'checkpoint':
+        // User reached a checkpoint in the demo
+        if (this.userProgress.interactiveUsage && 
+            this.userProgress.interactiveUsage[this.currentContent.interactive.id]) {
+          if (!this.userProgress.interactiveUsage[this.currentContent.interactive.id].checkpoints) {
+            this.userProgress.interactiveUsage[this.currentContent.interactive.id].checkpoints = [];
+          }
+          this.userProgress.interactiveUsage[this.currentContent.interactive.id].checkpoints.push({
+            id: data.checkpointId,
+            timestamp: Date.now()
+          });
+          this._saveUserProgress();
+        }
+        break;
+        
+      case 'wallet-request':
+        // Demo is requesting wallet connectivity
+        if (this.walletConnector && !this.walletConnector.getConnectionState().isConnected) {
+          this.walletConnector.connectWallet()
+            .then(() => {
+              if (this.currentDemo && typeof this.currentDemo.onWalletConnected === 'function') {
+                this.currentDemo.onWalletConnected(this.walletConnector.getConnectionState());
+              }
+            })
+            .catch(error => {
+              console.error('Failed to connect wallet for demo:', error);
+              if (this.currentDemo && typeof this.currentDemo.onWalletError === 'function') {
+                this.currentDemo.onWalletError(error);
+              }
+            });
+        } else if (this.walletConnector && this.walletConnector.getConnectionState().isConnected) {
+          if (this.currentDemo && typeof this.currentDemo.onWalletConnected === 'function') {
+            this.currentDemo.onWalletConnected(this.walletConnector.getConnectionState());
+          }
+        }
+        break;
     }
-}</textarea>
-        <div class="editor-controls">
-          <button id="compile-code-btn">Compile</button>
-          <button id="deploy-code-btn">Deploy</button>
-        </div>
-        <div id="editor-output" class="editor-output">Console output will appear here</div>
-      </div>
-    `;
+  }
+  
+  /**
+   * Handle demo completion
+   */
+  _handleDemoCompletion(detail) {
+    if (!this.currentDemo || !this.currentContent) return;
     
-    // Add event listeners for editor buttons
-    document.getElementById('compile-code-btn').addEventListener('click', () => {
-      const output = document.getElementById('editor-output');
-      output.innerHTML = 'Compiling...\nCompilation successful! No errors found.';
-    });
+    // Update user progress
+    if (this.userProgress.interactiveUsage && 
+        this.userProgress.interactiveUsage[this.currentContent.interactive.id]) {
+      this.userProgress.interactiveUsage[this.currentContent.interactive.id].completions += 1;
+      this.userProgress.interactiveUsage[this.currentContent.interactive.id].lastCompleted = Date.now();
+      this.userProgress.interactiveUsage[this.currentContent.interactive.id].lastResult = detail;
+      this._saveUserProgress();
+    }
     
-    document.getElementById('deploy-code-btn').addEventListener('click', () => {
-      const output = document.getElementById('editor-output');
-      output.innerHTML = 'Deploying contract...\nContract deployed successfully!\nContract address: 0x123...';
-    });
+    // Display completion message or reward
+    const container = document.getElementById('interactive-container');
+    if (container) {
+      const completionDiv = document.createElement('div');
+      completionDiv.className = 'demo-completion';
+      completionDiv.innerHTML = `
+        <h4>🎉 Demo Completed!</h4>
+        <p>${detail.message || 'You have successfully completed this interactive demo.'}</p>
+        ${detail.score ? `<p>Score: ${detail.score} points</p>` : ''}
+      `;
+      
+      container.appendChild(completionDiv);
+      
+      // Auto-mark the lesson as complete if it's not already
+      if (!this.userProgress.completedLessons.includes(this.currentContent.lesson.id)) {
+        this.userProgress.completedLessons.push(this.currentContent.lesson.id);
+        this._saveUserProgress();
+        
+        const markCompleteBtn = document.getElementById('mark-complete-btn');
+        if (markCompleteBtn) {
+          markCompleteBtn.textContent = 'Completed';
+          markCompleteBtn.disabled = true;
+        }
+      }
+    }
+  }
+  
+  /**
+   * Handle demo errors
+   */
+  _handleDemoError(detail) {
+    console.error('Demo error:', detail);
+    
+    const container = document.getElementById('interactive-container');
+    if (container) {
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'demo-error-message';
+      errorDiv.innerHTML = `
+        <h4>⚠️ Demo Error</h4>
+        <p>${detail.message || 'An error occurred in the interactive demo.'}</p>
+        <button class="retry-demo-btn">Retry</button>
+      `;
+      
+      container.appendChild(errorDiv);
+      
+      // Add retry button functionality
+      const retryBtn = errorDiv.querySelector('.retry-demo-btn');
+      if (retryBtn) {
+        retryBtn.addEventListener('click', () => {
+          errorDiv.remove();
+          this._resetDemo();
+        });
+      }
+    }
+  }
+  
+  /**
+   * Reset the current demo
+   */
+  _resetDemo() {
+    if (!this.currentDemo || !this.currentContent) return;
+    
+    try {
+      if (typeof this.currentDemo.reset === 'function') {
+        this.currentDemo.reset();
+      } else {
+        // Fallback: re-initialize the demo
+        const container = document.getElementById('interactive-container');
+        if (container) {
+          container.innerHTML = 'Reloading interactive demo...';
+          setTimeout(() => {
+            this._initializeInteractiveDemo(this.currentContent.interactive);
+          }, 500);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to reset demo:', error);
+    }
+  }
+  
+  /**
+   * Toggle fullscreen mode for the demo
+   */
+  _toggleFullscreen(element) {
+    if (!element) return;
+    
+    try {
+      if (!document.fullscreenElement) {
+        // Enter fullscreen
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+          element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) {
+          element.msRequestFullscreen();
+        }
+      } else {
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+    } catch (error) {
+      console.error('Fullscreen error:', error);
+    }
   }
   
   /**
@@ -724,6 +785,7 @@ contract MyToken {
     // Default progress object
     return {
       completedLessons: [],
+      interactiveUsage: {},
       lastAccessed: Date.now()
     };
   }
