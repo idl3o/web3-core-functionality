@@ -14,10 +14,13 @@ class ContentLibrary {
     this.topicGridElement = options.topicGrid;
     this.contentViewerElement = options.contentViewer;
     this.backButtonElement = options.backButton;
+    this.notificationElement = options.notificationElement;
+    this.apiEndpoint = options.apiEndpoint || 'api/education';
     
     this.topics = [];
     this.currentContent = null;
     this.currentDemo = null;
+    this.contentCache = new Map(); // Cache for fetched content
     
     // Track user progress in localStorage
     this.userProgress = this._loadUserProgress();
@@ -28,6 +31,9 @@ class ContentLibrary {
         this._updateContentAccess();
       });
     }
+    
+    // Set up offline support
+    this._setupOfflineSupport();
   }
   
   /**
@@ -35,182 +41,222 @@ class ContentLibrary {
    */
   async loadTopics() {
     try {
-      // In a real application, this would fetch from an API
-      // For now, we'll use a local definition
-      this.topics = [
-        {
-          id: 'web3-basics',
-          title: 'Web3 Basics',
-          description: 'Learn the fundamentals of Web3 and blockchain technology',
-          image: 'assets/images/web3-basics-thumbnail.jpg',
-          lessons: [
-            {
-              id: 'what-is-web3',
-              title: 'What is Web3?',
-              contentPath: 'assets/content/web3-basics/what-is-web3.json',
-              duration: '10 min',
-              isPremium: false
-            },
-            {
-              id: 'blockchain-fundamentals',
-              title: 'Blockchain Fundamentals',
-              contentPath: 'assets/content/web3-basics/blockchain-fundamentals.json',
-              duration: '15 min',
-              isPremium: false
-            },
-            {
-              id: 'wallets-and-keys',
-              title: 'Wallets and Keys',
-              contentPath: 'assets/content/web3-basics/wallets-and-keys.json',
-              duration: '12 min',
-              isPremium: false
-            },
-            {
-              id: 'web3-architecture',
-              title: 'Web3 Architecture Deep Dive',
-              contentPath: 'assets/content/web3-basics/web3-architecture.json',
-              duration: '20 min',
-              isPremium: true
-            }
-          ]
-        },
-        {
-          id: 'smart-contracts',
-          title: 'Smart Contract Development',
-          description: 'Build and deploy smart contracts on blockchain networks',
-          image: 'assets/images/smart-contract-dev-thumbnail.jpg',
-          lessons: [
-            {
-              id: 'solidity-intro',
-              title: 'Introduction to Solidity',
-              contentPath: 'assets/content/smart-contracts/solidity-intro.json',
-              duration: '15 min',
-              isPremium: false
-            },
-            {
-              id: 'first-contract',
-              title: 'Your First Smart Contract',
-              contentPath: 'assets/content/smart-contracts/first-contract.json',
-              duration: '20 min',
-              isPremium: false
-            },
-            {
-              id: 'testing-contracts',
-              title: 'Testing Smart Contracts',
-              contentPath: 'assets/content/smart-contracts/testing-contracts.json',
-              duration: '18 min',
-              isPremium: false
-            },
-            {
-              id: 'security-best-practices',
-              title: 'Security Best Practices',
-              contentPath: 'assets/content/smart-contracts/security-best-practices.json',
-              duration: '25 min',
-              isPremium: true
-            }
-          ]
-        },
-        {
-          id: 'defi',
-          title: 'DeFi Applications',
-          description: 'Learn about decentralized finance applications and protocols',
-          image: 'assets/images/defi-thumbnail.jpg',
-          lessons: [
-            {
-              id: 'defi-overview',
-              title: 'DeFi Overview',
-              contentPath: 'assets/content/defi/defi-overview.json',
-              duration: '12 min',
-              isPremium: false
-            },
-            {
-              id: 'amm-mechanics',
-              title: 'AMM Mechanics',
-              contentPath: 'assets/content/defi/amm-mechanics.json',
-              duration: '18 min',
-              isPremium: false
-            },
-            {
-              id: 'lending-protocols',
-              title: 'Lending Protocols',
-              contentPath: 'assets/content/defi/lending-protocols.json',
-              duration: '15 min',
-              isPremium: false
-            },
-            {
-              id: 'building-defi-app',
-              title: 'Building a DeFi App',
-              contentPath: 'assets/content/defi/building-defi-app.json',
-              duration: '30 min',
-              isPremium: true
-            }
-          ]
-        }
-      ];
+      // Show loading indicator
+      this._showLoadingIndicator('Loading educational content...');
       
+      // Try to fetch from API first
+      if (navigator.onLine) {
+        try {
+          const response = await fetch(`${this.apiEndpoint}/topics`);
+          if (response.ok) {
+            this.topics = await response.json();
+            // Cache the topics in localStorage
+            localStorage.setItem('web3EduTopics', JSON.stringify(this.topics));
+          } else {
+            throw new Error('Failed to fetch topics from API');
+          }
+        } catch (error) {
+          console.warn('Failed to fetch topics from API, falling back to local data:', error);
+          this._loadFallbackTopics();
+        }
+      } else {
+        console.info('Device is offline, loading cached topics');
+        this._loadFallbackTopics();
+      }
+      
+      // Hide loading indicator
+      this._hideLoadingIndicator();
+      
+      // Render the topics
       this.renderTopicGrid();
+      
+      // Pre-fetch commonly accessed content
+      this._preFetchPopularContent();
+      
     } catch (error) {
       console.error('Error loading topics:', error);
+      this._showNotification('Error loading content. Please try again later.', 'error');
+      this._hideLoadingIndicator();
     }
   }
   
   /**
-   * Render the topic grid with topic cards
+   * Load fallback topics from localStorage or hardcoded data
    */
-  renderTopicGrid() {
-    if (!this.topicGridElement) return;
+  _loadFallbackTopics() {
+    // Try to load from localStorage first
+    const cachedTopics = localStorage.getItem('web3EduTopics');
+    if (cachedTopics) {
+      try {
+        this.topics = JSON.parse(cachedTopics);
+        return;
+      } catch (e) {
+        console.error('Failed to parse cached topics', e);
+      }
+    }
     
-    // Clear the topic grid
-    this.topicGridElement.innerHTML = '';
+    // Fallback to hardcoded topics
+    this.topics = [
+      {
+        id: 'web3-basics',
+        title: 'Web3 Basics',
+        description: 'Learn the fundamentals of Web3 and blockchain technology',
+        image: 'assets/images/web3-basics-thumbnail.jpg',
+        lessons: [
+          {
+            id: 'what-is-web3',
+            title: 'What is Web3?',
+            contentPath: 'assets/content/web3-basics/what-is-web3.json',
+            duration: '10 min',
+            isPremium: false
+          },
+          {
+            id: 'blockchain-fundamentals',
+            title: 'Blockchain Fundamentals',
+            contentPath: 'assets/content/web3-basics/blockchain-fundamentals.json',
+            duration: '15 min',
+            isPremium: false
+          },
+          {
+            id: 'wallets-and-keys',
+            title: 'Wallets and Keys',
+            contentPath: 'assets/content/web3-basics/wallets-and-keys.json',
+            duration: '12 min',
+            isPremium: false
+          },
+          {
+            id: 'web3-architecture',
+            title: 'Web3 Architecture Deep Dive',
+            contentPath: 'assets/content/web3-basics/web3-architecture.json',
+            duration: '20 min',
+            isPremium: true
+          }
+        ]
+      },
+      {
+        id: 'smart-contracts',
+        title: 'Smart Contract Development',
+        description: 'Build and deploy smart contracts on blockchain networks',
+        image: 'assets/images/smart-contract-dev-thumbnail.jpg',
+        lessons: [
+          {
+            id: 'solidity-intro',
+            title: 'Introduction to Solidity',
+            contentPath: 'assets/content/smart-contracts/solidity-intro.json',
+            duration: '15 min',
+            isPremium: false
+          },
+          {
+            id: 'first-contract',
+            title: 'Your First Smart Contract',
+            contentPath: 'assets/content/smart-contracts/first-contract.json',
+            duration: '20 min',
+            isPremium: false
+          },
+          {
+            id: 'testing-contracts',
+            title: 'Testing Smart Contracts',
+            contentPath: 'assets/content/smart-contracts/testing-contracts.json',
+            duration: '18 min',
+            isPremium: false
+          },
+          {
+            id: 'security-best-practices',
+            title: 'Security Best Practices',
+            contentPath: 'assets/content/smart-contracts/security-best-practices.json',
+            duration: '25 min',
+            isPremium: true
+          }
+        ]
+      },
+      {
+        id: 'defi',
+        title: 'DeFi Applications',
+        description: 'Learn about decentralized finance applications and protocols',
+        image: 'assets/images/defi-thumbnail.jpg',
+        lessons: [
+          {
+            id: 'defi-overview',
+            title: 'DeFi Overview',
+            contentPath: 'assets/content/defi/defi-overview.json',
+            duration: '12 min',
+            isPremium: false
+          },
+          {
+            id: 'amm-mechanics',
+            title: 'AMM Mechanics',
+            contentPath: 'assets/content/defi/amm-mechanics.json',
+            duration: '18 min',
+            isPremium: false
+          },
+          {
+            id: 'lending-protocols',
+            title: 'Lending Protocols',
+            contentPath: 'assets/content/defi/lending-protocols.json',
+            duration: '15 min',
+            isPremium: false
+          },
+          {
+            id: 'building-defi-app',
+            title: 'Building a DeFi App',
+            contentPath: 'assets/content/defi/building-defi-app.json',
+            duration: '30 min',
+            isPremium: true
+          }
+        ]
+      }
+    ];
+  }
+  
+  /**
+   * Pre-fetch popular content for better user experience
+   */
+  async _preFetchPopularContent() {
+    if (!navigator.onLine) return;
     
-    // Create a card for each topic
-    this.topics.forEach(topic => {
-      const topicCard = document.createElement('div');
-      topicCard.className = 'topic-card';
+    try {
+      // Find most popular lessons based on user progress
+      const popularLessons = this._getPopularLessons(3); // Top 3 most accessed
       
-      // Calculate progress for this topic
-      const completedLessons = topic.lessons.filter(lesson => 
-        this.userProgress.completedLessons.includes(lesson.id)
-      ).length;
-      
-      const progressPercentage = topic.lessons.length > 0 
-        ? Math.round((completedLessons / topic.lessons.length) * 100)
-        : 0;
-      
-      topicCard.innerHTML = `
-        <h3>${topic.title}</h3>
-        <div class="description">${topic.description}</div>
-        <ul class="lessons">
-          ${topic.lessons.map(lesson => `
-            <li>
-              <a href="#" data-topic-id="${topic.id}" data-lesson-id="${lesson.id}" class="lesson-link ${lesson.isPremium ? 'premium-lesson' : ''}">
-                ${lesson.title}
-                ${lesson.isPremium ? '<span class="token-required">🔒 Token Required</span>' : ''}
-                <span class="duration">(${lesson.duration})</span>
-                ${this.userProgress.completedLessons.includes(lesson.id) ? '<span class="completed">✓</span>' : ''}
-              </a>
-            </li>
-          `).join('')}
-        </ul>
-        <div class="progress-bar">
-          <div class="progress" style="width: ${progressPercentage}%"></div>
-        </div>
-        <div class="progress-text">${progressPercentage}% complete</div>
-      `;
-      
-      // Add event listeners for lesson links
-      topicCard.querySelectorAll('.lesson-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const topicId = link.getAttribute('data-topic-id');
-          const lessonId = link.getAttribute('data-lesson-id');
-          this.loadLesson(topicId, lessonId);
-        });
-      });
-      
-      // Add the card to the grid
-      this.topicGridElement.appendChild(topicCard);
-    });
+      // Pre-fetch these lessons in the background
+      for (const lesson of popularLessons) {
+        this._fetchLessonContent(lesson.contentPath)
+          .then(content => {
+            this.contentCache.set(lesson.contentPath, content);
+            console.debug(`Pre-fetched content: ${lesson.title}`);
+          })
+          .catch(error => {
+            console.debug(`Failed to pre-fetch ${lesson.title}:`, error);
+          });
+      }
+    } catch (error) {
+      console.debug('Error pre-fetching content:', error);
+    }
+  }
+  
+  /**
+   * Get most popular lessons based on access patterns
+   */
+  _getPopularLessons(count = 3) {
+    // Look at last accessed lessons from user progress
+    if (!this.userProgress.lessonAccess) {
+      return [];
+    }
+    
+    const lessonData = Object.entries(this.userProgress.lessonAccess)
+      .map(([id, data]) => ({ id, ...data }))
+      .sort((a, b) => b.accessCount - a.accessCount)
+      .slice(0, count);
+    
+    // Find the lesson objects for these IDs
+    return lessonData.map(data => {
+      // Find the lesson with this ID across all topics
+      for (const topic of this.topics) {
+        const lesson = topic.lessons.find(l => l.id === data.id);
+        if (lesson) return lesson;
+      }
+      return null;
+    }).filter(lesson => lesson !== null);
   }
   
   /**
@@ -218,6 +264,9 @@ class ContentLibrary {
    */
   async loadLesson(topicId, lessonId) {
     try {
+      // Show loading indicator
+      this._showLoadingIndicator('Loading lesson...');
+      
       // Find the topic and lesson
       const topic = this.topics.find(t => t.id === topicId);
       if (!topic) throw new Error(`Topic ${topicId} not found`);
@@ -225,35 +274,77 @@ class ContentLibrary {
       const lesson = topic.lessons.find(l => l.id === lessonId);
       if (!lesson) throw new Error(`Lesson ${lessonId} not found in topic ${topicId}`);
       
+      // Track lesson access
+      this._trackLessonAccess(lessonId);
+      
       // Check if the user has access to premium content
       if (lesson.isPremium) {
         const hasAccess = await this._checkPremiumAccess();
         if (!hasAccess) {
+          this._hideLoadingIndicator();
           this._showPremiumContentMessage(lesson);
           return;
         }
       }
       
-      // In a real app, you would fetch the lesson content using the contentPath
-      // For now, let's use a hardcoded example
-      const lessonContent = await this._fetchLessonContent(lesson.contentPath);
+      // Fetch the lesson content - first check cache
+      let lessonContent;
+      if (this.contentCache.has(lesson.contentPath)) {
+        lessonContent = this.contentCache.get(lesson.contentPath);
+        console.debug('Loaded lesson from cache:', lesson.title);
+      } else {
+        lessonContent = await this._fetchLessonContent(lesson.contentPath);
+        // Cache the content for future use
+        this.contentCache.set(lesson.contentPath, lessonContent);
+      }
+      
+      // Hide loading indicator
+      this._hideLoadingIndicator();
       
       // Display the lesson content
       this.showContent(lessonContent, lesson, topic);
       
-      // Mark the lesson as viewed if not already
+      // Track the lesson view if not already completed
       if (!this.userProgress.completedLessons.includes(lessonId)) {
-        this.userProgress.completedLessons.push(lessonId);
-        this._saveUserProgress();
+        // Mark as viewed (not completed)
+        if (!this.userProgress.viewedLessons) {
+          this.userProgress.viewedLessons = [];
+        }
+        
+        if (!this.userProgress.viewedLessons.includes(lessonId)) {
+          this.userProgress.viewedLessons.push(lessonId);
+          this._saveUserProgress();
+        }
       }
     } catch (error) {
       console.error('Error loading lesson:', error);
-      alert('Failed to load lesson content. Please try again later.');
+      this._hideLoadingIndicator();
+      this._showNotification('Failed to load lesson content. Please try again later.', 'error');
     }
   }
   
   /**
-   * Show the content in the content viewer
+   * Track lesson access for analytics and optimization
+   */
+  _trackLessonAccess(lessonId) {
+    if (!this.userProgress.lessonAccess) {
+      this.userProgress.lessonAccess = {};
+    }
+    
+    if (!this.userProgress.lessonAccess[lessonId]) {
+      this.userProgress.lessonAccess[lessonId] = {
+        firstAccess: Date.now(),
+        accessCount: 0,
+      };
+    }
+    
+    this.userProgress.lessonAccess[lessonId].lastAccess = Date.now();
+    this.userProgress.lessonAccess[lessonId].accessCount += 1;
+    this._saveUserProgress();
+  }
+  
+  /**
+   * Show the content in the content viewer with enhanced accessibility
    */
   showContent(content, lesson, topic) {
     if (!this.contentViewerElement) return;
@@ -264,30 +355,33 @@ class ContentLibrary {
     // Show the back button
     if (this.backButtonElement) {
       this.backButtonElement.style.display = 'block';
+      this.backButtonElement.setAttribute('aria-hidden', 'false');
     }
     
     // Hide the topic grid and show the content viewer
     if (this.topicGridElement) {
       this.topicGridElement.style.display = 'none';
+      this.topicGridElement.setAttribute('aria-hidden', 'true');
     }
     this.contentViewerElement.style.display = 'block';
+    this.contentViewerElement.setAttribute('aria-hidden', 'false');
     
-    // Set the content HTML
+    // Set the content HTML with enhanced accessibility
     this.contentViewerElement.innerHTML = `
-      <h2>${content.title}</h2>
-      <div class="lesson-meta">
+      <h2 id="lesson-title">${content.title}</h2>
+      <div class="lesson-meta" aria-labelledby="lesson-title">
         <span class="topic">${topic.title}</span> • <span class="duration">${lesson.duration}</span>
       </div>
       
-      <div class="lesson-content">
-        ${content.sections.map(section => `
-          <section class="content-section">
-            <h3>${section.title}</h3>
-            <div class="section-content">${section.html}</div>
+      <div class="lesson-content" role="main">
+        ${content.sections.map((section, index) => `
+          <section class="content-section" id="section-${index}">
+            <h3 id="section-heading-${index}">${section.title}</h3>
+            <div class="section-content" aria-labelledby="section-heading-${index}">${section.html}</div>
             
             ${section.videoUrl ? `
               <div class="video-container">
-                <video controls>
+                <video controls preload="metadata" aria-label="${section.title} video">
                   <source src="${section.videoUrl}" type="video/mp4">
                   Your browser does not support the video tag.
                 </video>
@@ -297,7 +391,7 @@ class ContentLibrary {
             ${section.codeExample ? `
               <div class="code-example">
                 <h4>Code Example</h4>
-                <pre><code>${section.codeExample}</code></pre>
+                <pre><code tabindex="0" class="language-javascript">${section.codeExample}</code></pre>
               </div>
             ` : ''}
           </section>
@@ -306,15 +400,21 @@ class ContentLibrary {
       
       ${content.interactive ? `
         <div class="interactive-demo">
-          <h3>Interactive Demo</h3>
-          <div id="interactive-container" data-demo-id="${content.interactive.id}" data-demo-type="${content.interactive.type}">
-            Loading interactive demo...
+          <h3 id="interactive-heading">Interactive Demo</h3>
+          <div id="interactive-container" 
+               data-demo-id="${content.interactive.id}" 
+               data-demo-type="${content.interactive.type}"
+               aria-labelledby="interactive-heading"
+               role="application">
+            <p class="loading-message">Loading interactive demo...</p>
           </div>
         </div>
       ` : ''}
       
-      <div class="lesson-navigation">
-        <button id="mark-complete-btn" class="mark-complete">Mark as Complete</button>
+      <div class="lesson-navigation" role="navigation">
+        <button id="mark-complete-btn" class="mark-complete" aria-label="Mark lesson as complete">
+          ${this.userProgress.completedLessons.includes(lesson.id) ? 'Completed' : 'Mark as Complete'}
+        </button>
         <button id="next-lesson-btn" class="next-lesson">Next Lesson</button>
       </div>
     `;
@@ -322,10 +422,15 @@ class ContentLibrary {
     // Add event listeners for the lesson navigation
     const markCompleteBtn = document.getElementById('mark-complete-btn');
     if (markCompleteBtn) {
+      if (this.userProgress.completedLessons.includes(lesson.id)) {
+        markCompleteBtn.disabled = true;
+      }
+      
       markCompleteBtn.addEventListener('click', () => {
         if (!this.userProgress.completedLessons.includes(lesson.id)) {
           this.userProgress.completedLessons.push(lesson.id);
           this._saveUserProgress();
+          this._showNotification('Lesson marked as complete!', 'success');
         }
         markCompleteBtn.textContent = 'Completed';
         markCompleteBtn.disabled = true;
@@ -357,448 +462,305 @@ class ContentLibrary {
       this._initializeInteractiveDemo(content.interactive);
     }
     
-    // Scroll to the top
-    window.scrollTo(0, 0);
-  }
-  
-  /**
-   * Show the topic grid and hide the content viewer
-   */
-  showTopics() {
-    // Update the topic grid with any progress changes
-    this.renderTopicGrid();
-    
-    // Show the topic grid and hide the content viewer
-    if (this.topicGridElement) {
-      this.topicGridElement.style.display = 'grid';
-    }
-    if (this.contentViewerElement) {
-      this.contentViewerElement.style.display = 'none';
-    }
-    if (this.backButtonElement) {
-      this.backButtonElement.style.display = 'none';
-    }
-    
-    // Reset the current content
-    this.currentContent = null;
-  }
-  
-  /**
-   * Check if the user has access to premium content
-   */
-  async _checkPremiumAccess() {
-    // Check if the user is connected to a wallet
-    if (!this.walletConnector || !this.contractManager) {
-      return false;
-    }
-    
-    const connectionState = this.walletConnector.getConnectionState();
-    if (!connectionState.isConnected) {
-      return false;
-    }
-    
-    try {
-      // Check if the user has any streaming tokens
-      const balance = await this.contractManager.getBalance();
-      return balance > 0;
-    } catch (error) {
-      console.error('Error checking premium access:', error);
-      return false;
-    }
-  }
-  
-  /**
-   * Show a message about premium content access
-   */
-  _showPremiumContentMessage(lesson) {
-    if (!this.contentViewerElement) return;
-    
-    // Hide the topic grid and show the content viewer
-    if (this.topicGridElement) {
-      this.topicGridElement.style.display = 'none';
-    }
-    this.contentViewerElement.style.display = 'block';
-    
-    // Show the back button
-    if (this.backButtonElement) {
-      this.backButtonElement.style.display = 'block';
-    }
-    
-    // Set the content HTML
-    this.contentViewerElement.innerHTML = `
-      <h2>${lesson.title}</h2>
-      <div class="premium-content-message">
-        <h3>🔒 Premium Content</h3>
-        <p>This lesson requires streaming tokens to access.</p>
-        
-        <div class="connect-wallet-section">
-          ${!this.walletConnector || !this.walletConnector.getConnectionState().isConnected ? `
-            <p>Please connect your wallet to access premium content.</p>
-            <button id="connect-wallet-btn" class="primary-btn">Connect Wallet</button>
-          ` : `
-            <p>You need streaming tokens to access this content.</p>
-            <button id="purchase-tokens-btn" class="primary-btn">Purchase Tokens</button>
-          `}
-        </div>
-      </div>
-    `;
-    
-    // Add event listeners
-    const connectWalletBtn = document.getElementById('connect-wallet-btn');
-    if (connectWalletBtn) {
-      connectWalletBtn.addEventListener('click', () => {
-        this.walletConnector.connectWallet();
-      });
-    }
-    
-    const purchaseTokensBtn = document.getElementById('purchase-tokens-btn');
-    if (purchaseTokensBtn) {
-      purchaseTokensBtn.addEventListener('click', () => {
-        // Redirect to the token purchase page
-        window.location.href = 'streaming.html?action=purchase';
-      });
-    }
+    // Initialize syntax highlighting if available
+    this._initializeSyntaxHighlighting();
     
     // Scroll to the top
     window.scrollTo(0, 0);
+    
+    // Announce to screen readers
+    this._announceToScreenReader(`Loaded lesson: ${content.title}`);
   }
   
   /**
-   * Initialize an interactive demo using the InteractiveDemos component
+   * Initialize syntax highlighting for code examples
    */
-  _initializeInteractiveDemo(interactive) {
-    if (!this.interactiveDemos) {
-      console.warn('InteractiveDemos component is not available');
-      return;
+  _initializeSyntaxHighlighting() {
+    // Check if Prism or Highlight.js is available
+    if (typeof Prism !== 'undefined') {
+      Prism.highlightAll();
+    } else if (typeof hljs !== 'undefined') {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
     }
+  }
+  
+  /**
+   * Announce message to screen readers
+   */
+  _announceToScreenReader(message) {
+    const announcer = document.getElementById('sr-announcer');
     
-    const container = document.getElementById('interactive-container');
-    if (!container) return;
+    if (!announcer) {
+      // Create an announcer if it doesn't exist
+      const newAnnouncer = document.createElement('div');
+      newAnnouncer.id = 'sr-announcer';
+      newAnnouncer.className = 'sr-only';
+      newAnnouncer.setAttribute('aria-live', 'polite');
+      document.body.appendChild(newAnnouncer);
+      
+      setTimeout(() => {
+        newAnnouncer.textContent = message;
+      }, 100);
+    } else {
+      announcer.textContent = '';
+      setTimeout(() => {
+        announcer.textContent = message;
+      }, 100);
+    }
+  }
+  
+  /**
+   * Show loading indicator
+   */
+  _showLoadingIndicator(message = 'Loading...') {
+    // Create loading indicator if it doesn't exist
+    let loadingEl = document.getElementById('content-loader');
     
-    try {
-      // Initialize the demo using the InteractiveDemos helper
-      this.currentDemo = this.interactiveDemos.initializeDemo(
-        interactive.type, 
-        'interactive-container', 
-        interactive.id,
-        interactive.config || {},
-        this._handleDemoInteraction.bind(this)
-      );
-      
-      // Add controls for the interactive demo if specified
-      if (interactive.controls) {
-        this._addDemoControls(container, interactive.controls);
-      }
-      
-      // Set up event listeners for demo interaction
-      container.addEventListener('demo-completed', (e) => {
-        this._handleDemoCompletion(e.detail);
-      });
-      
-      container.addEventListener('demo-error', (e) => {
-        this._handleDemoError(e.detail);
-      });
-      
-      // Track demo usage in user progress
-      if (!this.userProgress.interactiveUsage) {
-        this.userProgress.interactiveUsage = {};
-      }
-      
-      if (!this.userProgress.interactiveUsage[interactive.id]) {
-        this.userProgress.interactiveUsage[interactive.id] = {
-          startedAt: Date.now(),
-          completions: 0,
-          lastUsed: Date.now()
-        };
-      } else {
-        this.userProgress.interactiveUsage[interactive.id].lastUsed = Date.now();
-      }
-      
-      this._saveUserProgress();
-    } catch (error) {
-      console.error('Failed to initialize interactive demo:', error);
-      container.innerHTML = `
-        <div class="demo-error">
-          <p>Failed to load interactive demo. Please try refreshing the page.</p>
-          <p>Error: ${error.message}</p>
-        </div>
+    if (!loadingEl) {
+      loadingEl = document.createElement('div');
+      loadingEl.id = 'content-loader';
+      loadingEl.className = 'content-loader';
+      loadingEl.setAttribute('aria-live', 'polite');
+      loadingEl.innerHTML = `
+        <div class="loader-spinner"></div>
+        <div class="loader-message">${message}</div>
       `;
+      document.body.appendChild(loadingEl);
+    } else {
+      loadingEl.querySelector('.loader-message').textContent = message;
+      loadingEl.style.display = 'flex';
     }
   }
   
   /**
-   * Add interactive controls to a demo container
+   * Hide loading indicator
    */
-  _addDemoControls(container, controls) {
-    const controlsDiv = document.createElement('div');
-    controlsDiv.className = 'demo-controls';
-    
-    if (controls.reset) {
-      const resetBtn = document.createElement('button');
-      resetBtn.className = 'demo-control-btn reset';
-      resetBtn.textContent = 'Reset Demo';
-      resetBtn.addEventListener('click', () => this._resetDemo());
-      controlsDiv.appendChild(resetBtn);
+  _hideLoadingIndicator() {
+    const loadingEl = document.getElementById('content-loader');
+    if (loadingEl) {
+      loadingEl.style.display = 'none';
     }
-    
-    if (controls.fullscreen) {
-      const fullscreenBtn = document.createElement('button');
-      fullscreenBtn.className = 'demo-control-btn fullscreen';
-      fullscreenBtn.textContent = 'Fullscreen';
-      fullscreenBtn.addEventListener('click', () => this._toggleFullscreen(container));
-      controlsDiv.appendChild(fullscreenBtn);
+  }
+  
+  /**
+   * Show notification to the user
+   */
+  _showNotification(message, type = 'info') {
+    if (this.notificationElement) {
+      this.notificationElement.textContent = message;
+      this.notificationElement.className = `notification ${type}`;
+      this.notificationElement.style.display = 'block';
+      
+      setTimeout(() => {
+        this.notificationElement.style.display = 'none';
+      }, 5000);
+    } else {
+      // Create a temporary notification element
+      const notification = document.createElement('div');
+      notification.className = `floating-notification ${type}`;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => {
+        notification.style.transform = 'translateY(0)';
+        notification.style.opacity = '1';
+      }, 10);
+      
+      // Remove after timeout
+      setTimeout(() => {
+        notification.style.transform = 'translateY(-20px)';
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          notification.remove();
+        }, 300);
+      }, 5000);
     }
+  }
+  
+  /**
+   * Set up offline support
+   */
+  _setupOfflineSupport() {
+    // Listen for online/offline events
+    window.addEventListener('online', () => {
+      this._showNotification('You are back online. Full functionality restored.', 'success');
+      // Refresh data if needed
+      if (this.topics.length === 0) {
+        this.loadTopics();
+      }
+    });
     
-    if (controls.custom && Array.isArray(controls.custom)) {
-      controls.custom.forEach(customControl => {
-        const customBtn = document.createElement('button');
-        customBtn.className = `demo-control-btn ${customControl.className || ''}`;
-        customBtn.textContent = customControl.label;
-        customBtn.addEventListener('click', () => {
-          if (this.currentDemo && typeof this.currentDemo[customControl.action] === 'function') {
-            this.currentDemo[customControl.action](customControl.params);
-          }
+    window.addEventListener('offline', () => {
+      this._showNotification('You are offline. Limited functionality available.', 'warning');
+    });
+    
+    // If using service workers, register here
+    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
         });
-        controlsDiv.appendChild(customBtn);
-      });
-    }
-    
-    if (controlsDiv.children.length > 0) {
-      container.parentNode.insertBefore(controlsDiv, container.nextSibling);
     }
   }
   
   /**
-   * Handle interactions from the demo
+   * Fetch lesson content with better error handling and offline support
    */
-  _handleDemoInteraction(type, data) {
-    if (!this.currentDemo || !this.currentContent) return;
-    
-    console.log(`Demo interaction: ${type}`, data);
-    
-    // Handle different interaction types
-    switch (type) {
-      case 'state-change':
-        // Update user progress based on demo state changes
-        if (this.userProgress.interactiveUsage && 
-            this.userProgress.interactiveUsage[this.currentContent.interactive.id]) {
-          this.userProgress.interactiveUsage[this.currentContent.interactive.id].state = data;
-          this._saveUserProgress();
-        }
-        break;
-        
-      case 'checkpoint':
-        // User reached a checkpoint in the demo
-        if (this.userProgress.interactiveUsage && 
-            this.userProgress.interactiveUsage[this.currentContent.interactive.id]) {
-          if (!this.userProgress.interactiveUsage[this.currentContent.interactive.id].checkpoints) {
-            this.userProgress.interactiveUsage[this.currentContent.interactive.id].checkpoints = [];
-          }
-          this.userProgress.interactiveUsage[this.currentContent.interactive.id].checkpoints.push({
-            id: data.checkpointId,
-            timestamp: Date.now()
-          });
-          this._saveUserProgress();
-        }
-        break;
-        
-      case 'wallet-request':
-        // Demo is requesting wallet connectivity
-        if (this.walletConnector && !this.walletConnector.getConnectionState().isConnected) {
-          this.walletConnector.connectWallet()
-            .then(() => {
-              if (this.currentDemo && typeof this.currentDemo.onWalletConnected === 'function') {
-                this.currentDemo.onWalletConnected(this.walletConnector.getConnectionState());
-              }
-            })
-            .catch(error => {
-              console.error('Failed to connect wallet for demo:', error);
-              if (this.currentDemo && typeof this.currentDemo.onWalletError === 'function') {
-                this.currentDemo.onWalletError(error);
-              }
-            });
-        } else if (this.walletConnector && this.walletConnector.getConnectionState().isConnected) {
-          if (this.currentDemo && typeof this.currentDemo.onWalletConnected === 'function') {
-            this.currentDemo.onWalletConnected(this.walletConnector.getConnectionState());
-          }
-        }
-        break;
-    }
-  }
-  
-  /**
-   * Handle demo completion
-   */
-  _handleDemoCompletion(detail) {
-    if (!this.currentDemo || !this.currentContent) return;
-    
-    // Update user progress
-    if (this.userProgress.interactiveUsage && 
-        this.userProgress.interactiveUsage[this.currentContent.interactive.id]) {
-      this.userProgress.interactiveUsage[this.currentContent.interactive.id].completions += 1;
-      this.userProgress.interactiveUsage[this.currentContent.interactive.id].lastCompleted = Date.now();
-      this.userProgress.interactiveUsage[this.currentContent.interactive.id].lastResult = detail;
-      this._saveUserProgress();
-    }
-    
-    // Display completion message or reward
-    const container = document.getElementById('interactive-container');
-    if (container) {
-      const completionDiv = document.createElement('div');
-      completionDiv.className = 'demo-completion';
-      completionDiv.innerHTML = `
-        <h4>🎉 Demo Completed!</h4>
-        <p>${detail.message || 'You have successfully completed this interactive demo.'}</p>
-        ${detail.score ? `<p>Score: ${detail.score} points</p>` : ''}
-      `;
-      
-      container.appendChild(completionDiv);
-      
-      // Auto-mark the lesson as complete if it's not already
-      if (!this.userProgress.completedLessons.includes(this.currentContent.lesson.id)) {
-        this.userProgress.completedLessons.push(this.currentContent.lesson.id);
-        this._saveUserProgress();
-        
-        const markCompleteBtn = document.getElementById('mark-complete-btn');
-        if (markCompleteBtn) {
-          markCompleteBtn.textContent = 'Completed';
-          markCompleteBtn.disabled = true;
-        }
-      }
-    }
-  }
-  
-  /**
-   * Handle demo errors
-   */
-  _handleDemoError(detail) {
-    console.error('Demo error:', detail);
-    
-    const container = document.getElementById('interactive-container');
-    if (container) {
-      const errorDiv = document.createElement('div');
-      errorDiv.className = 'demo-error-message';
-      errorDiv.innerHTML = `
-        <h4>⚠️ Demo Error</h4>
-        <p>${detail.message || 'An error occurred in the interactive demo.'}</p>
-        <button class="retry-demo-btn">Retry</button>
-      `;
-      
-      container.appendChild(errorDiv);
-      
-      // Add retry button functionality
-      const retryBtn = errorDiv.querySelector('.retry-demo-btn');
-      if (retryBtn) {
-        retryBtn.addEventListener('click', () => {
-          errorDiv.remove();
-          this._resetDemo();
-        });
-      }
-    }
-  }
-  
-  /**
-   * Reset the current demo
-   */
-  _resetDemo() {
-    if (!this.currentDemo || !this.currentContent) return;
-    
+  async _fetchLessonContent(contentPath) {
     try {
-      if (typeof this.currentDemo.reset === 'function') {
-        this.currentDemo.reset();
-      } else {
-        // Fallback: re-initialize the demo
-        const container = document.getElementById('interactive-container');
-        if (container) {
-          container.innerHTML = 'Reloading interactive demo...';
-          setTimeout(() => {
-            this._initializeInteractiveDemo(this.currentContent.interactive);
-          }, 500);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to reset demo:', error);
-    }
-  }
-  
-  /**
-   * Toggle fullscreen mode for the demo
-   */
-  _toggleFullscreen(element) {
-    if (!element) return;
-    
-    try {
-      if (!document.fullscreenElement) {
-        // Enter fullscreen
-        if (element.requestFullscreen) {
-          element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) {
-          element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) {
-          element.msRequestFullscreen();
+      if (navigator.onLine) {
+        try {
+          // Try to fetch from API first
+          const response = await fetch(contentPath);
+          if (response.ok) {
+            const content = await response.json();
+            // Cache the content
+            localStorage.setItem(`web3Edu_content_${contentPath}`, JSON.stringify(content));
+            return content;
+          } else {
+            throw new Error(`Failed to fetch content: ${response.status}`);
+          }
+        } catch (error) {
+          console.warn(`API fetch failed for ${contentPath}, trying localStorage`);
+          // Try to get from localStorage
+          const cachedContent = localStorage.getItem(`web3Edu_content_${contentPath}`);
+          if (cachedContent) {
+            return JSON.parse(cachedContent);
+          }
+          // If not in localStorage, throw to try fallback
+          throw error;
         }
       } else {
-        // Exit fullscreen
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-          document.msExitFullscreen();
+        // Offline - try to get from localStorage
+        const cachedContent = localStorage.getItem(`web3Edu_content_${contentPath}`);
+        if (cachedContent) {
+          return JSON.parse(cachedContent);
         }
       }
+      
+      // If we get here, we need to use hardcoded fallbacks
+      throw new Error('Content not available offline');
     } catch (error) {
-      console.error('Fullscreen error:', error);
+      console.error(`Error fetching content: ${error.message}`);
+      throw error;
     }
   }
   
   /**
-   * Update content access based on wallet connection state
-   */
-  _updateContentAccess() {
-    // Re-render the topic grid to reflect current access state
-    this.renderTopicGrid();
-    
-    // If viewing premium content, check access again
-    if (this.currentContent && this.currentContent.lesson.isPremium) {
-      this._checkPremiumAccess().then(hasAccess => {
-        if (!hasAccess) {
-          this._showPremiumContentMessage(this.currentContent.lesson);
-        }
-      });
-    }
-  }
-  
-  /**
-   * Load user progress from localStorage
+   * Load user progress from localStorage with improved error handling
    */
   _loadUserProgress() {
     const storedProgress = localStorage.getItem('web3EduProgress');
     if (storedProgress) {
       try {
-        return JSON.parse(storedProgress);
+        const parsedProgress = JSON.parse(storedProgress);
+        
+        // Validate structure and provide defaults for missing properties
+        if (!parsedProgress.completedLessons) parsedProgress.completedLessons = [];
+        if (!parsedProgress.viewedLessons) parsedProgress.viewedLessons = [];
+        if (!parsedProgress.interactiveUsage) parsedProgress.interactiveUsage = {};
+        if (!parsedProgress.lastAccessed) parsedProgress.lastAccessed = Date.now();
+        
+        return parsedProgress;
       } catch (e) {
         console.error('Failed to parse stored progress', e);
+        this._showNotification('There was a problem loading your progress data.', 'error');
       }
     }
     
     // Default progress object
     return {
       completedLessons: [],
+      viewedLessons: [],
       interactiveUsage: {},
+      lessonAccess: {},
       lastAccessed: Date.now()
     };
   }
   
   /**
-   * Save user progress to localStorage
+   * Save user progress to localStorage with error handling and data cleanup
    */
   _saveUserProgress() {
     try {
       this.userProgress.lastAccessed = Date.now();
+      
+      // Clean up progress data to avoid localStorage bloat
+      this._cleanupProgressData();
+      
       localStorage.setItem('web3EduProgress', JSON.stringify(this.userProgress));
     } catch (e) {
       console.error('Failed to save progress', e);
+      // If localStorage is full, try to clear some space
+      if (e.code === 22 || e.name === 'QuotaExceededError') {
+        this._handleStorageQuotaExceeded();
+      }
+    }
+  }
+  
+  /**
+   * Clean up progress data to prevent localStorage bloat
+   */
+  _cleanupProgressData() {
+    // Limit the size of interactive usage history
+    if (this.userProgress.interactiveUsage) {
+      // Only keep the last 20 demo interactions
+      const demos = Object.keys(this.userProgress.interactiveUsage);
+      if (demos.length > 20) {
+        const sortedDemos = demos
+          .map(key => ({ 
+            key, 
+            lastUsed: this.userProgress.interactiveUsage[key].lastUsed || 0 
+          }))
+          .sort((a, b) => b.lastUsed - a.lastUsed);
+        
+        // Keep only the 20 most recent
+        const demosToKeep = sortedDemos.slice(0, 20).map(item => item.key);
+        
+        // Create a new object with just the demos to keep
+        const cleanedDemos = {};
+        demosToKeep.forEach(key => {
+          cleanedDemos[key] = this.userProgress.interactiveUsage[key];
+        });
+        
+        this.userProgress.interactiveUsage = cleanedDemos;
+      }
+    }
+  }
+  
+  /**
+   * Handle localStorage quota exceeded error
+   */
+  _handleStorageQuotaExceeded() {
+    console.warn('localStorage quota exceeded, clearing some space');
+    
+    try {
+      // Clear old content caches
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('web3Edu_content_')) {
+          localStorage.removeItem(key);
+        }
+      }
+      
+      // Try saving again with minimal data
+      const minimalProgress = {
+        completedLessons: this.userProgress.completedLessons,
+        viewedLessons: this.userProgress.viewedLessons,
+        lastAccessed: Date.now()
+      };
+      
+      localStorage.setItem('web3EduProgress', JSON.stringify(minimalProgress));
+    } catch (e) {
+      console.error('Failed to recover from storage quota exceeded', e);
+      this._showNotification('Unable to save your progress. Please clear your browser cache.', 'error');
     }
   }
 }
