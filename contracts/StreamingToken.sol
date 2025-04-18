@@ -141,4 +141,70 @@ contract StreamingToken is ERC20, Ownable, ReentrancyGuard {
         require(_newTreasuryAddress != address(0), "Treasury address cannot be zero address");
         treasuryAddress = _newTreasuryAddress;
     }
+
+    /**
+     * @dev Update content creator address (only owner or original creator)
+     * @param contentId Unique identifier for the content
+     * @param newCreator New creator address
+     */
+    function updateContentCreator(string memory contentId, address newCreator) public {
+        require(
+            msg.sender == owner() || msg.sender == contentCreators[contentId],
+            "Only owner or original creator can update"
+        );
+        require(newCreator != address(0), "Creator address cannot be zero address");
+        contentCreators[contentId] = newCreator;
+        emit ContentRegistered(contentId, newCreator);
+    }
+    
+    /**
+     * @dev Grant streaming access to a user (only owner)
+     * @param user Address of the user
+     * @param contentId Unique identifier for the content
+     * @param duration Access duration in seconds
+     */
+    function grantAccess(address user, string memory contentId, uint256 duration) public onlyOwner {
+        require(user != address(0), "User address cannot be zero address");
+        require(duration > 0, "Duration must be greater than zero");
+        
+        uint256 expiryTime = block.timestamp + duration;
+        streamExpiry[user][contentId] = expiryTime;
+        
+        emit StreamStarted(user, contentId, expiryTime);
+    }
+    
+    /**
+     * @dev Revoke streaming access from a user (only owner)
+     * @param user Address of the user
+     * @param contentId Unique identifier for the content
+     */
+    function revokeAccess(address user, string memory contentId) public onlyOwner {
+        streamExpiry[user][contentId] = 0;
+    }
+    
+    /**
+     * @dev Mint additional tokens (only owner)
+     * @param to Address to receive the tokens
+     * @param amount Amount of tokens to mint
+     */
+    function ownerMint(address to, uint256 amount) public onlyOwner {
+        require(to != address(0), "Cannot mint to the zero address");
+        _mint(to, amount);
+    }
+    
+    /**
+     * @dev Pause all token transfers (only owner)
+     * Requires adding the Pausable contract from OpenZeppelin
+     */
+    // function pause() public onlyOwner {
+    //    _pause();
+    // }
+    
+    /**
+     * @dev Unpause all token transfers (only owner)
+     * Requires adding the Pausable contract from OpenZeppelin
+     */
+    // function unpause() public onlyOwner {
+    //    _unpause();
+    // }
 }

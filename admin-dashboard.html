@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Web3 Crypto Streaming Service</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="shortcut icon" href="assets/images/favicon.ico" type="image/x-icon" />
+  <style>
+    /* Admin Dashboard Specific Styles */
+    .admin-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e1e4e8;
+    }
+    
+    .admin-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .admin-title h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    
+    .owner-badge {
+      background-color: #0066cc;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    
+    .admin-nav {
+      margin-bottom: 2rem;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      padding: 0.5rem;
+    }
+    
+    .admin-nav ul {
+      display: flex;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      gap: 0.5rem;
+    }
+    
+    .admin-nav li a {
+      display: block;
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      color: #333;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .admin-nav li a:hover,
+    .admin-nav li a.active {
+      background-color: #0066cc;
+      color: white;
+    }
+    
+    .admin-tab {
+      display: none;
+      background-color: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .admin-tab.active {
+      display: block;
+    }
+    
+    .admin-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .stat-card h3 {
+      margin-top: 0;
+      font-size: 0.9rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #0066cc;
+      margin: 0.5rem 0;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    
+    .form-control:focus {
+      border-color: #0066cc;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+    }
+    
+    .btn-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .admin-btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .btn-primary {
+      background-color: #0066cc;
+      color: white;
+    }
+    
+    .btn-secondary {
+      background-color: #e9ecef;
+      color: #333;
+    }
+    
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #dde2e6;
+    }
+    
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .admin-table th,
+    .admin-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .admin-table th {
+      background-color: #f8f9fa;
+      font-weight: bold;
+    }
+    
+    .admin-table tbody tr:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    
+    .badge-success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .badge-warning {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .badge-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0066cc;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 2rem auto;
+      display: none;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .notification {
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+    
+    .notification.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .notification.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .wallet-section {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    
+    .login-screen {
+      max-width: 500px;
+      margin: 3rem auto;
+      text-align: center;
+    }
+    
+    .actions-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    
+    .search-box {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .search-box input {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 300px;
+    }
+    
+    /* Mobile Responsive */
+    @media screen and (max-width: 768px) {
+      .admin-nav ul {
+        flex-direction: column;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+      
+      .actions-bar {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .search-box {
+        width: 100%;
+      }
+      
+      .search-box input {
+        flex-grow: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <div class="navigation">
+    <div class="container nav-container">
+      <a href="/" class="logo">Web3 Crypto Streaming</a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="streaming.html">Streaming</a></li>
+          <li><a href="library.html">Education</a></li>
+          <li><a href="admin-dashboard.html"><strong>Admin</strong></a></li>
+          <li><a href="docs/">Docs</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Admin Content -->
+  <div class="admin-container">
+    <!-- Login Screen (shown initially) -->
+    <div id="login-screen" class="login-screen">
+      <div class="admin-card">
+        <h2>Owner Access Required</h2>
+        <p>Connect with the contract owner wallet to access administrative functions.</p>
+        
+        <div id="login-notification" class="notification"></div>
+        
+        <div class="form-group">
+          <button id="connect-admin-wallet" class="admin-btn btn-primary">Connect Owner Wallet</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Dashboard (hidden initially) -->
+    <div id="admin-dashboard" style="display: none;">
+      <header class="admin-header">
+        <div class="admin-title">
+          <h1>Admin Dashboard</h1>
+          <span class="owner-badge">Owner</span>
+        </div>
+        
+        <div class="wallet-info">
+          <span id="admin-address">0x0000...0000</span>
+          <button id="disconnect-wallet" class="admin-btn btn-secondary">Disconnect</button>
+        </div>
+      </header>
+      
+      <div id="admin-notification" class="notification"></div>
+      
+      <!-- Navigation Tabs -->
+      <nav class="admin-nav">
+        <ul>
+          <li><a href="#dashboard" class="tab-link active" data-tab="dashboard-tab">Dashboard</a></li>
+          <li><a href="#user-management" class="tab-link" data-tab="users-tab">Users</a></li>
+          <li><a href="#content-management" class="tab-link" data-tab="content-tab">Content</a></li>
+          <li><a href="#token-management" class="tab-link" data-tab="tokens-tab">Token Management</a></li>
+          <li><a href="#platform-settings" class="tab-link" data-tab="settings-tab">Platform Settings</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Dashboard Tab -->
+      <div id="dashboard-tab" class="admin-tab active">
+        <h2>Platform Overview</h2>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Total Users</h3>
+            <div class="stat-value" id="stats-users">--</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>Content Items</h3>
+            <div class="stat-value" id="stats-content">--</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>Active Streams</h3>
+            <div class="stat-value" id="stats-streams">--</div>
+          </div>
+          
+          <div class="stat-card">
+            <h3>Token Supply</h3>
+            <div class="stat-value" id="stats-supply">--</div>
+          </div>
+        </div>
+        
+        <div class="admin-card">
+          <h3>Quick Actions</h3>
+          
+          <div class="btn-row">
+            <button class="admin-btn btn-primary" onclick="showTab('users-tab')">Manage Users</button>
+            <button class="admin-btn btn-primary" onclick="showTab('content-tab')">Manage Content</button>
+            <button class="admin-btn btn-primary" onclick="showTab('tokens-tab')">Manage Tokens</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Users Tab -->
+      <div id="users-tab" class="admin-tab">
+        <h2>User Management</h2>
+        
+        <div class="actions-bar">
+          <div class="search-box">
+            <input type="text" placeholder="Search by address or username..." id="user-search">
+            <button class="admin-btn btn-secondary">Search</button>
+          </div>
+        </div>
+        
+        <div class="admin-card">
+          <h3>Grant Access</h3>
+          <p>Manually grant content access to users</p>
+          
+          <form id="grant-access-form">
+            <div class="form-group">
+              <label for="user-address">User Wallet Address</label>
+              <input type="text" class="form-control" id="user-address" placeholder="0x...">
+            </div>
+            
+            <div class="form-group">
+              <label for="content-id">Content ID</label>
+              <input type="text" class="form-control" id="content-id" placeholder="content_001">
+            </div>
+            
+            <div class="form-group">
+              <label for="access-duration">Access Duration (seconds)</label>
+              <input type="number" class="form-control" id="access-duration" value="3600" min="60">
+            </div>
+            
+            <div class="btn-row">
+              <button type="submit" class="admin-btn btn-primary">Grant Access</button>
+            </div>
+          </form>
+        </div>
+        
+        <div class="admin-card">
+          <h3>Active Stream Sessions</h3>
+          
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Content</th>
+                  <th>Expires</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="active-streams-table">
+                <tr>
+                  <td colspan="4">Loading active streams...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Content Tab -->
+      <div id="content-tab" class="admin-tab">
+        <h2>Content Management</h2>
+        
+        <div class="actions-bar">
+          <div class="search-box">
+            <input type="text" placeholder="Search content..." id="content-search">
+            <button class="admin-btn btn-secondary">Search</button>
+          </div>
+        </div>
+        
+        <div class="admin-card">
+          <h3>Update Content Creator</h3>
+          <p>Transfer content ownership to another creator</p>
+          
+          <form id="update-creator-form">
+            <div class="form-group">
+              <label for="content-id-update">Content ID</label>
+              <input type="text" class="form-control" id="content-id-update" placeholder="content_001">
+            </div>
+            
+            <div class="form-group">
+              <label for="new-creator-address">New Creator Address</label>
+              <input type="text" class="form-control" id="new-creator-address" placeholder="0x...">
+            </div>
+            
+            <div class="btn-row">
+              <button type="submit" class="admin-btn btn-primary">Update Creator</button>
+            </div>
+          </form>
+        </div>
+        
+        <div class="admin-card">
+          <h3>Content Library</h3>
+          
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Content ID</th>
+                  <th>Title</th>
+                  <th>Creator</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="content-table">
+                <tr>
+                  <td colspan="5">Loading content...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tokens Tab -->
+      <div id="tokens-tab" class="admin-tab">
+        <h2>Token Management</h2>
+        
+        <div class="admin-card">
+          <h3>Mint Tokens</h3>
+          <p>Create new tokens and send them to an address</p>
+          
+          <form id="mint-tokens-form">
+            <div class="form-group">
+              <label for="recipient-address">Recipient Address</label>
+              <input type="text" class="form-control" id="recipient-address" placeholder="0x...">
+            </div>
+            
+            <div class="form-group">
+              <label for="token-amount">Token Amount</label>
+              <input type="number" class="form-control" id="token-amount" placeholder="100" min="1" step="1">
+            </div>
+            
+            <div class="btn-row">
+              <button type="submit" class="admin-btn btn-primary">Mint Tokens</button>
+            </div>
+          </form>
+        </div>
+        
+        <div class="admin-card">
+          <h3>Treasury Management</h3>
+          <p>Update treasury address for platform fees</p>
+          
+          <form id="treasury-form">
+            <div class="form-group">
+              <label for="treasury-address">New Treasury Address</label>
+              <input type="text" class="form-control" id="treasury-address" placeholder="0x...">
+            </div>
+            
+            <div class="btn-row">
+              <button type="submit" class="admin-btn btn-primary">Update Treasury</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Settings Tab -->
+      <div id="settings-tab" class="admin-tab">
+        <h2>Platform Settings</h2>
+        
+        <div class="admin-card">
+          <h3>Contract Information</h3>
+          
+          <div class="form-group">
+            <label>Contract Address</label>
+            <input type="text" class="form-control" id="contract-address" readonly>
+          </div>
+          
+          <div class="form-group">
+            <label>Owner Address</label>
+            <input type="text" class="form-control" id="owner-address" readonly>
+          </div>
+          
+          <div class="form-group">
+            <label>Treasury Address</label>
+            <input type="text" class="form-control" id="current-treasury-address" readonly>
+          </div>
+        </div>
+        
+        <div class="admin-card">
+          <h3>Transfer Ownership</h3>
+          <p>Warning: This will transfer control of the entire platform to a new owner</p>
+          
+          <form id="transfer-ownership-form">
+            <div class="form-group">
+              <label for="new-owner-address">New Owner Address</label>
+              <input type="text" class="form-control" id="new-owner-address" placeholder="0x...">
+            </div>
+            
+            <div class="form-group">
+              <label for="confirm-transfer">Confirmation</label>
+              <input type="checkbox" id="confirm-transfer"> I understand this operation is irreversible
+            </div>
+            
+            <div class="btn-row">
+              <button type="submit" class="admin-btn btn-danger" disabled id="transfer-btn">Transfer Ownership</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h3>Web3 Crypto Streaming Service</h3>
+          <p>Revolutionizing content distribution through blockchain technology.</p>
+        </div>
+
+        <div>
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="web3-streaming-service-whitepaper.md">Whitepaper</a></li>
+            <li><a href="docs/">Documentation</a></li>
+            <li><a href="blog/">Blog</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Community</h4>
+          <ul>
+            <li><a href="https://twitter.com/modsias">Twitter</a></li>
+            <li><a href="https://discord.gg/web3streaming">Discord</a></li>
+            <li><a href="https://t.me/web3streaming">Telegram</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="terms.md">Terms of Service</a></li>
+            <li><a href="privacy.md">Privacy Policy</a></li>
+            <li><a href="docs/token-disclaimer.html">Token Disclaimer</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Team MODSIAS | <a href="sitemap.html">Sitemap</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Common Scripts -->
+  <script src="https://cdn.ethers.io/lib/ethers-5.6.umd.min.js" type="application/javascript"></script>
+  <script src="assets/js/wallet-connector.js"></script>
+  <script src="assets/js/contract-manager.js"></script>
+
+  <!-- Admin Dashboard Script -->
+  <script>
+    // DOM Elements
+    const loginScreen = document.getElementById('login-screen');
+    const adminDashboard = document.getElementById('admin-dashboard');
+    const loginNotification = document.getElementById('login-notification');
+    const adminNotification = document.getElementById('admin-notification');
+    const connectAdminWalletBtn = document.getElementById('connect-admin-wallet');
+    const disconnectWalletBtn = document.getElementById('disconnect-wallet');
+    const adminAddressEl = document.getElementById('admin-address');
+    const contractAddressEl = document.getElementById('contract-address');
+    const ownerAddressEl = document.getElementById('owner-address');
+    const currentTreasuryAddressEl = document.getElementById('current-treasury-address');
+    
+    // Tab elements
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.admin-tab');
+    
+    // Form elements
+    const grantAccessForm = document.getElementById('grant-access-form');
+    const updateCreatorForm = document.getElementById('update-creator-form');
+    const mintTokensForm = document.getElementById('mint-tokens-form');
+    const treasuryForm = document.getElementById('treasury-form');
+    const transferOwnershipForm = document.getElementById('transfer-ownership-form');
+    const transferConfirmCheckbox = document.getElementById('confirm-transfer');
+    const transferBtn = document.getElementById('transfer-btn');
+    
+    // API Endpoint
+    const apiBaseUrl = '/api';
+    
+    // Contract ABI and Address
+    const contractABI = [
+      "function owner() view returns (address)",
+      "function treasuryAddress() view returns (address)",
+      "function grantAccess(address user, string memory contentId, uint256 duration)",
+      "function revokeAccess(address user, string memory contentId)",
+      "function updateContentCreator(string memory contentId, address newCreator)",
+      "function ownerMint(address to, uint256 amount)",
+      "function setTreasuryAddress(address _newTreasuryAddress)",
+      "function transferOwnership(address newOwner)"
+    ];
+    
+    // Auth state
+    let authToken = null;
+    let adminAddress = null;
+    let provider = null;
+    let signer = null;
+    let contract = null;
+    let contractAddress = "0x1234567890123456789012345678901234567890"; // Replace with actual address
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', initialize);
+    
+    async function initialize() {
+      // Set up tab navigation
+      setupTabs();
+      
+      // Set up form event listeners
+      setupForms();
+      
+      // Check for cached auth
+      const cachedAuth = localStorage.getItem('adminAuth');
+      if (cachedAuth) {
+        try {
+          const parsed = JSON.parse(cachedAuth);
+          authToken = parsed.token;
+          adminAddress = parsed.address;
+          
+          // Try to auto-connect if cached auth exists
+          await connectWallet(true);
+        } catch (error) {
+          console.error('Failed to restore session:', error);
+          clearAuth();
+        }
+      }
+      
+      // Setup connect wallet button
+      connectAdminWalletBtn.addEventListener('click', () => connectWallet());
+      
+      // Setup disconnect button
+      disconnectWalletBtn.addEventListener('click', disconnectWallet);
+      
+      // Setup transfer ownership checkbox
+      transferConfirmCheckbox.addEventListener('change', function() {
+        transferBtn.disabled = !this.checked;
+      });
+    }
+    
+    function setupTabs() {
+      tabLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tabId = link.getAttribute('data-tab');
+          showTab(tabId);
+        });
+      });
+    }
+    
+    function showTab(tabId) {
+      // Hide all tabs
+      tabContents.forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Deactivate all links
+      tabLinks.forEach(link => {
+        link.classList.remove('active');
+      });
+      
+      // Show the selected tab
+      document.getElementById(tabId).classList.add('active');
+      
+      // Activate the corresponding link
+      document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+    }
+    
+    function setupForms() {
+      // Grant access form
+      grantAccessForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userAddress = document.getElementById('user-address').value;
+        const contentId = document.getElementById('content-id').value;
+        const duration = document.getElementById('access-duration').value;
+        
+        await grantAccess(userAddress, contentId, duration);
+      });
+      
+      // Update creator form
+      updateCreatorForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const contentId = document.getElementById('content-id-update').value;
+        const creatorAddress = document.getElementById('new-creator-address').value;
+        
+        await updateContentCreator(contentId, creatorAddress);
+      });
+      
+      // Mint tokens form
+      mintTokensForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const recipientAddress = document.getElementById('recipient-address').value;
+        const amount = document.getElementById('token-amount').value;
+        
+        await mintTokens(recipientAddress, amount);
+      });
+      
+      // Treasury form
+      treasuryForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const treasuryAddress = document.getElementById('treasury-address').value;
+        
+        await updateTreasury(treasuryAddress);
+      });
+      
+      // Transfer ownership form
+      transferOwnershipForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!transferConfirmCheckbox.checked) return;
+        
+        const newOwnerAddress = document.getElementById('new-owner-address').value;
+        
+        if (confirm('Are you absolutely sure you want to transfer ownership? This cannot be undone!')) {
+          await transferOwnership(newOwnerAddress);
+        }
+      });
+    }
+    
+    async function connectWallet(autoConnect = false) {
+      try {
+        if (window.ethereum) {
+          provider = new ethers.providers.Web3Provider(window.ethereum);
+          
+          // Request account access if needed
+          await provider.send("eth_requestAccounts", []);
+          signer = provider.getSigner();
+          const address = await signer.getAddress();
+          
+          if (!autoConnect) {
+            // If not auto-connecting, we need to authenticate
+            await authenticate(address);
+          } else {
+            // If auto-connecting with cached token, verify the address matches
+            if (address.toLowerCase() !== adminAddress.toLowerCase()) {
+              throw new Error("Connected wallet doesn't match admin address");
+            }
+            
+            // Just switch to admin view
+            showAdminDashboard(address);
+          }
+        } else {
+          showLoginError("Please install MetaMask to access admin dashboard");
+        }
+      } catch (error) {
+        console.error("Failed to connect wallet:", error);
+        showLoginError(error.message);
+        clearAuth();
+      }
+    }
+    
+    async function authenticate(address) {
+      try {
+        // Generate a random message to sign
+        const timestamp = Date.now();
+        const message = `Sign this message to authenticate as admin: ${timestamp}`;
+        
+        // Request signature from user
+        const signature = await signer.signMessage(message);
+        
+        // Send to backend for verification
+        const response = await fetch(`${apiBaseUrl}/admin/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ address, message, signature })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || "Authentication failed");
+        }
+        
+        // Store auth token
+        authToken = data.token;
+        adminAddress = data.address;
+        
+        // Cache auth data
+        localStorage.setItem('adminAuth', JSON.stringify({
+          token: authToken,
+          address: adminAddress
+        }));
+        
+        // Show admin dashboard
+        showAdminDashboard(address);
+        
+        // Initialize contract
+        contract = new ethers.Contract(contractAddress, contractABI, signer);
+        
+        // Load initial data
+        await loadContractInfo();
+        await loadStats();
+      } catch (error) {
+        console.error("Authentication failed:", error);
+        showLoginError(error.message);
+      }
+    }
+    
+    function showAdminDashboard(address) {
+      // Hide login, show dashboard
+      loginScreen.style.display = 'none';
+      adminDashboard.style.display = 'block';
+      
+      // Update address display
+      adminAddressEl.textContent = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+    }
+    
+    function disconnectWallet() {
+      // Clear auth data
+      clearAuth();
+      
+      // Show login screen
+      loginScreen.style.display = 'block';
+      adminDashboard.style.display = 'none';
+    }
+    
+    function clearAuth() {
+      // Clear auth state
+      authToken = null;
+      adminAddress = null;
+      
+      // Clear cached auth
+      localStorage.removeItem('adminAuth');
+      
+      // Reset contract
+      contract = null;
+    }
+    
+    function showLoginError(message) {
+      loginNotification.textContent = message;
+      loginNotification.className = 'notification error';
+      loginNotification.style.display = 'block';
+      
+      // Hide after delay
+      setTimeout(() => {
+        loginNotification.style.display = 'none';
+      }, 5000);
+    }
+    
+    function showAdminNotification(message, type = 'success') {
+      adminNotification.textContent = message;
+      adminNotification.className = `notification ${type}`;
+      adminNotification.style.display = 'block';
+      
+      // Hide after delay
+      setTimeout(() => {
+        adminNotification.style.display = 'none';
+      }, 5000);
+    }
+    
+    async function loadContractInfo() {
+      try {
+        if (!contract) return;
+        
+        // Get contract address
+        contractAddressEl.value = contractAddress;
+        
+        // Get owner address
+        const owner = await contract.owner();
+        ownerAddressEl.value = owner;
+        
+        // Get treasury address
+        const treasury = await contract.treasuryAddress();
+        currentTreasuryAddressEl.value = treasury;
+      } catch (error) {
+        console.error("Failed to load contract info:", error);
+      }
+    }
+    
+    async function loadStats() {
+      try {
+        // Fetch stats from API
+        const response = await fetch(`${apiBaseUrl}/admin/stats`, {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to load stats");
+        }
+        
+        // Update stats
+        document.getElementById('stats-users').textContent = data.users || 0;
+        document.getElementById('stats-content').textContent = data.content || 0;
+        document.getElementById('stats-streams').textContent = data.activeStreams || 0;
+        document.getElementById('stats-supply').textContent = data.tokenStats?.totalSupply || 0;
+      } catch (error) {
+        console.error("Failed to load stats:", error);
+        showAdminNotification("Failed to load platform statistics", "error");
+      }
+    }
+    
+    // Admin API Functions
+    
+    async function grantAccess(userAddress, contentId, duration) {
+      try {
+        if (!contract) throw new Error("Contract not initialized");
+        
+        // Call contract method
+        const tx = await contract.grantAccess(userAddress, contentId, duration);
+        await tx.wait();
+        
+        showAdminNotification(`Access granted to ${userAddress} for ${contentId}`);
+        
+        // Reset form
+        grantAccessForm.reset();
+      } catch (error) {
+        console.error("Failed to grant access:", error);
+        showAdminNotification(`Failed to grant access: ${error.message}`, "error");
+      }
+    }
+    
+    async function updateContentCreator(contentId, creatorAddress) {
+      try {
+        if (!contract) throw new Error("Contract not initialized");
+        
+        // Call contract method
+        const tx = await contract.updateContentCreator(contentId, creatorAddress);
+        await tx.wait();
+        
+        showAdminNotification(`Content creator updated for ${contentId}`);
+        
+        // Reset form
+        updateCreatorForm.reset();
+      } catch (error) {
+        console.error("Failed to update creator:", error);
+        showAdminNotification(`Failed to update creator: ${error.message}`, "error");
+      }
+    }
+    
+    async function mintTokens(recipientAddress, amount) {
+      try {
+        if (!contract) throw new Error("Contract not initialized");
+        
+        // Convert to wei
+        const amountWei = ethers.utils.parseEther(amount.toString());
+        
+        // Call contract method
+        const tx = await contract.ownerMint(recipientAddress, amountWei);
+        await tx.wait();
+        
+        showAdminNotification(`Minted ${amount} tokens to ${recipientAddress}`);
+        
+        // Reset form
+        mintTokensForm.reset();
+        
+        // Refresh stats
+        await loadStats();
+      } catch (error) {
+        console.error("Failed to mint tokens:", error);
+        showAdminNotification(`Failed to mint tokens: ${error.message}`, "error");
+      }
+    }
+    
+    async function updateTreasury(treasuryAddress) {
+      try {
+        if (!contract) throw new Error("Contract not initialized");
+        
+        // Call contract method
+        const tx = await contract.setTreasuryAddress(treasuryAddress);
+        await tx.wait();
+        
+        showAdminNotification(`Treasury address updated to ${treasuryAddress}`);
+        
+        // Reset form
+        treasuryForm.reset();
+        
+        // Refresh contract info
+        await loadContractInfo();
+      } catch (error) {
+        console.error("Failed to update treasury:", error);
+        showAdminNotification(`Failed to update treasury: ${error.message}`, "error");
+      }
+    }
+    
+    async function transferOwnership(newOwnerAddress) {
+      try {
+        if (!contract) throw new Error("Contract not initialized");
+        
+        // Call contract method
+        const tx = await contract.transferOwnership(newOwnerAddress);
+        await tx.wait();
+        
+        showAdminNotification(`Ownership transferred to ${newOwnerAddress}`);
+        
+        // Since ownership is transferred, we need to log out
+        setTimeout(() => {
+          disconnectWallet();
+        }, 5000);
+      } catch (error) {
+        console.error("Failed to transfer ownership:", error);
+        showAdminNotification(`Failed to transfer ownership: ${error.message}`, "error");
+      }
+    }
+  </script>
+</body>
+</html>

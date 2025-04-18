@@ -14,8 +14,15 @@
 
 const EventEmitter = require('events');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const { ethers } = require('ethers');
 const TokenModel = require('../../models/token-model');
 const StreamModel = require('../../models/stream-model');
+
+const SECRET_KEY = process.env.JWT_SECRET || 'web3-streaming-secret';
+const ADMIN_SECRET_KEY = process.env.ADMIN_JWT_SECRET || 'web3-admin-secret-key';
+const TOKEN_EXPIRY = '7d'; // Regular user tokens
+const ADMIN_TOKEN_EXPIRY = '24h'; // Admin tokens expire more frequently for security
 
 class TokenGeneratorService extends EventEmitter {
   constructor() {
@@ -422,6 +429,119 @@ class TokenGeneratorService extends EventEmitter {
     }
     
     return pending;
+  }
+  
+  /**
+   * Generate a JWT token for a user
+   * @param {string} address - User's wallet address
+   * @param {Object} additionalData - Additional data to include in token
+   * @returns {string} JWT token
+   */
+  async generateToken(address, additionalData = {}) {
+    try {
+      if (!address) throw new Error('Address is required');
+      
+      // Normalize address to lowercase
+      const normalizedAddress = address.toLowerCase();
+      
+      // Create token payload
+      const payload = {
+        address: normalizedAddress,
+        ...additionalData,
+        // Add random nonce for uniqueness
+        nonce: crypto.randomBytes(8).toString('hex'),
+        // Add timestamp for reference
+        timestamp: Math.floor(Date.now() / 1000)
+      };
+      
+      // Sign the token
+      const token = jwt.sign(payload, SECRET_KEY, {
+        expiresIn: TOKEN_EXPIRY
+      });
+      
+      return token;
+    } catch (error) {
+      console.error('Error generating token:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Generate an admin JWT token for owner-level access
+   * @param {string} address - Owner's wallet address
+   * @param {Object} additionalData - Additional data to include in token
+   * @returns {string} Admin JWT token
+   */
+  async generateAdminToken(address, additionalData = {}) {
+    try {
+      if (!address) throw new Error('Address is required');
+      
+      // Normalize address to lowercase
+      const normalizedAddress = address.toLowerCase();
+      
+      // Create token payload with owner flag
+      const payload = {
+        address: normalizedAddress,
+        isOwner: true,  // Flag indicating owner-level access
+        ...additionalData,
+        // Add random nonce for uniqueness
+        nonce: crypto.randomBytes(16).toString('hex'),
+        // Add timestamp for reference
+        timestamp: Math.floor(Date.now() / 1000)
+      };
+      
+      // Sign the token with admin secret
+      const token = jwt.sign(payload, ADMIN_SECRET_KEY, {
+        expiresIn: ADMIN_TOKEN_EXPIRY
+      });
+      
+      return token;
+    } catch (error) {
+      console.error('Error generating admin token:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Verify a JWT token
+   * @param {string} token - JWT token to verify
+   * @returns {Object} Decoded token payload or null if invalid
+   */
+  async verifyToken(token) {
+    try {
+      if (!token) return null;
+      
+      // Verify the token
+      const decoded = jwt.verify(token, SECRET_KEY);
+      return decoded;
+    } catch (error) {
+      console.error('Token verification error:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Verify an admin JWT token
+   * @param {string} token - Admin JWT token to verify
+   * @returns {Object} Decoded token payload or null if invalid
+   */
+  async verifyAdminToken(token) {
+    try {
+      if (!token) return null;
+      
+      // Verify the token using admin secret
+      const decoded = jwt.verify(token, ADMIN_SECRET_KEY);
+      
+      // Ensure it's an admin token
+      if (!decoded.isOwner) {
+        throw new Error('Not an admin token');
+      }
+      
+      return decoded;
+    } catch (error) {
+      console.error('Admin token verification error:', error);
+      return null;
+    }
   }
   
   /**
