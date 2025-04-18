@@ -1,0 +1,58 @@
+{
+  "title": "What is Web3?",
+  "description": "An introduction to Web3 technology and concepts",
+  "lastUpdated": "2025-04-18",
+  "author": "Web3 Education Team",
+  "sections": [
+    {
+      "title": "Introduction to Web3",
+      "html": "<p>Web3 represents the next evolution of the internet, built on decentralized blockchain technology.</p><p>Unlike Web2 (the current internet), which is dominated by centralized platforms and services, Web3 aims to redistribute power to users through decentralized applications (dApps), smart contracts, and token-based economics.</p><p>In this lesson, we'll explore the fundamental concepts behind Web3, its key technologies, and how it differs from previous iterations of the web.</p>"
+    },
+    {
+      "title": "Web1, Web2, and Web3",
+      "html": "<p><strong>Web1 (1990s-early 2000s)</strong>: The read-only web. Static websites with minimal interaction.</p><p><strong>Web2 (mid-2000s-present)</strong>: The read-write web. Interactive platforms, social media, and cloud services controlled by centralized entities.</p><p><strong>Web3 (emerging)</strong>: The read-write-own web. Users have ownership over their data and digital assets through blockchain and cryptography.</p><p>The key difference is that Web3 enables true ownership and peer-to-peer interaction without intermediaries.</p>",
+      "videoUrl": "https://example.com/videos/web3-evolution.mp4"
+    },
+    {
+      "title": "Key Components of Web3",
+      "html": "<p>Web3 is built on several foundational components:</p><ul><li><strong>Blockchain</strong>: Distributed, immutable ledgers that record transactions and state changes</li><li><strong>Smart Contracts</strong>: Self-executing programs that run on blockchain networks</li><li><strong>Cryptocurrencies</strong>: Digital currencies used for transactions and incentives</li><li><strong>Digital Wallets</strong>: Tools for managing cryptographic keys and digital assets</li><li><strong>Decentralized Applications (dApps)</strong>: Applications that run on blockchain networks</li><li><strong>Tokens</strong>: Digital assets representing value or utility on blockchain networks</li></ul>"
+    },
+    {
+      "title": "Web3 Use Cases",
+      "html": "<p>Web3 technologies are being applied to a wide range of use cases:</p><ul><li>Decentralized Finance (DeFi)</li><li>Digital Identity and Authentication</li><li>Content Creation and Monetization</li><li>Supply Chain Tracking</li><li>Digital Art and Collectibles (NFTs)</li><li>Decentralized Autonomous Organizations (DAOs)</li><li>Gaming and Virtual Worlds</li></ul><p>Each of these applications leverages the unique properties of blockchain technology to create new possibilities and business models.</p>"
+    }
+  ],
+  "interactive": null,
+  "quizQuestions": [
+    {
+      "question": "What is the main difference between Web2 and Web3?",
+      "options": [
+        "Web3 is faster than Web2", 
+        "Web3 is built on decentralized technology with user ownership",
+        "Web3 requires a subscription fee", 
+        "Web3 works without an internet connection"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "Which of the following is NOT a key component of Web3?",
+      "options": [
+        "Blockchain", 
+        "Smart Contracts", 
+        "Centralized Databases", 
+        "Digital Wallets"
+      ],
+      "correctAnswer": 2
+    }
+  ],
+  "furtherReading": [
+    {
+      "title": "The Architecture of a Web 3.0 application",
+      "url": "https://ethereum.org/en/developers/docs/web2-vs-web3/"
+    },
+    {
+      "title": "What is Web3?",
+      "url": "https://ethereum.org/en/web3/"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web3 Educational Library</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/education.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Web3 Educational Platform</div>
+      <ul>
+        <li><a href="streaming.html">Streaming</a></li>
+        <li><a href="education.html" class="active">Education</a></li>
+      </ul>
+      <div class="wallet-connect">
+        <button id="wallet-connect-btn">Connect Wallet</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="education-container">
+    <h1>Web3 Educational Library</h1>
+    <p>Explore our curated educational content to learn about blockchain technology, smart contracts, and Web3 development.</p>
+    
+    <div class="topic-grid" id="topic-grid">
+      <!-- Topic cards will be inserted here by JavaScript -->
+    </div>
+    
+    <button class="back-to-topics" id="back-to-topics">← Back to Topics</button>
+    
+    <section class="content-viewer" id="content-viewer">
+      <!-- Content will be loaded here -->
+    </section>
+  </main>
+
+  <script src="assets/js/wallet-connector.js"></script>
+  <script src="assets/js/contract-manager.js"></script>
+  <script src="assets/js/education/interactive-demos.js"></script>
+  <script src="assets/js/education/content-library.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize the wallet connector
+      const walletConnector = new WalletConnector();
+      
+      // Initialize the contract manager
+      const contractManager = new ContractManager({ 
+        walletConnector: walletConnector 
+      });
+      
+      // Initialize the interactive demos handler
+      const interactiveDemos = new InteractiveDemos({
+        walletConnector: walletConnector,
+        contractManager: contractManager
+      });
+      
+      // Initialize the educational content library
+      const contentLibrary = new ContentLibrary({
+        walletConnector: walletConnector,
+        contractManager: contractManager,
+        interactiveDemos: interactiveDemos,
+        topicGrid: document.getElementById('topic-grid'),
+        contentViewer: document.getElementById('content-viewer'),
+        backButton: document.getElementById('back-to-topics')
+      });
+      
+      // Load the topics and content
+      contentLibrary.loadTopics();
+      
+      // Connect wallet button event
+      document.getElementById('wallet-connect-btn').addEventListener('click', () => {
+        walletConnector.connectWallet();
+      });
+      
+      // Back to topics button event
+      document.getElementById('back-to-topics').addEventListener('click', () => {
+        contentLibrary.showTopics();
+      });
+    });
+  </script>
+</body>
+</html>

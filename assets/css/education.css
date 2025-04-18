@@ -1,0 +1,810 @@
+/* Education Content Styles */
+
+/* Topic Grid */
+.education-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.topic-card {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #e9ecef;
+}
+
+.topic-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.topic-card h3 {
+  color: #4361ee;
+  margin-top: 0;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.topic-card .description {
+  color: #555;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.topic-card .lessons {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 25px;
+}
+
+.topic-card .lessons li {
+  margin-bottom: 10px;
+}
+
+.topic-card .lessons li a {
+  color: #3a56d4;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.topic-card .lessons li a:hover {
+  background-color: rgba(67, 97, 238, 0.1);
+}
+
+.topic-card .lessons li a::before {
+  content: "▶";
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 0.8em;
+  color: #4361ee;
+  transition: transform 0.2s ease;
+}
+
+.topic-card .lessons li a:hover::before {
+  transform: translateX(3px);
+}
+
+.topic-card .lessons li a .token-required {
+  font-weight: 500;
+  color: #e63946;
+  margin-left: 8px;
+  font-size: 0.8em;
+}
+
+.topic-card .lessons li a .duration {
+  color: #6c757d;
+  margin-left: auto;
+  font-size: 0.85em;
+}
+
+.topic-card .lessons li a .completed {
+  color: #2ecc71;
+  margin-left: 8px;
+  font-weight: bold;
+}
+
+/* Progress Bar */
+.progress-bar {
+  height: 6px;
+  background-color: #e9ecef;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.progress {
+  height: 100%;
+  background-color: #4361ee;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  color: #6c757d;
+  font-size: 0.85em;
+  margin-top: 5px;
+  text-align: right;
+}
+
+/* Content Viewer */
+.content-viewer {
+  margin-top: 40px;
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  display: none;
+}
+
+.content-viewer h2 {
+  color: #212529;
+  margin-top: 0;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.lesson-meta {
+  color: #6c757d;
+  margin-bottom: 25px;
+  font-size: 0.9rem;
+}
+
+.lesson-content {
+  line-height: 1.6;
+  color: #343a40;
+}
+
+.content-section {
+  margin-bottom: 40px;
+}
+
+.content-section h3 {
+  color: #4361ee;
+  font-weight: 600;
+}
+
+.section-content {
+  margin-bottom: 20px;
+}
+
+.section-content p {
+  margin-bottom: 15px;
+}
+
+.section-content ul, .section-content ol {
+  padding-left: 25px;
+  margin-bottom: 15px;
+}
+
+.section-content li {
+  margin-bottom: 8px;
+}
+
+.code-example {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  overflow-x: auto;
+  border: 1px solid #e9ecef;
+}
+
+.code-example pre {
+  margin: 0;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9em;
+  white-space: pre-wrap;
+}
+
+.code-example code {
+  color: #333;
+}
+
+/* Navigation */
+.back-to-topics {
+  background-color: #4361ee;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 30px;
+  display: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.back-to-topics:hover {
+  background-color: #3a56d4;
+}
+
+.lesson-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.lesson-navigation button {
+  background-color: #4361ee;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.lesson-navigation button:hover {
+  background-color: #3a56d4;
+}
+
+.lesson-navigation .mark-complete {
+  background-color: #2ecc71;
+}
+
+.lesson-navigation .mark-complete:hover {
+  background-color: #27ae60;
+}
+
+.lesson-navigation button:disabled {
+  background-color: #ced4da;
+  cursor: not-allowed;
+}
+
+/* Premium Content */
+.premium-content-message {
+  background-color: #f8f9fa;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  margin: 40px 0;
+  border: 1px solid #e9ecef;
+}
+
+.premium-content-message h3 {
+  color: #e63946;
+  margin-top: 0;
+}
+
+.connect-wallet-section {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #f1f5ff;
+  border-left: 4px solid #4361ee;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.primary-btn {
+  background-color: #4361ee;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  margin-top: 15px;
+}
+
+.primary-btn:hover {
+  background-color: #3a56d4;
+}
+
+/* Video Container */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.video-container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+}
+
+/* Tables */
+.comparison-table {
+  width: 100%;
+  margin: 20px 0;
+  border-collapse: collapse;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.comparison-table th {
+  background-color: #f1f5ff;
+  font-weight: 600;
+  color: #4361ee;
+}
+
+.comparison-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Interactive Demo Styling */
+.demo-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 30px 0;
+  border: 1px solid #e9ecef;
+}
+
+.demo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.demo-header h3 {
+  margin: 0;
+  color: #4361ee;
+  font-weight: 600;
+}
+
+.demo-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.demo-controls button {
+  background-color: #4361ee;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s ease;
+}
+
+.demo-controls button:hover {
+  background-color: #3a56d4;
+}
+
+/* Block Explorer Demo */
+.block-explorer .blockchain-visualization {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.block-explorer .blockchain {
+  display: flex;
+  align-items: center;
+  min-width: min-content;
+}
+
+.block-explorer .block {
+  background-color: white;
+  border-radius: 8px;
+  padding: 15px;
+  min-width: 200px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-right: 5px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.block-explorer .block.modified {
+  border-color: #f39c12;
+  background-color: #fff8e1;
+}
+
+.block-explorer .block.invalid {
+  border-color: #e74c3c;
+  background-color: #ffebee;
+}
+
+.block-explorer .block-header {
+  font-weight: bold;
+  color: #4361ee;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.block-explorer .block-content {
+  font-size: 0.9em;
+}
+
+.block-explorer .block-info div {
+  margin-bottom: 5px;
+}
+
+.block-explorer .block-connector {
+  margin: 0 10px;
+  font-size: 1.5em;
+  color: #6c757d;
+}
+
+.block-explorer .demo-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.block-explorer .panel-section {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.block-explorer .panel-section h4 {
+  margin-top: 0;
+  color: #4361ee;
+  margin-bottom: 15px;
+}
+
+.block-explorer .form-group {
+  margin-bottom: 15px;
+}
+
+.block-explorer .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.block-explorer .form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.block-explorer .chain-status {
+  padding: 10px 15px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.block-explorer .chain-status.valid {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.block-explorer .chain-status.invalid {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Solidity Code Editor */
+.code-editor-demo {
+  display: flex;
+  flex-direction: column;
+}
+
+.code-editor-demo .editor-container {
+  margin-bottom: 20px;
+}
+
+.code-editor-demo .code-editor-textarea {
+  width: 100%;
+  min-height: 300px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 15px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  resize: vertical;
+  background-color: #282c34;
+  color: #abb2bf;
+}
+
+.code-editor-demo .output-container {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.code-editor-demo .output-container h4 {
+  margin-top: 0;
+  color: #4361ee;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 10px;
+}
+
+.code-editor-demo .editor-output {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.code-editor-demo .contract-interaction {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #e9ecef;
+}
+
+.code-editor-demo .function-call {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.code-editor-demo #function-selector {
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.code-editor-demo .connect-btn {
+  background-color: #4361ee;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+
+/* DeFi Simulator */
+.defi-simulator .simulator-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.defi-simulator .defi-protocol,
+.defi-simulator .wallet-balances {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.defi-simulator h4 {
+  margin-top: 0;
+  color: #4361ee;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 10px;
+}
+
+.defi-simulator .liquidity-pool {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.defi-simulator .pool-token {
+  text-align: center;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  min-width: 120px;
+}
+
+.defi-simulator .token-symbol {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.defi-simulator .pool-price {
+  text-align: center;
+  font-weight: 500;
+}
+
+.defi-simulator .wallet-balances .balance {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.defi-simulator .transaction-panel {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.defi-simulator .transaction-form h4 {
+  margin-top: 0;
+  color: #4361ee;
+  margin-bottom: 20px;
+}
+
+.defi-simulator .form-group {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.defi-simulator .form-group label {
+  width: 100px;
+  font-weight: 500;
+}
+
+.defi-simulator .form-group input {
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  width: 120px;
+}
+
+.defi-simulator .form-group select {
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.defi-simulator .form-group button {
+  padding: 10px 20px;
+}
+
+.defi-simulator .staking-info {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.defi-simulator .staking-info h5 {
+  margin-top: 0;
+  color: #4361ee;
+  margin-bottom: 10px;
+}
+
+.defi-simulator .staking-info div {
+  margin-bottom: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .education-container {
+    padding: 15px;
+  }
+  
+  .topic-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .content-viewer {
+    padding: 20px;
+  }
+  
+  .block-explorer .demo-panel {
+    grid-template-columns: 1fr;
+  }
+  
+  .defi-simulator .simulator-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .defi-simulator .form-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .defi-simulator .form-group label {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  
+  .defi-simulator .form-group input,
+  .defi-simulator .form-group select {
+    width: 100%;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .topic-card,
+  .content-viewer,
+  .code-example,
+  .premium-content-message,
+  .block-explorer .block,
+  .block-explorer .panel-section,
+  .code-editor-demo .output-container,
+  .defi-simulator .defi-protocol,
+  .defi-simulator .wallet-balances,
+  .defi-simulator .transaction-panel {
+    background-color: #2a2d3e;
+    border-color: #3a3f55;
+  }
+  
+  .education-container,
+  .content-section,
+  .topic-card .description,
+  .section-content,
+  .comparison-table td,
+  .defi-simulator .wallet-balances .balance {
+    color: #e1e1e1;
+  }
+  
+  .topic-card h3,
+  .content-viewer h2,
+  .content-section h3,
+  .block-explorer .block-header,
+  .block-explorer .panel-section h4,
+  .code-editor-demo .output-container h4,
+  .defi-simulator h4 {
+    color: #5d7aee;
+  }
+  
+  .topic-card .lessons li a {
+    color: #7b96f6;
+  }
+  
+  .topic-card .lessons li a:hover {
+    background-color: rgba(93, 122, 238, 0.2);
+  }
+  
+  .code-example {
+    background-color: #22252e;
+  }
+  
+  .code-example code {
+    color: #e1e1e1;
+  }
+  
+  .progress-bar {
+    background-color: #3a3f55;
+  }
+  
+  .connect-wallet-section {
+    background-color: #2c3357;
+    border-left-color: #5d7aee;
+  }
+  
+  .block-explorer .chain-status.valid {
+    background-color: #1e382d;
+    color: #4cd964;
+  }
+  
+  .block-explorer .chain-status.invalid {
+    background-color: #381e2a;
+    color: #ff3b30;
+  }
+  
+  .block-explorer .block.modified {
+    border-color: #e8a317;
+    background-color: #3d341e;
+  }
+  
+  .block-explorer .block.invalid {
+    border-color: #ff3b30;
+    background-color: #3d1e1e;
+  }
+  
+  .defi-simulator .pool-token {
+    background-color: #22252e;
+  }
+  
+  .defi-simulator .staking-info {
+    background-color: #22252e;
+  }
+}
