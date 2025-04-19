@@ -1,0 +1,40 @@
+name: Smart Contract Documentation Deployment
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'contracts/**'
+      - 'docs/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'contracts/**'
+      - 'docs/**'
+  workflow_dispatch:
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '16'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Generate documentation
+      run: npm run generate-docs
+    
+    - name: Upload documentation artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: contract-documentation
+        path: docs/contracts/
+        if-no-files-found: warn

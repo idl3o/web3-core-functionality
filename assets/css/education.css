@@ -682,6 +682,710 @@
   margin-bottom: 5px;
 }
 
+/* Education & Recreation Center Styles */
+
+/* Tab Navigation */
+.tab-container {
+  margin: 2rem 0;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #e1e4e8;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #586069;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  color: #0366d6;
+}
+
+.tab-button.active {
+  color: #0366d6;
+  border-bottom-color: #0366d6;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Card Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.card {
+  background-color: #f6f8fa;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card h4 {
+  margin-top: 0;
+  color: #24292e;
+}
+
+/* Featured Experiences */
+.featured-experiences {
+  margin: 2rem 0;
+}
+
+.featured-card {
+  display: flex;
+  background-color: #f6f8fa;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.featured-card.reverse {
+  flex-direction: row-reverse;
+}
+
+.featured-image {
+  flex: 0 0 40%;
+}
+
+.featured-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featured-content {
+  flex: 0 0 60%;
+  padding: 2rem;
+}
+
+.featured-content h3 {
+  margin-top: 0;
+}
+
+.featured-content ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.featured-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Benefits Section */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.benefit-card {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: #f6f8fa;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.benefit-card:hover {
+  transform: scale(1.05);
+}
+
+.benefit-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+/* Token Rewards */
+.rewards-container {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.rewards-table-container {
+  flex: 1;
+  min-width: 300px;
+}
+
+.rewards-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rewards-table th,
+.rewards-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e1e4e8;
+  text-align: left;
+}
+
+.rewards-table th {
+  background-color: #f6f8fa;
+}
+
+.badges-showcase {
+  flex: 1;
+  min-width: 300px;
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.badge-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.badge-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f6f8fa;
+  border-radius: 50%;
+}
+
+.badge-note {
+  font-size: 0.875rem;
+  color: #586069;
+  margin-top: 1rem;
+}
+
+/* Events Timeline */
+.events-timeline {
+  margin: 2rem 0;
+}
+
+.event-card {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  transition: transform 0.2s ease;
+}
+
+.event-card:hover {
+  transform: translateX(5px);
+}
+
+.event-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #0366d6;
+  color: white;
+  border-radius: 6px;
+  padding: 1rem;
+  min-width: 80px;
+  text-align: center;
+}
+
+.event-date .month {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.event-date .day {
+  font-size: 1.75rem;
+  font-weight: bold;
+  line-height: 1;
+  margin-top: 0.25rem;
+}
+
+.event-details {
+  flex: 1;
+}
+
+.event-details h4 {
+  margin-top: 0;
+}
+
+.event-details ul {
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.event-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Recent Changes Timeline Styles */
+.recent-changes-section {
+  background-color: #f8f9fa;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.timeline-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.refresh-btn {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refresh-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.refresh-btn .icon {
+  margin-right: 0.5rem;
+}
+
+.rss-container {
+  display: flex;
+  align-items: center;
+}
+
+.rss-link {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #ff6600;
+  text-decoration: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.rss-link:hover {
+  background-color: #fff3e0;
+}
+
+.rss-link .icon {
+  margin-right: 0.5rem;
+}
+
+.changes-timeline {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.changes-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 120px;
+  width: 2px;
+  background-color: #e0e0e0;
+}
+
+.timeline-item {
+  display: flex;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.timeline-date {
+  width: 100px;
+  flex-shrink: 0;
+  margin-right: 40px;
+  text-align: right;
+  font-size: 0.9rem;
+  color: #666;
+  padding-top: 0.25rem;
+}
+
+.timeline-date .badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.timeline-item.new .timeline-date .badge {
+  background-color: #e3f2fd;
+  color: #0277bd;
+}
+
+.timeline-item.issue-fixed .timeline-date .badge.fix {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.timeline-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1.25rem;
+  flex-grow: 1;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+.timeline-content::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 3px solid #e0e0e0;
+  left: -48px;
+  top: 15px;
+}
+
+.timeline-item.new .timeline-content::before {
+  border-color: #2196f3;
+}
+
+.timeline-item.issue-fixed .timeline-content::before {
+  border-color: #4caf50;
+}
+
+.timeline-content h4 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: #333;
+}
+
+.timeline-meta {
+  display: flex;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #757575;
+}
+
+.timeline-meta span {
+  margin-right: 1rem;
+}
+
+.timeline-meta .author {
+  font-style: italic;
+}
+
+.timeline-meta .category {
+  background-color: #f1f1f1;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.timeline-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.known-issues {
+  margin-top: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1.25rem;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.known-issues h4 {
+  margin-top: 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.known-issues ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.known-issues li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.issue-tag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin-right: 0.75rem;
+  font-weight: bold;
+}
+
+.issue-tag:first-child {
+  background-color: #fff8e1;
+  color: #ff8f00;
+}
+
+.issue-tag:nth-child(2) {
+  background-color: #e8eaf6;
+  color: #3949ab;
+}
+
+/* Modal Styles */
+.recreation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.recreation-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  padding: 2rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.game-info, 
+.simulation-info,
+.join-info {
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.difficulty-selector,
+.simulation-options,
+.join-form {
+  margin: 1.5rem 0;
+}
+
+.form-note {
+  font-size: 0.875rem;
+  color: #586069;
+  margin-top: 0.5rem;
+}
+
+.registration-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.registration-form input[type="text"],
+.registration-form input[type="email"],
+.join-form input[type="text"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e1e4e8;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+}
+
+/* Gameplay Area */
+.gameplay-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-content {
+  text-align: center;
+  color: white;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.gameplay-area {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 1200px;
+  height: 80%;
+  background-color: #f6f8fa;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.gameplay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #0366d6;
+  color: white;
+}
+
+.gameplay-header h2 {
+  margin: 0;
+}
+
+.gameplay-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.placeholder-game {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 2rem;
+  height: 300px;
+}
+
+.game-element {
+  width: 150px;
+  height: 150px;
+  background-color: #dde5ef;
+  border-radius: 8px;
+  animation: pulse 2s infinite alternate;
+}
+
+.game-element:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+.game-element:nth-child(3) {
+  animation-delay: 1s;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); background-color: #dde5ef; }
+  to { transform: scale(1.05); background-color: #c9d5e7; }
+}
+
+/* Notification */
+.recreation-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  padding: 1rem;
+  z-index: 1001;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.recreation-notification.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.token-notification .token-icon,
+.badge-notification .badge-icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.token-notification .token-amount,
+.badge-notification .badge-title {
+  font-weight: bold;
+  margin: 0;
+}
+
+.token-notification .token-reason,
+.badge-notification .badge-name {
+  margin: 0;
+  color: #586069;
+  font-size: 0.875rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .education-container {
@@ -717,6 +1421,37 @@
   .defi-simulator .form-group input,
   .defi-simulator .form-group select {
     width: 100%;
+  }
+  
+  .featured-card {
+    flex-direction: column;
+  }
+  
+  .featured-card.reverse {
+    flex-direction: column;
+  }
+  
+  .featured-image {
+    flex: 0 0 200px;
+  }
+  
+  .rewards-container {
+    flex-direction: column;
+  }
+  
+  .event-card {
+    flex-direction: column;
+  }
+  
+  .event-date {
+    flex-direction: row;
+    padding: 0.5rem 1rem;
+    min-width: auto;
+    width: fit-content;
+  }
+  
+  .event-date .month {
+    margin-right: 0.5rem;
   }
 }
 

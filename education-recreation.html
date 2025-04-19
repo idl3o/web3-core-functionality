@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education & Recreation Center - Web3 Core Platform</title>
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/education.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">Web3 Core</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="streaming.html">Streaming</a></li>
+                    <li class="active"><a href="education.html">Education</a></li>
+                    <li><a href="library.html">Library</a></li>
+                    <li><a href="admin-dashboard.html">Admin</a></li>
+                </ul>
+            </nav>
+            <div class="wallet-connect">
+                <button id="connect-wallet" class="button primary outline">Connect Wallet</button>
+                <div id="wallet-address" class="hidden">
+                    <span id="address-text">0x0000...0000</span>
+                    <div id="token-info">
+                        <span id="token-balance">0</span> <img src="assets/images/icons/token.svg" alt="STREAM Tokens">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="education-container">
+        <h1>Education & Recreation Center</h1>
+        <p class="subtitle">Learn, play, and earn rewards while mastering Web3 concepts</p>
+
+        <div class="user-progress">
+            <div class="token-display">
+                <p>Your STREAM Tokens: <span class="token-count">0</span> <img src="assets/images/icons/token.svg" alt="STREAM Tokens" class="token-icon"></p>
+            </div>
+        </div>
+
+        <!-- Recent Changes Timeline -->
+        <div class="recent-changes-section">
+            <div class="container">
+                <h2 class="center-text">Recent Updates</h2>
+                <div class="timeline-controls">
+                    <button class="refresh-btn" id="refresh-timeline" title="Refresh Timeline">
+                        <span class="icon">🔄</span> Refresh
+                    </button>
+                    <div class="rss-container">
+                        <a href="changes-feed.xml" class="rss-link" title="Subscribe to RSS feed">
+                            <span class="icon">📶</span> RSS
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="changes-timeline" id="changes-timeline">
+                    <div class="timeline-item new">
+                        <div class="timeline-date">
+                            <span class="date">April 19, 2025</span>
+                            <span class="badge">New</span>
+                        </div>
+                        <div class="timeline-content">
+                            <h4>Game Theory Interactive Module Launched</h4>
+                            <p>Our new interactive Game Theory module is now available! Explore how blockchain consensus mechanisms use game theory principles through hands-on simulations.</p>
+                            <div class="timeline-meta">
+                                <span class="author">By Dev Team</span>
+                                <span class="category">Education</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <span class="date">April 15, 2025</span>
+                        </div>
+                        <div class="timeline-content">
+                            <h4>Blockchain Builder Game Updated</h4>
+                            <p>The Blockchain Builder game now includes new attack scenarios and defense mechanisms. Test your blockchain against Sybil attacks and improve your security.</p>
+                            <div class="timeline-meta">
+                                <span class="author">By Gaming Team</span>
+                                <span class="category">Games</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <span class="date">April 10, 2025</span>
+                        </div>
+                        <div class="timeline-content">
+                            <h4>Community Events Calendar Integration</h4>
+                            <p>You can now sync our events to your personal calendar with one click. Never miss a workshop, hackathon, or community meetup!</p>
+                            <div class="timeline-meta">
+                                <span class="author">By Community Team</span>
+                                <span class="category">Events</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item issue-fixed">
+                        <div class="timeline-date">
+                            <span class="date">April 8, 2025</span>
+                            <span class="badge fix">Fixed</span>
+                        </div>
+                        <div class="timeline-content">
+                            <h4>Wallet Connection Issue Resolved</h4>
+                            <p>Fixed connectivity issues affecting some users when connecting MetaMask wallets to the Recreation Center games. All interactive features should now work properly.</p>
+                            <div class="timeline-meta">
+                                <span class="author">By Support Team</span>
+                                <span class="category">Bugfix</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <span class="date">April 3, 2025</span>
+                        </div>
+                        <div class="timeline-content">
+                            <h4>Token Rewards System Enhanced</h4>
+                            <p>The Learn & Earn system now includes tiered rewards. Regular participation unlocks bonus multipliers for increased STREAM token earnings!</p>
+                            <div class="timeline-meta">
+                                <span class="author">By Tokenomics Team</span>
+                                <span class="category">Rewards</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-footer">
+                    <button class="button outline" id="load-more-changes">Load More Updates</button>
+                    <div class="known-issues">
+                        <h4>Known Issues</h4>
+                        <ul>
+                            <li>
+                                <span class="issue-tag">Investigating</span>
+                                Some users report occasional lag in the Network Attack Simulator under high traffic
+                            </li>
+                            <li>
+                                <span class="issue-tag">Scheduled Fix</span>
+                                Mobile responsiveness issues on the NFT Creation Studio (Fix scheduled for April 25)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="games">Learning Games</button>
+                <button class="tab-button" data-tab="simulations">Simulations</button>
+                <button class="tab-button" data-tab="community">Community</button>
+                <button class="tab-button" data-tab="events">Events</button>
+                <button class="tab-button" data-tab="rewards">Rewards</button>
+            </div>
+
+            <!-- Games Tab Content -->
+            <div id="games-content" class="tab-content active">
+                <h2>Learning Through Play</h2>
+                <p>Sharpen your Web3 knowledge with our interactive educational games. Earn tokens and badges as you master important concepts.</p>
+
+                <div class="featured-experiences">
+                    <div class="featured-card">
+                        <div class="featured-image">
+                            <img src="assets/images/education/game-theory.jpg" alt="Blockchain Builder Game">
+                        </div>
+                        <div class="featured-content">
+                            <h3>Blockchain Builder</h3>
+                            <p>Create and secure your own blockchain in this interactive simulation. Learn how blocks are formed, transactions are validated, and consensus is reached.</p>
+                            <ul>
+                                <li>Understand blockchain fundamentals through hands-on experience</li>
+                                <li>Learn about consensus mechanisms and network security</li>
+                                <li>Defend your blockchain against simulated attacks</li>
+                            </ul>
+                            <div class="featured-actions">
+                                <button id="blockchain-builder" class="button primary">Play Now</button>
+                                <button class="button outline">View Leaderboard</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>More Games</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>Token Trader</h4>
+                        <p>Test your trading skills in a simulated DEX environment. Learn about liquidity pools, impermanent loss, and trading strategies.</p>
+                        <button id="token-trader" class="button primary">Play Now</button>
+                    </div>
+                    <div class="card">
+                        <h4>Smart Contract Challenge</h4>
+                        <p>Find and fix vulnerabilities in smart contracts. Practice your code auditing skills and learn secure development patterns.</p>
+                        <button id="smart-contract-challenge" class="button primary">Play Now</button>
+                    </div>
+                    <div class="card">
+                        <h4>Consensus Quest</h4>
+                        <p>Join a multiplayer consensus building challenge. Work with or against other players to achieve network consensus.</p>
+                        <button id="consensus-quest" class="button primary">Play Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simulations Tab Content -->
+            <div id="simulations-content" class="tab-content">
+                <h2>Interactive Simulations</h2>
+                <p>Explore complex Web3 systems through our interactive simulations. Experiment in a risk-free environment and deepen your understanding.</p>
+
+                <div class="featured-experiences">
+                    <div class="featured-card reverse">
+                        <div class="featured-image">
+                            <img src="assets/images/education/blockchain-structure.png" alt="Market Simulator">
+                        </div>
+                        <div class="featured-content">
+                            <h3>Market Simulator</h3>
+                            <p>Explore token economics in different market conditions. Learn how liquidity, trading volume, and market sentiment affect prices.</p>
+                            <ul>
+                                <li>Simulate various market scenarios and observe outcomes</li>
+                                <li>Learn about tokenomics and supply/demand dynamics</li>
+                                <li>Test different investment and trading strategies</li>
+                            </ul>
+                            <div class="featured-actions">
+                                <button id="market-simulator" class="button primary">Launch Simulation</button>
+                                <button class="button outline">Tutorial</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>More Simulations</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>Network Attack Simulator</h4>
+                        <p>Understand blockchain security by simulating various attack vectors like 51% attacks, Sybil attacks, and eclipse attacks.</p>
+                        <button id="attack-simulator" class="button primary">Launch Simulation</button>
+                    </div>
+                    <div class="card">
+                        <h4>Governance Simulator</h4>
+                        <p>Experience DAO governance and voting mechanisms. Create proposals, vote, and see how different voting systems impact outcomes.</p>
+                        <button id="governance-simulator" class="button primary">Launch Simulation</button>
+                    </div>
+                    <div class="card">
+                        <h4>NFT Creation Studio</h4>
+                        <p>Design and mint your own NFTs. Learn about metadata standards, royalties, and NFT marketplaces.</p>
+                        <button id="nft-studio" class="button primary">Launch Simulation</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Community Tab Content -->
+            <div id="community-content" class="tab-content">
+                <h2>Community Learning</h2>
+                <p>Connect with fellow learners and experts to enhance your Web3 education through collaborative activities and social learning.</p>
+
+                <h3>Active Community Activities</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>Web3 Book Club</h4>
+                        <p>Join our monthly book discussions focusing on Web3, blockchain, and cryptocurrency literature.</p>
+                        <p><strong>Current Book:</strong> "The Infinite Machine" by Camila Russo</p>
+                        <p><strong>Next Meeting:</strong> May 5, 2025</p>
+                        <button id="join-book-club" class="button outline">Join Book Club</button>
+                    </div>
+                    <div class="card">
+                        <h4>Code Review Sessions</h4>
+                        <p>Weekly peer review sessions where you can get feedback on your smart contract code from experts and community members.</p>
+                        <p><strong>Next Session:</strong> April 22, 2025</p>
+                        <button id="join-code-review" class="button outline">Join Next Session</button>
+                    </div>
+                    <div class="card">
+                        <h4>Web3 Career Network</h4>
+                        <p>Connect with professionals in the Web3 space. Regular networking events, job postings, and mentorship opportunities.</p>
+                        <button id="join-career-network" class="button outline">Join Network</button>
+                    </div>
+                    <div class="card">
+                        <h4>Study Groups</h4>
+                        <p>Find or create focused study groups based on specific technologies, projects, or learning goals.</p>
+                        <p><strong>Active Groups:</strong> Solidity Deep Dive, DeFi Fundamentals, Zero-Knowledge Proofs</p>
+                        <button id="browse-study-groups" class="button outline">Browse Groups</button>
+                    </div>
+                </div>
+
+                <h3>Benefits of Community Learning</h3>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">👥</div>
+                        <h4>Peer Learning</h4>
+                        <p>Learn from others' perspectives and experiences.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🤝</div>
+                        <h4>Networking</h4>
+                        <p>Build valuable connections in the Web3 space.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🚀</div>
+                        <h4>Accountability</h4>
+                        <p>Stay motivated with community support.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💡</div>
+                        <h4>Innovation</h4>
+                        <p>Collaborate on projects and share ideas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Tab Content -->
+            <div id="events-content" class="tab-content">
+                <h2>Upcoming Events</h2>
+                <p>Join our educational events to learn from industry experts and connect with the community.</p>
+
+                <div class="events-timeline">
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="month">APR</span>
+                            <span class="day">25</span>
+                        </div>
+                        <div class="event-details">
+                            <h4>DeFi Deep Dive Webinar</h4>
+                            <p>An expert-led exploration of the latest developments in decentralized finance and yield farming strategies.</p>
+                            <ul>
+                                <li>Speaker: Alex Johnson, DeFi Researcher</li>
+                                <li>Format: Online Webinar</li>
+                                <li>Duration: 2 hours</li>
+                            </ul>
+                            <div class="event-actions">
+                                <button class="button outline">Register</button>
+                                <button class="button outline">Add to Calendar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="month">MAY</span>
+                            <span class="day">10</span>
+                        </div>
+                        <div class="event-details">
+                            <h4>Smart Contract Security Workshop</h4>
+                            <p>Hands-on workshop covering common vulnerabilities in smart contracts and how to prevent them.</p>
+                            <ul>
+                                <li>Speaker: Maria Chen, Security Auditor</li>
+                                <li>Format: Online Workshop</li>
+                                <li>Duration: 3 hours</li>
+                            </ul>
+                            <div class="event-actions">
+                                <button class="button outline">Register</button>
+                                <button class="button outline">Add to Calendar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="month">MAY</span>
+                            <span class="day">18</span>
+                        </div>
+                        <div class="event-details">
+                            <h4>NFT Art & Technology Fusion</h4>
+                            <p>Explore the intersection of art, technology, and finance in the NFT space.</p>
+                            <ul>
+                                <li>Speakers: Panel of NFT Artists and Developers</li>
+                                <li>Format: Online Panel Discussion</li>
+                                <li>Duration: 2 hours</li>
+                            </ul>
+                            <div class="event-actions">
+                                <button class="button outline">Register</button>
+                                <button class="button outline">Add to Calendar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="month">JUN</span>
+                            <span class="day">5</span>
+                        </div>
+                        <div class="event-details">
+                            <h4>Web3 Career Fair</h4>
+                            <p>Connect with Web3 companies hiring for technical and non-technical roles.</p>
+                            <ul>
+                                <li>Participating Companies: 20+</li>
+                                <li>Format: Virtual Fair</li>
+                                <li>Duration: All day (9 AM - 5 PM EST)</li>
+                            </ul>
+                            <div class="event-actions">
+                                <button class="button outline">Register</button>
+                                <button class="button outline">Add to Calendar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rewards Tab Content -->
+            <div id="rewards-content" class="tab-content">
+                <h2>Rewards & Recognition</h2>
+                <p>Earn tokens and badges as you learn and participate in our educational activities.</p>
+
+                <div class="rewards-container">
+                    <div class="rewards-table-container">
+                        <h3>Token Earning Opportunities</h3>
+                        <table class="rewards-table">
+                            <thead>
+                                <tr>
+                                    <th>Activity</th>
+                                    <th>Tokens</th>
+                                    <th>Frequency</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Complete a Learning Game</td>
+                                    <td>5</td>
+                                    <td>Once per game</td>
+                                </tr>
+                                <tr>
+                                    <td>Use a Simulation</td>
+                                    <td>10</td>
+                                    <td>Once per simulation</td>
+                                </tr>
+                                <tr>
+                                    <td>Attend Community Event</td>
+                                    <td>15</td>
+                                    <td>Per event</td>
+                                </tr>
+                                <tr>
+                                    <td>Answer Community Questions</td>
+                                    <td>3</td>
+                                    <td>Per approved answer</td>
+                                </tr>
+                                <tr>
+                                    <td>Submit Project for Review</td>
+                                    <td>20</td>
+                                    <td>Per submission</td>
+                                </tr>
+                                <tr>
+                                    <td>Referral Program</td>
+                                    <td>25</td>
+                                    <td>Per new user</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="badges-showcase">
+                        <h3>Achievement Badges</h3>
+                        <p>Earn badges to demonstrate your expertise and showcase your learning journey.</p>
+                        <div class="badges-grid">
+                            <div class="badge-item">
+                                <div class="badge-icon">⛓️</div>
+                                <p>Blockchain Builder</p>
+                            </div>
+                            <div class="badge-item">
+                                <div class="badge-icon">📊</div>
+                                <p>Market Analyst</p>
+                            </div>
+                            <div class="badge-item">
+                                <div class="badge-icon">📝</div>
+                                <p>Contract Wizard</p>
+                            </div>
+                            <div class="badge-item">
+                                <div class="badge-icon">🔐</div>
+                                <p>Security Expert</p>
+                            </div>
+                            <div class="badge-item">
+                                <div class="badge-icon">🤝</div>
+                                <p>Consensus Builder</p>
+                            </div>
+                            <div class="badge-item">
+                                <div class="badge-icon">🏛️</div>
+                                <p>DAO Governor</p>
+                            </div>
+                            <div class="badge-item">
+                                <div class="badge-icon">🎨</div>
+                                <p>NFT Creator</p>
+                            </div>
+                            <div class="badge-item">
+                                <div class="badge-icon">📈</div>
+                                <p>Market Maker</p>
+                            </div>
+                        </div>
+                        <p class="badge-note">Badges can be minted as NFTs if you connect your wallet</p>
+                    </div>
+                </div>
+
+                <h3>Your Earned Badges</h3>
+                <div class="user-badges">
+                    <p>No badges earned yet. Complete activities to earn badges!</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Web3 Core</h2>
+                    <p>Empowering the decentralized future</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Platform</h4>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="streaming.html">Streaming</a></li>
+                            <li><a href="education.html">Education</a></li>
+                            <li><a href="library.html">Library</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">White Paper</a></li>
+                            <li><a href="#">Roadmap</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Community</h4>
+                        <ul>
+                            <li><a href="#">Discord</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">Telegram</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Web3 Core Platform. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/wallet-connector.js"></script>
+    <script src="assets/js/education/content-library.js"></script>
+    <script src="assets/js/education/recreation-center.js"></script>
+    <script>
+        // Tab Navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+                    
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to current button and content
+                    button.classList.add('active');
+                    document.getElementById(`${tabId}-content`).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

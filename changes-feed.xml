@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Web3 Core Platform Updates</title>
+    <link>https://web3core.example.com/</link>
+    <description>Latest updates, additions, and fixes to the Web3 Core educational platform</description>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 19 Apr 2025 10:30:00 GMT</lastBuildDate>
+    <atom:link href="https://web3core.example.com/changes-feed.xml" rel="self" type="application/rss+xml" />
+    <image>
+      <url>https://web3core.example.com/assets/images/favicon.ico</url>
+      <title>Web3 Core Platform Updates</title>
+      <link>https://web3core.example.com/</link>
+    </image>
+    <category>Web3</category>
+    <category>Blockchain Education</category>
+    
+    <item>
+      <title>Game Theory Interactive Module Launched</title>
+      <link>https://web3core.example.com/education-recreation.html#game-theory-module</link>
+      <guid isPermaLink="false">update-2025-04-19-game-theory</guid>
+      <pubDate>Sat, 19 Apr 2025 09:00:00 GMT</pubDate>
+      <dc:creator>Dev Team</dc:creator>
+      <category>Education</category>
+      <description>Our new interactive Game Theory module is now available! Explore how blockchain consensus mechanisms use game theory principles through hands-on simulations.</description>
+      <content:encoded><![CDATA[
+        <h2>Game Theory Interactive Module Launched</h2>
+        <p>Our new interactive Game Theory module is now available! Explore how blockchain consensus mechanisms use game theory principles through hands-on simulations. This module includes:</p>
+        <ul>
+          <li>Interactive Prisoner's Dilemma simulator</li>
+          <li>Nash Equilibrium visualization tool</li>
+          <li>Network validation game with multiple actor types</li>
+          <li>Comparison of different consensus mechanisms through game theory lens</li>
+        </ul>
+        <p>Access this new content in the Education & Recreation Center under the Learning Games tab.</p>
+      ]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Blockchain Builder Game Updated</title>
+      <link>https://web3core.example.com/education-recreation.html#blockchain-builder</link>
+      <guid isPermaLink="false">update-2025-04-15-blockchain-builder</guid>
+      <pubDate>Tue, 15 Apr 2025 14:30:00 GMT</pubDate>
+      <dc:creator>Gaming Team</dc:creator>
+      <category>Games</category>
+      <description>The Blockchain Builder game now includes new attack scenarios and defense mechanisms. Test your blockchain against Sybil attacks and improve your security.</description>
+      <content:encoded><![CDATA[
+        <h2>Blockchain Builder Game Updated</h2>
+        <p>The Blockchain Builder game now includes new attack scenarios and defense mechanisms. Test your blockchain against Sybil attacks and improve your security.</p>
+        <p>New features include:</p>
+        <ul>
+          <li>Sybil attack simulation with configurable attack parameters</li>
+          <li>New defense mechanism options including reputation systems</li>
+          <li>Historical blockchain attack case studies</li>
+          <li>Improved visualization of network health during attacks</li>
+        </ul>
+      ]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Community Events Calendar Integration</title>
+      <link>https://web3core.example.com/education-recreation.html#events-content</link>
+      <guid isPermaLink="false">update-2025-04-10-calendar</guid>
+      <pubDate>Wed, 10 Apr 2025 08:15:00 GMT</pubDate>
+      <dc:creator>Community Team</dc:creator>
+      <category>Events</category>
+      <description>You can now sync our events to your personal calendar with one click. Never miss a workshop, hackathon, or community meetup!</description>
+      <content:encoded><![CDATA[
+        <h2>Community Events Calendar Integration</h2>
+        <p>You can now sync our events to your personal calendar with one click. Never miss a workshop, hackathon, or community meetup!</p>
+        <p>This new feature works with:</p>
+        <ul>
+          <li>Google Calendar</li>
+          <li>Apple Calendar</li>
+          <li>Microsoft Outlook</li>
+          <li>Any calendar app that supports .ics files</li>
+        </ul>
+        <p>Simply click the "Add to Calendar" button next to any event listing.</p>
+      ]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Wallet Connection Issue Resolved</title>
+      <link>https://web3core.example.com/education-recreation.html</link>
+      <guid isPermaLink="false">update-2025-04-08-wallet-fix</guid>
+      <pubDate>Mon, 08 Apr 2025 16:45:00 GMT</pubDate>
+      <dc:creator>Support Team</dc:creator>
+      <category>Bugfix</category>
+      <description>Fixed connectivity issues affecting some users when connecting MetaMask wallets to the Recreation Center games. All interactive features should now work properly.</description>
+      <content:encoded><![CDATA[
+        <h2>Wallet Connection Issue Resolved</h2>
+        <p>We've fixed connectivity issues affecting some users when connecting MetaMask wallets to the Recreation Center games. All interactive features should now work properly.</p>
+        <p>The fix addresses:</p>
+        <ul>
+          <li>Connection timeouts with MetaMask extension v11.3</li>
+          <li>Incorrect network detection on mobile wallets</li>
+          <li>Token balance display issues after wallet reconnection</li>
+        </ul>
+        <p>If you're still experiencing wallet connection issues, please clear your browser cache and try again, or contact support for assistance.</p>
+      ]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Token Rewards System Enhanced</title>
+      <link>https://web3core.example.com/education-recreation.html#rewards-content</link>
+      <guid isPermaLink="false">update-2025-04-03-rewards</guid>
+      <pubDate>Thu, 03 Apr 2025 11:20:00 GMT</pubDate>
+      <dc:creator>Tokenomics Team</dc:creator>
+      <category>Rewards</category>
+      <description>The Learn &amp; Earn system now includes tiered rewards. Regular participation unlocks bonus multipliers for increased STREAM token earnings!</description>
+      <content:encoded><![CDATA[
+        <h2>Token Rewards System Enhanced</h2>
+        <p>The Learn &amp; Earn system now includes tiered rewards. Regular participation unlocks bonus multipliers for increased STREAM token earnings!</p>
+        <p>New reward features include:</p>
+        <ul>
+          <li>Participation streak bonuses (daily, weekly, monthly)</li>
+          <li>Completion multipliers based on difficulty level</li>
+          <li>Special event double-reward periods</li>
+          <li>Community contribution bonuses</li>
+        </ul>
+        <p>Check out the updated rewards tab to see your current tier and available bonuses.</p>
+      ]]></content:encoded>
+    </item>
+  </channel>
+</rss>
