@@ -1,0 +1,67 @@
+{
+  "title": "Introduction to Solidity",
+  "description": "Learn the basics of Solidity programming for Ethereum smart contracts",
+  "lastUpdated": "2025-04-18",
+  "author": "Web3 Education Team",
+  "sections": [
+    {
+      "title": "What is Solidity?",
+      "html": "<p>Solidity is an object-oriented, high-level programming language designed specifically for writing smart contracts on blockchain platforms like Ethereum.</p><p>Created in 2014, Solidity allows developers to implement complex business logic, create tokens, and build decentralized applications (dApps).</p><p>It has a syntax similar to JavaScript, making it relatively approachable for web developers transitioning to blockchain development.</p>"
+    },
+    {
+      "title": "Basic Solidity Syntax",
+      "html": "<p>Here's a simple Solidity contract that demonstrates the basic structure and syntax:</p>",
+      "codeExample": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract SimpleStorage {\n    // State variable to store a number\n    uint256 private storedData;\n    \n    // Event to notify clients about the change\n    event DataChanged(uint256 newValue);\n    \n    // Store a new value\n    function set(uint256 x) public {\n        storedData = x;\n        emit DataChanged(x);\n    }\n    \n    // Return the stored value\n    function get() public view returns (uint256) {\n        return storedData;\n    }\n}"
+    },
+    {
+      "title": "Solidity Data Types",
+      "html": "<p>Solidity provides various data types:</p><ul><li><strong>Value Types</strong>: <code>bool</code>, <code>int</code>, <code>uint</code>, <code>address</code>, <code>bytes</code>, <code>enum</code></li><li><strong>Reference Types</strong>: <code>string</code>, <code>array</code>, <code>struct</code>, <code>mapping</code></li></ul><p>Example of using different data types:</p>",
+      "codeExample": "pragma solidity ^0.8.0;\n\ncontract DataTypesExample {\n    // Value types\n    bool public isActive = true;\n    uint256 public amount = 100;\n    address public owner;\n    \n    // Reference types\n    string public name = \"Web3 Project\";\n    uint256[] public values;\n    \n    // Mapping (key => value)\n    mapping(address => uint256) public balances;\n    \n    // Struct\n    struct User {\n        string name;\n        uint256 balance;\n        bool isActive;\n    }\n    \n    // Mapping with struct\n    mapping(address => User) public users;\n    \n    constructor() {\n        owner = msg.sender;\n    }\n}"
+    },
+    {
+      "title": "Functions and Modifiers",
+      "html": "<p>Solidity functions can have different visibility specifiers and modifiers:</p><ul><li><strong>public</strong>: Accessible from inside and outside the contract</li><li><strong>private</strong>: Only accessible from inside the contract</li><li><strong>internal</strong>: Accessible from inside and derived contracts</li><li><strong>external</strong>: Only accessible from outside the contract</li></ul><p>Function modifiers are reusable code that can change the behavior of functions:</p>",
+      "codeExample": "pragma solidity ^0.8.0;\n\ncontract AccessControl {\n    address public owner;\n    \n    constructor() {\n        owner = msg.sender;\n    }\n    \n    // Modifier to check if caller is owner\n    modifier onlyOwner() {\n        require(msg.sender == owner, \"Not the owner\");\n        _; // Continue execution\n    }\n    \n    // Function with modifier\n    function transferOwnership(address newOwner) public onlyOwner {\n        require(newOwner != address(0), \"New owner is zero address\");\n        owner = newOwner;\n    }\n}"
+    },
+    {
+      "title": "Ethereum Development Environment",
+      "html": "<p>To develop Solidity contracts, you'll need:</p><ul><li><strong>Development Framework</strong>: Hardhat, Truffle, or Foundry</li><li><strong>Compiler</strong>: solc (Solidity Compiler)</li><li><strong>Network</strong>: Local (Ganache, Hardhat Network) or Testnet (Sepolia, Goerli)</li><li><strong>Web3 Library</strong>: ethers.js or web3.js</li><li><strong>Wallet</strong>: MetaMask for interacting with your contracts</li></ul><p>This ecosystem allows you to write, compile, deploy, and interact with Solidity contracts.</p>"
+    }
+  ],
+  "interactive": {
+    "id": "solidity-playground",
+    "type": "code-editor"
+  },
+  "quizQuestions": [
+    {
+      "question": "Which of the following is NOT a valid Solidity data type?",
+      "options": [
+        "uint256", 
+        "address", 
+        "decimal", 
+        "string"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "question": "What does the 'view' keyword indicate in a Solidity function?",
+      "options": [
+        "The function can modify state variables", 
+        "The function cannot modify state variables", 
+        "The function can accept Ether", 
+        "The function can only be called by the contract owner"
+      ],
+      "correctAnswer": 1
+    }
+  ],
+  "furtherReading": [
+    {
+      "title": "Solidity Documentation",
+      "url": "https://docs.soliditylang.org/"
+    },
+    {
+      "title": "Ethereum and Solidity: The Complete Developer's Guide",
+      "url": "https://ethereum.org/en/developers/docs/"
+    }
+  ]
+}

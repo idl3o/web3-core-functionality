@@ -1,0 +1,79 @@
+{
+  "title": "Blockchain Fundamentals",
+  "description": "Learn the core concepts of blockchain technology",
+  "lastUpdated": "2025-04-18",
+  "author": "Web3 Education Team",
+  "sections": [
+    {
+      "title": "What is a Blockchain?",
+      "html": "<p>At its core, a blockchain is a distributed ledger that records transactions across many computers.</p><p>Each block contains a list of transactions, a timestamp, and a reference to the previous block, forming a chain of blocks—hence the name 'blockchain.'</p><p>This structure makes the blockchain immutable, as changing any information would require altering all subsequent blocks, which is computationally infeasible.</p>"
+    },
+    {
+      "title": "Blockchain Structure",
+      "html": "<p>A blockchain consists of connected blocks, each containing:</p><ul><li><strong>Block Header</strong>: Contains metadata like the timestamp, nonce (a number used in mining), and a reference to the previous block's hash.</li><li><strong>Transaction Data</strong>: The actual information being stored, such as cryptocurrency transfers or smart contract interactions.</li><li><strong>Hash</strong>: A cryptographic fingerprint that uniquely identifies the block's contents.</li></ul><p>The hash of each block is calculated using the block's contents and the previous block's hash, creating an unbreakable chain. If any data in a block changes, its hash changes too, breaking the chain.</p>"
+    },
+    {
+      "title": "Consensus Mechanisms",
+      "html": "<p>Blockchain networks use consensus mechanisms to agree on the state of the ledger without central authority.</p><p>The two most common consensus mechanisms are:</p><ul><li><strong>Proof of Work (PoW)</strong>: Miners solve complex mathematical puzzles to validate transactions and create new blocks. Used by Bitcoin and (formerly) Ethereum.</li><li><strong>Proof of Stake (PoS)</strong>: Validators stake cryptocurrency to participate in block validation. More energy-efficient than PoW. Used by Ethereum 2.0, Cardano, and Solana.</li></ul><p>Other consensus mechanisms include Delegated Proof of Stake (DPoS), Proof of Authority (PoA), and Practical Byzantine Fault Tolerance (PBFT).</p>",
+      "videoUrl": "https://example.com/videos/consensus-mechanisms.mp4"
+    },
+    {
+      "title": "Immutability and Security",
+      "html": "<p>Blockchain's immutability comes from:</p><ul><li><strong>Cryptographic Hashing</strong>: Each block contains a cryptographic hash of the previous block, creating a tamper-evident chain.</li><li><strong>Distributed Nature</strong>: The blockchain is stored across many nodes in a network, making it difficult for an attacker to compromise the majority.</li><li><strong>Consensus</strong>: Nodes must agree on the state of the blockchain, preventing malicious actors from altering records.</li></ul><p>To successfully attack a blockchain, an attacker would need to control over 51% of the network's computing power (in PoW) or stake (in PoS), which is increasingly difficult as networks grow larger.</p>"
+    },
+    {
+      "title": "Public vs. Private Blockchains",
+      "html": "<p>Blockchains can be categorized based on who can participate:</p><table class='comparison-table'><thead><tr><th>Feature</th><th>Public Blockchains</th><th>Private Blockchains</th></tr></thead><tbody><tr><td>Access</td><td>Open to anyone</td><td>Limited to authorized participants</td></tr><tr><td>Examples</td><td>Bitcoin, Ethereum</td><td>Hyperledger Fabric, R3 Corda</td></tr><tr><td>Transparency</td><td>Fully transparent</td><td>Controlled transparency</td></tr><tr><td>Consensus</td><td>Permissionless (e.g., PoW, PoS)</td><td>Permissioned (e.g., PBFT, PoA)</td></tr><tr><td>Security</td><td>Secured by economic incentives</td><td>Secured by access controls</td></tr><tr><td>Use Cases</td><td>Cryptocurrencies, public applications</td><td>Enterprise solutions, consortiums</td></tr></tbody></table><p>Hybrid models also exist, combining features of both public and private blockchains.</p>"
+    },
+    {
+      "title": "Try It Yourself",
+      "html": "<p>Below is an interactive blockchain demo where you can see how blocks are linked together and what happens when data is changed. Try adding new blocks to the chain, then try modifying data in one of the blocks to see how it affects the integrity of the entire blockchain.</p>"
+    }
+  ],
+  "interactive": {
+    "id": "blockchain-demo-1",
+    "type": "block-explorer"
+  },
+  "quizQuestions": [
+    {
+      "question": "What makes blockchain technology tamper-resistant?",
+      "options": [
+        "Government regulations", 
+        "The linking of blocks through cryptographic hashes",
+        "Expensive hardware requirements", 
+        "Centralized verification"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "Which consensus mechanism is more energy-efficient?",
+      "options": [
+        "Proof of Work", 
+        "Proof of Stake", 
+        "Both use the same amount of energy", 
+        "Neither uses energy"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "What happens if data in a blockchain block is modified?",
+      "options": [
+        "Nothing, the blockchain automatically adjusts", 
+        "The block's hash changes, breaking the chain",
+        "The modification is approved by miners", 
+        "The change is rejected and reverted"
+      ],
+      "correctAnswer": 1
+    }
+  ],
+  "furtherReading": [
+    {
+      "title": "How Does Blockchain Work?",
+      "url": "https://ethereum.org/en/developers/docs/intro-to-ethereum/"
+    },
+    {
+      "title": "Consensus Mechanisms Explained",
+      "url": "https://ethereum.org/en/developers/docs/consensus-mechanisms/"
+    }
+  ]
+}

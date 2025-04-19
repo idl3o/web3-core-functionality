@@ -1,0 +1,62 @@
+{
+  "title": "What is Web3?",
+  "description": "An introduction to Web3 technology and concepts",
+  "lastUpdated": "2025-04-18",
+  "author": "Web3 Education Team",
+  "sections": [
+    {
+      "title": "Introduction to Web3",
+      "html": "<p>Web3 represents the next evolution of the internet, built on decentralized blockchain technology.</p><p>Unlike Web2 (the current internet), which is dominated by centralized platforms and services, Web3 aims to redistribute power to users through decentralized applications (dApps), smart contracts, and token-based economics.</p><p>In this lesson, we'll explore the fundamental concepts behind Web3, its key technologies, and how it differs from previous iterations of the web.</p>"
+    },
+    {
+      "title": "Web1, Web2, and Web3",
+      "html": "<p><strong>Web1 (1990s-early 2000s)</strong>: The read-only web. Static websites with minimal interaction.</p><p><strong>Web2 (mid-2000s-present)</strong>: The read-write web. Interactive platforms, social media, and cloud services controlled by centralized entities.</p><p><strong>Web3 (emerging)</strong>: The read-write-own web. Users have ownership over their data and digital assets through blockchain and cryptography.</p><p>The key difference is that Web3 enables true ownership and peer-to-peer interaction without intermediaries.</p>",
+      "videoUrl": "https://example.com/videos/web3-evolution.mp4"
+    },
+    {
+      "title": "Core Components of Web3",
+      "html": "<p>Web3 is built on several foundational technologies and concepts:</p><ul><li><strong>Blockchain</strong>: A distributed, immutable ledger that records transactions across many computers.</li><li><strong>Cryptocurrencies</strong>: Digital currencies that use cryptography for security and operate on decentralized networks.</li><li><strong>Smart Contracts</strong>: Self-executing contracts with the terms directly written into code.</li><li><strong>Decentralized Applications (dApps)</strong>: Applications that run on a blockchain network rather than a single computer.</li><li><strong>Tokens</strong>: Digital assets that can represent anything from currency to voting rights to real-world assets.</li><li><strong>Wallets</strong>: Software or hardware that stores the private keys needed to access and manage cryptocurrencies and interact with dApps.</li></ul>"
+    },
+    {
+      "title": "Web3 vs. Traditional Web Architecture",
+      "html": "<p>Let's compare the architecture of traditional web applications with Web3 applications:</p><table class='comparison-table'><thead><tr><th>Feature</th><th>Traditional Web (Web2)</th><th>Web3</th></tr></thead><tbody><tr><td>Data Storage</td><td>Centralized servers and databases</td><td>Distributed blockchain nodes</td></tr><tr><td>Authentication</td><td>Username/password, OAuth</td><td>Cryptographic signatures</td></tr><tr><td>Business Logic</td><td>Server-side code</td><td>Smart contracts</td></tr><tr><td>Hosting</td><td>Cloud providers</td><td>Distributed network</td></tr><tr><td>State Management</td><td>Database transactions</td><td>Blockchain consensus</td></tr><tr><td>Trust Model</td><td>Trust the service provider</td><td>Trust the code (trustless)</td></tr></tbody></table>"
+    },
+    {
+      "title": "Why Web3 Matters",
+      "html": "<p>Web3 represents a paradigm shift in how we interact with digital services:</p><ul><li><strong>User Sovereignty</strong>: Users own their data and digital assets.</li><li><strong>Censorship Resistance</strong>: No central authority can remove content or block users.</li><li><strong>Permissionless Innovation</strong>: Anyone can build and deploy Web3 applications without gatekeepers.</li><li><strong>Native Payments</strong>: Built-in payment infrastructure without intermediaries.</li><li><strong>Global Accessibility</strong>: Services available to anyone with internet access, regardless of location or status.</li></ul><p>While Web3 is still evolving, it represents a significant shift in how we think about internet services, digital ownership, and online interactions.</p>"
+    }
+  ],
+  "interactive": null,
+  "quizQuestions": [
+    {
+      "question": "What is the main difference between Web2 and Web3?",
+      "options": [
+        "Web3 is faster than Web2", 
+        "Web3 is built on decentralized technology with user ownership",
+        "Web3 requires a subscription fee", 
+        "Web3 works without an internet connection"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "Which of the following is NOT a key component of Web3?",
+      "options": [
+        "Blockchain", 
+        "Smart Contracts", 
+        "Centralized Databases", 
+        "Digital Wallets"
+      ],
+      "correctAnswer": 2
+    }
+  ],
+  "furtherReading": [
+    {
+      "title": "The Architecture of a Web 3.0 application",
+      "url": "https://ethereum.org/en/developers/docs/web2-vs-web3/"
+    },
+    {
+      "title": "What is Web3?",
+      "url": "https://ethereum.org/en/web3/"
+    }
+  ]
+}

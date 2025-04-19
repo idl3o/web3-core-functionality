@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>.NET SDK | Web3 Crypto Streaming Service</title>
+    <link rel="stylesheet" href="../../assets/css/main.css" />
+    <link rel="shortcut icon" href="../../assets/images/favicon.ico" type="image/x-icon" />
+    <meta
+      name="description"
+      content=".NET SDK for Web3 Crypto Streaming Service - Integrate streaming functionality into your C# applications"
+    />
+    <style>
+      .docs-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .docs-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .docs-header h1 {
+        font-size: 2.5rem;
+        color: #0066cc;
+        margin-bottom: 10px;
+      }
+
+      .docs-header p {
+        font-size: 1.2rem;
+        color: #666;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .docs-grid {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 30px;
+      }
+
+      .sidebar {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .sidebar-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .sidebar-nav li {
+        margin-bottom: 5px;
+      }
+
+      .sidebar-nav a {
+        display: block;
+        padding: 8px 15px;
+        color: #333;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+      }
+
+      .sidebar-nav a:hover,
+      .sidebar-nav a.active {
+        background-color: #0066cc;
+        color: white;
+      }
+
+      .sidebar-section {
+        margin-bottom: 20px;
+      }
+
+      .sidebar-section-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #666;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+      }
+
+      .main-content {
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .content-section {
+        margin-bottom: 40px;
+      }
+
+      .content-section h2 {
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+
+      .table-of-contents {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+      }
+
+      .table-of-contents h3 {
+        margin-top: 0;
+        font-size: 1.2rem;
+      }
+
+      .table-of-contents ul {
+        padding-left: 20px;
+      }
+
+      .table-of-contents li {
+        margin-bottom: 8px;
+      }
+
+      code {
+        font-family: monospace;
+        background: #f5f5f5;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-size: 0.9em;
+      }
+
+      pre {
+        background: #272822;
+        color: #f8f8f2;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+        margin: 15px 0;
+      }
+
+      .code-example {
+        margin: 20px 0;
+      }
+
+      .code-title {
+        background: #1e1f1c;
+        color: #8f908a;
+        padding: 5px 15px;
+        border-radius: 5px 5px 0 0;
+        font-family: monospace;
+        font-size: 0.9em;
+      }
+
+      .changelog {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 40px;
+      }
+
+      .changelog h3 {
+        margin-top: 0;
+      }
+
+      .changelog ul {
+        margin-bottom: 0;
+      }
+
+      .method-card {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+
+      .method-header {
+        background: #f8f9fa;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .method-header h4 {
+        margin: 0;
+        color: #0066cc;
+      }
+
+      .method-signature {
+        font-family: monospace;
+        font-size: 0.9em;
+        color: #333;
+        margin-top: 5px;
+      }
+
+      .method-body {
+        padding: 15px;
+      }
+
+      .method-params h5 {
+        margin-top: 0;
+      }
+
+      .method-returns h5 {
+        margin-bottom: 5px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+      }
+
+      th, td {
+        text-align: left;
+        padding: 12px 15px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #f1f1f1;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.75em;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .badge-required {
+        background-color: #dc3545;
+        color: white;
+      }
+
+      .badge-optional {
+        background-color: #6c757d;
+        color: white;
+      }
+
+      .nuget-badge {
+        display: inline-block;
+        background: #004880;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 4px;
+        margin: 15px 0;
+        font-family: monospace;
+      }
+
+      .platform-support {
+        margin: 20px 0;
+      }
+
+      .platform-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .platform-table th,
+      .platform-table td {
+        text-align: center;
+      }
+
+      .check {
+        color: #28a745;
+        font-size: 1.2em;
+      }
+
+      .cross {
+        color: #dc3545;
+        font-size: 1.2em;
+      }
+
+      .button-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      @media (max-width: 768px) {
+        .docs-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .sidebar {
+          position: static;
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navigation -->
+    <div class="navigation">
+      <div class="container nav-container">
+        <a href="../../index.html" class="logo">Web3 Crypto Streaming</a>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="../../index.html#features">Features</a></li>
+            <li><a href="../../index.html#architecture">Architecture</a></li>
+            <li><a href="../../index.html#tech">Tech Stack</a></li>
+            <li><a href="../../index.html#token">Token</a></li>
+            <li><a href="../../index.html#roadmap">Roadmap</a></li>
+            <li><a href="../../streaming.html">Demo Player</a></li>
+            <li><a href="../../library.html">Education</a></li>
+            <li><a href="../../docs/" class="active"><strong>Docs</strong></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Documentation Content -->
+    <div class="docs-container">
+      <header class="docs-header">
+        <h1>.NET SDK for Web3 Crypto Streaming</h1>
+        <p>
+          Integrate Web3 streaming functionality into your .NET applications with our
+          comprehensive C# SDK
+        </p>
+      </header>
+
+      <div class="docs-grid">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+          <div class="sidebar-title">SDK Documentation</div>
+          
+          <nav class="sidebar-nav">
+            <div class="sidebar-section">
+              <div class="sidebar-section-title">SDKs</div>
+              <ul>
+                <li><a href="javascript.html">JavaScript/TypeScript</a></li>
+                <li><a href="react.html">React Components</a></li>
+                <li><a href="python.html">Python</a></li>
+                <li><a href="java.html">Java</a></li>
+                <li><a href="dotnet.html" class="active">.NET (C#)</a></li>
+              </ul>
+            </div>
+            
+            <div class="sidebar-section">
+              <div class="sidebar-section-title">Documentation</div>
+              <ul>
+                <li><a href="../guides/quick-start.html">Quick Start</a></li>
+                <li><a href="../api/reference.html">API Reference</a></li>
+                <li><a href="../concepts/token-economics.html">Token Economics</a></li>
+              </ul>
+            </div>
+            
+            <div class="sidebar-section">
+              <div class="sidebar-section-title">On This Page</div>
+              <ul>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#getting-started">Getting Started</a></li>
+                <li><a href="#authentication">Authentication</a></li>
+                <li><a href="#streaming">Streaming</a></li>
+                <li><a href="#wallet-integration">Wallet Integration</a></li>
+                <li><a href="#token-management">Token Management</a></li>
+                <li><a href="#admin-access">Owner/Admin Access</a></li>
+                <li><a href="#examples">Examples</a></li>
+                <li><a href="#faq">FAQ</a></li>
+              </ul>
+            </div>
+          </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+          <section class="content-section">
+            <h2>Introduction to the .NET SDK</h2>
+            <p>
+              The Web3 Crypto Streaming .NET SDK provides a type-safe, intuitive interface for .NET developers
+              to integrate streaming functionality into applications built with C# and other .NET languages.
+              Our SDK supports various .NET platforms including .NET 6+, .NET Framework 4.6.2+, Xamarin, and Unity.
+            </p>
+            
+            <div class="nuget-badge">
+              dotnet add package Web3.Streaming.Client
+            </div>
+            
+            <div class="platform-support">
+              <h3>Platform Support</h3>
+              <table class="platform-table">
+                <thead>
+                  <tr>
+                    <th>Platform</th>
+                    <th>.NET 6+</th>
+                    <th>.NET Framework 4.6.2+</th>
+                    <th>Xamarin</th>
+                    <th>Unity</th>
+                    <th>Blazor WebAssembly</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Supported</td>
+                    <td><span class="check">✓</span></td>
+                    <td><span class="check">✓</span></td>
+                    <td><span class="check">✓</span></td>
+                    <td><span class="check">✓</span></td>
+                    <td><span class="check">✓</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="installation" class="content-section">
+            <h2>Installation</h2>
+            <p>
+              You can install the Web3 Streaming .NET SDK via NuGet Package Manager or the .NET CLI:
+            </p>
+            
+            <div class="code-example">
+              <div class="code-title">Via NuGet Package Manager</div>
+              <pre><code>Install-Package Web3.Streaming.Client</code></pre>
+            </div>
+            
+            <div class="code-example">
+              <div class="code-title">Via .NET CLI</div>
+              <pre><code>dotnet add package Web3.Streaming.Client</code></pre>
+            </div>
+            
+            <div class="code-example">
+              <div class="code-title">Via PackageReference</div>
+              <pre><code>&lt;PackageReference Include="Web3.Streaming.Client" Version="1.0.0" /&gt;</code></pre>
+            </div>
+          </section>
+
+          <section id="getting-started" class="content-section">
+            <h2>Getting Started</h2>
+            <p>
+              To get started with the Web3 Streaming .NET SDK, you'll need to create a client instance
+              and configure it with your API credentials.
+            </p>
+            
+            <div class="code-example">
+              <div class="code-title">Basic Setup</div>
+              <pre><code>using Web3.Streaming.Client;
+using Web3.Streaming.Client.Config;
+
+// Create client configuration
+var config = new Web3StreamingConfig
+{
+    ApiKey = "your-api-key",
+    ApiBaseUrl = "https://api.web3streaming.com/v1",
+    Network = NetworkType.Polygon
+};
+
+// Initialize the client
+var streamingClient = new Web3StreamingClient(config);
+
+// Test connection
+bool isConnected = await streamingClient.TestConnectionAsync();
+Console.WriteLine($"Connected to Web3 Streaming API: {isConnected}");</code></pre>
+            </div>
+          </section>
+
+          <section id="authentication" class="content-section">
+            <h2>User Authentication</h2>
+            <p>
+              The SDK provides methods for authenticating users with Web3 wallets. This is essential
+              for accessing user-specific features such as token balances and stream access rights.
+            </p>
+            
+            <div class="code-example">
+              <div class="code-title">Web3 Wallet Authentication</div>
+              <pre><code>// Using Nethereum for wallet integration
+using Nethereum.Web3;
+using Nethereum.Signer;
+
+// Create a challenge message for the user to sign
+var challenge = await streamingClient.Auth.CreateChallengeAsync(walletAddress);
+
+// In a real app, the user would sign this with their wallet
+// For demo purposes, we'll use a private key (never do this in production!)
+var privateKey = "your_private_key_for_testing";
+var signer = new EthereumMessageSigner();
+var signature = signer.SignMessage(privateKey, challenge.Message);
+
+// Authenticate with the signature
+var authResult = await streamingClient.Auth.AuthenticateAsync(new AuthRequest
+{
+    Address = walletAddress,
+    Signature = signature,
+    ChallengeId = challenge.ChallengeId
+});
+
+// Store the auth token for subsequent requests
+streamingClient.SetAuthToken(authResult.Token);</code></pre>
+            </div>
+          </section>
+
+          <section id="streaming" class="content-section">
+            <h2>Streaming Content</h2>
+            <p>
+              Once authenticated, users can access streaming content. The SDK provides methods to check
+              access rights, start streams, and retrieve content metadata.
+            </p>
+            
+            <div class="code-example">
+              <div class="code-title">Check Stream Access</div>
+              <pre><code>// Check if the user has access to a specific content
+var contentId = "content_123456";
+var accessCheck = await streamingClient.Content.CheckAccessAsync(contentId);
+
+if (accessCheck.HasAccess)
+{
+    Console.WriteLine($"Access granted until: {accessCheck.ExpiryTime}");
+    Console.WriteLine($"Remaining time: {accessCheck.RemainingTime} seconds");
+    
+    // Get stream URL
+    var streamUrl = await streamingClient.Content.GetStreamUrlAsync(contentId);
+    Console.WriteLine($"Stream URL: {streamUrl}");
+}
+else
+{
+    Console.WriteLine("Access denied. User needs to purchase access.");
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+              <div class="code-title">Start New Stream</div>
+              <pre><code>// Start a new stream (spends 1 token)
+var startStreamResult = await streamingClient.Streaming.StartStreamAsync(new StartStreamRequest
+{
+    ContentId = contentId
+});
+
+if (startStreamResult.Success)
+{
+    Console.WriteLine($"Stream started. Expires at: {startStreamResult.ExpiryTime}");
+    Console.WriteLine($"Transaction hash: {startStreamResult.TransactionHash}");
+}
+else
+{
+    Console.WriteLine($"Failed to start stream: {startStreamResult.ErrorMessage}");
+}</code></pre>
+            </div>
+          </section>
+
+          <section id="wallet-integration" class="content-section">
+            <h2>Wallet Integration</h2>
+            <p>
+              The Web3 Streaming .NET SDK integrates seamlessly with popular Ethereum wallet providers
+              for .NET, such as Nethereum. This enables token transactions and stream purchases.
+            </p>
+            
+            <div class="code-example">
+              <div class="code-title">Connect Wallet with Nethereum</div>
+              <pre><code>using Nethereum.Web3;
+using Nethereum.Contracts;
+
+// Set up Web3 instance with Nethereum
+var web3 = new Web3("https://polygon-rpc.com");
+
+// Connect the wallet to our SDK
+var walletConnector = new Web3WalletConnector(web3);
+streamingClient.SetWalletConnector(walletConnector);
+
+// Now the SDK can interact with the blockchain directly
+var balance = await streamingClient.Token.GetBalanceAsync();
+Console.WriteLine($"Token balance: {balance}");</code></pre>
+            </div>
+          </section>
+          
+          <section id="token-management" class="content-section">
+            <h2>Token Management</h2>
+            <p>
+              The SDK provides comprehensive token management capabilities, including balance checking,
+              token transfers, and purchasing streaming credits.
+            </p>
+            
+            <div class="code-example">
+              <div class="code-title">Purchase Tokens</div>
+              <pre><code>// Purchase tokens with ETH/MATIC
+var purchaseResult = await streamingClient.Token.PurchaseTokensAsync(new TokenPurchaseRequest
+{
+    Amount = 10, // Amount in ETH/MATIC
+    GasLimit = 200000
+});
+
+if (purchaseResult.Success)
+{
+    Console.WriteLine($"Purchased tokens successfully!");
+    Console.WriteLine($"Transaction hash: {purchaseResult.TransactionHash}");
+    Console.WriteLine($"Tokens received: {purchaseResult.TokensReceived}");
+}
+else
+{
+    Console.WriteLine($"Token purchase failed: {purchaseResult.ErrorMessage}");
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+              <div class="code-title">Transfer Tokens</div>
+              <pre><code>// Transfer tokens to another address
+var transferResult = await streamingClient.Token.TransferTokensAsync(new TokenTransferRequest
+{
+    RecipientAddress = "0xRecipientAddress...",
+    Amount = 50, // 50 tokens
+    GasLimit = 150000
+});
+
+if (transferResult.Success)
+{
+    Console.WriteLine($"Token transfer successful!");
+    Console.WriteLine($"Transaction hash: {transferResult.TransactionHash}");
+}
+else
+{
+    Console.WriteLine($"Transfer failed: {transferResult.ErrorMessage}");
+}</code></pre>
+            </div>
+          </section>
+          
+          <section id="admin-access" class="content-section">
+            <h2>Owner/Admin Access</h2>
+            <p>
+              For platform owners and administrators, the SDK provides advanced management capabilities
+              that interact with the owner-level functions of your StreamingToken smart contract.
+            </p>
+            
+            <div class="code-example">
+              <div class="code-title">Admin Authentication</div>
+              <pre><code>// Admin authentication requires owner wallet
+var adminAuthResult = await streamingClient.Admin.AuthenticateAdminAsync(new AdminAuthRequest
+{
+    Address = ownerWalletAddress,
+    Signature = ownerSignature,
+    Message = challengeMessage
+});
+
+if (adminAuthResult.Success)
+{
+    // Set admin token for subsequent admin operations
+    streamingClient.SetAdminToken(adminAuthResult.Token);
+    Console.WriteLine("Admin authentication successful");
+}
+else
+{
+    Console.WriteLine($"Admin authentication failed: {adminAuthResult.ErrorMessage}");
+}</code></pre>
+            </div>
+            
+            <div class="code-example">
+              <div class="code-title">Grant Access to User</div>
+              <pre><code>// Grant content access to a user (admin only)
+var grantResult = await streamingClient.Admin.GrantAccessAsync(new GrantAccessRequest
+{
+    UserAddress = "0xUserAddress...",
+    ContentId = "content_123456",
+    DurationInSeconds = 3600 // 1 hour
+});
+
+if (grantResult.Success)
+{
+    Console.WriteLine($"Access granted to user until {grantResult.ExpiryTime}");
+    Console.WriteLine($"Transaction hash: {grantResult.TransactionHash}");
+}
+else
+{
+    Console.WriteLine($"Failed to grant access: {grantResult.ErrorMessage}");
+}</code></pre>
+            </div>
+            
+            <div class="code-example">
+              <div class="code-title">Mint Tokens</div>
+              <pre><code>// Mint new tokens to an address (admin only)
+var mintResult = await streamingClient.Admin.MintTokensAsync(new MintTokensRequest
+{
+    RecipientAddress = "0xRecipientAddress...",
+    Amount = 1000
+});
+
+if (mintResult.Success)
+{
+    Console.WriteLine($"Successfully minted 1000 tokens");
+    Console.WriteLine($"Transaction hash: {mintResult.TransactionHash}");
+}
+else
+{
+    Console.WriteLine($"Failed to mint tokens: {mintResult.ErrorMessage}");
+}</code></pre>
+            </div>
+            
+            <div class="code-example">
+              <div class="code-title">Get Platform Statistics</div>
+              <pre><code>// Get platform statistics (admin only)
+var stats = await streamingClient.Admin.GetPlatformStatsAsync();
+
+Console.WriteLine($"Total users: {stats.UserCount}");
+Console.WriteLine($"Total content items: {stats.ContentCount}");
+Console.WriteLine($"Active streams: {stats.ActiveStreams}");
+Console.WriteLine($"Total token supply: {stats.TokenSupply}");
+Console.WriteLine($"Treasury balance: {stats.TreasuryBalance}");</code></pre>
+            </div>
+          </section>
+          
+          <section id="examples" class="content-section">
+            <h2>Complete Examples</h2>
+            <p>
+              Here are some complete examples demonstrating common use cases for the Web3 Streaming .NET SDK.
+            </p>
+            
+            <div class="code-example">
+              <div class="code-title">Simple Streaming Application</div>
+              <pre><code>using System;
+using System.Threading.Tasks;
+using Web3.Streaming.Client;
+using Web3.Streaming.Client.Config;
+
+public class StreamingExample
+{
+    public static async Task Main(string[] args)
+    {
+        // Initialize client
+        var config = new Web3StreamingConfig
+        {
+            ApiKey = "YOUR_API_KEY",
+            ApiBaseUrl = "https://api.web3streaming.com/v1",
+            Network = NetworkType.Polygon
+        };
+        
+        var client = new Web3StreamingClient(config);
+        
+        // Authenticate user
+        await AuthenticateUser(client, "0xUserWalletAddress...");
+        
+        // Browse available content
+        var content = await client.Content.GetContentListAsync(new ContentQueryRequest
+        {
+            Page = 1,
+            PageSize = 10,
+            Category = "education"
+        });
+        
+        Console.WriteLine($"Found {content.TotalItems} educational content items");
+        
+        foreach (var item in content.Items)
+        {
+            Console.WriteLine($"- {item.Title} (ID: {item.ContentId})");
+            
+            // Check if user has access to this content
+            var access = await client.Content.CheckAccessAsync(item.ContentId);
+            
+            if (access.HasAccess)
+            {
+                Console.WriteLine($"  You have access until {access.ExpiryTime}");
+                
+                // Get stream URL
+                var streamUrl = await client.Content.GetStreamUrlAsync(item.ContentId);
+                Console.WriteLine($"  Stream URL: {streamUrl}");
+            }
+            else
+            {
+                Console.WriteLine("  You don't have access to this content yet");
+                
+                // Purchase access if user wants to
+                Console.Write("  Would you like to purchase access? (y/n): ");
+                if (Console.ReadLine().ToLower() == "y")
+                {
+                    var startResult = await client.Streaming.StartStreamAsync(new StartStreamRequest
+                    {
+                        ContentId = item.ContentId
+                    });
+                    
+                    if (startResult.Success)
+                    {
+                        Console.WriteLine($"  Access purchased! Valid until {startResult.ExpiryTime}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"  Purchase failed: {startResult.ErrorMessage}");
+                    }
+                }
+            }
+            
+            Console.WriteLine();
+        }
+    }
+    
+    private static async Task AuthenticateUser(Web3StreamingClient client, string walletAddress)
+    {
+        // In a real app, you would integrate with a wallet provider
+        // For this example, we'll mock the authentication
+        
+        Console.WriteLine($"Authenticating user {walletAddress}");
+        
+        // Simulate successful authentication
+        client.SetAuthToken("SIMULATED_AUTH_TOKEN");
+        
+        Console.WriteLine("Authentication successful");
+    }
+}</code></pre>
+            </div>
+          </section>
+          
+          <section id="faq" class="content-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <h4>Why do I need a .NET SDK for a Web3 application?</h4>
+            <p>
+              While Web3 applications are primarily based on blockchain technologies, integrating them
+              into traditional applications often requires seamless bridges between Web2 and Web3 technologies.
+              Our .NET SDK provides this bridge, allowing .NET developers to easily incorporate blockchain
+              functionality without needing to write complex Web3 integration code.
+            </p>
+            
+            <h4>Does the SDK support cross-platform development?</h4>
+            <p>
+              Yes, our SDK is built on .NET Standard 2.0, which provides compatibility with .NET Core, .NET Framework,
+              Xamarin, Unity, and other .NET platforms. This allows you to use the same SDK across desktop,
+              mobile, and web applications.
+            </p>
+            
+            <h4>How does the SDK handle blockchain transactions?</h4>
+            <p>
+              The SDK interfaces with Nethereum for blockchain interactions, providing a simplified API
+              that abstracts away the complexity of direct blockchain calls. For advanced users, we also
+              expose direct access to the underlying blockchain functionality.
+            </p>
+            
+            <h4>Is the SDK suitable for backend services?</h4>
+            <p>
+              Absolutely. The SDK works well for both client and server applications. For server
+              applications, you can use the admin APIs to manage users, content, and tokens from
+              your backend infrastructure.
+            </p>
+          </section>
+          
+          <div class="changelog">
+            <h3>Changelog</h3>
+            <p>Current version: 1.0.0 (Released: April 10, 2025)</p>
+            <ul>
+              <li>Initial release with full feature parity with other platform SDKs</li>
+              <li>Support for .NET 6+ and .NET Framework 4.6.2+</li>
+              <li>Complete StreamingToken contract integration</li>
+              <li>Admin/Owner operations for platform management</li>
+            </ul>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <h3>Web3 Crypto Streaming Service</h3>
+            <p>Revolutionizing content distribution through blockchain technology.</p>
+          </div>
+
+          <div>
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="../../web3-streaming-service-whitepaper.md">Whitepaper</a></li>
+              <li><a href="../../docs/">Documentation</a></li>
+              <li><a href="../../blog/">Blog</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Community</h4>
+            <ul>
+              <li><a href="https://twitter.com/modsias">Twitter</a></li>
+              <li><a href="https://discord.gg/web3streaming">Discord</a></li>
+              <li><a href="https://t.me/web3streaming">Telegram</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="../../terms.md">Terms of Service</a></li>
+              <li><a href="../../privacy.md">Privacy Policy</a></li>
+              <li><a href="../token-disclaimer.html">Token Disclaimer</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2025 Team MODSIAS | <a href="../../sitemap.html">Sitemap</a></p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
