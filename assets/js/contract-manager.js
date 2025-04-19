@@ -1,212 +1,187 @@
 /**
- * Contract Manager Module
- *
- * Handles smart contract interactions for the Web3 streaming platform
+ * ContractManager class for managing smart contract interactions
+ * @class
  */
-
 class ContractManager {
+  /**
+   * Create a contract manager
+   * @param {Object} options - Configuration options
+   * @param {WalletConnector} options.walletConnector - Wallet connector instance
+   */
   constructor(options = {}) {
-    this.options = {
-      networkId: options.networkId || '0x1', // Default to Ethereum mainnet
-      streamingTokenAddress: options.streamingTokenAddress,
-      contentRegistryAddress: options.contentRegistryAddress,
-      walletConnector: options.walletConnector,
-      onTransactionStart: options.onTransactionStart || function () {},
-      onTransactionSuccess: options.onTransactionSuccess || function () {},
-      onTransactionError: options.onTransactionError || function () {}
-    };
-
+    this.walletConnector = options.walletConnector;
     this.contracts = {};
-    this.provider = null;
-    this.signer = null;
+    this.ethers = null;
+    
+    // Initialize ethers
+    this.initializeEthers();
+  }
 
-    // Initialize contracts if wallet is available
-    if (this.options.walletConnector &&
-        this.options.walletConnector.getConnectionState().isConnected) {
-      this.initContracts();
+  /**
+   * Initialize ethers library
+   * @private
+   */
+  async initializeEthers() {
+    // Check if ethers is already loaded
+    if (window.ethers) {
+      this.ethers = window.ethers;
+    } else {
+      // Try to load ethers from CDN
+      try {
+        await this.loadScript('https://cdn.ethers.io/lib/ethers-5.7.umd.min.js');
+        if (window.ethers) {
+          this.ethers = window.ethers;
+        } else {
+          console.error('Failed to load ethers.js');
+        }
+      } catch (error) {
+        console.error('Error loading ethers.js:', error);
+      }
     }
   }
 
   /**
-   * Initialize contract instances
+   * Load a script from URL
+   * @param {string} url - Script URL
+   * @returns {Promise<void>} Promise that resolves when script is loaded
+   * @private
    */
-  initContracts() {
-    try {
-      const connectionState = this.options.walletConnector.getConnectionState();
-
-      if (!connectionState.isConnected) {
-        console.warn('Wallet not connected, using demo mode');
-        return;
-      }
-
-      this.provider = new ethers.providers.Web3Provider(window.ethereum);
-      this.signer = this.provider.getSigner();
-
-      // Initialize streaming token contract
-      if (this.options.streamingTokenAddress) {
-        const streamingTokenAbi = [
-          'function balanceOf(address account) view returns (uint256)',
-          'function purchaseCredits() payable',
-          'function startStream(string memory contentId)',
-          'function canStream(address user, string memory contentId) view returns (bool)',
-          'function totalSupply() view returns (uint256)',
-          'function streamExpiry(address user, string memory contentId) view returns (uint256)'
-        ];
-
-        this.contracts.streamingToken = new ethers.Contract(
-          this.options.streamingTokenAddress,
-          streamingTokenAbi,
-          this.signer
-        );
-      }
-
-      // Initialize content registry contract if available
-      if (this.options.contentRegistryAddress) {
-        const contentRegistryAbi = [
-          'function registerContent(string memory contentId, string memory contentUri, uint256 price) external',
-          'function getContentInfo(string memory contentId) view returns (string memory, address, uint256)',
-          'function listContent(uint256 limit) view returns (string[] memory)'
-        ];
-
-        this.contracts.contentRegistry = new ethers.Contract(
-          this.options.contentRegistryAddress,
-          contentRegistryAbi,
-          this.signer
-        );
-      }
-
-      console.log('Contract manager initialized');
-    } catch (error) {
-      console.error('Failed to initialize contracts:', error);
-    }
+  loadScript(url) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = url;
+      script.async = true;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
   }
 
   /**
-   * Get token balance for connected account
+   * Load a contract
+   * @param {string} name - Contract name
+   * @param {string} address - Contract address
+   * @param {Array} abi - Contract ABI
+   * @returns {Object} Contract instance
    */
-  async getBalance() {
-    try {
-      if (this.contracts.streamingToken) {
-        const address = await this.signer.getAddress();
-        return await this.contracts.streamingToken.balanceOf(address);
+  async loadContract(name, address, abi) {
+    if (!this.ethers) {
+      await this.initializeEthers();
+      if (!this.ethers) {
+        throw new Error('ethers.js not available');
       }
-      throw new Error('Streaming token contract not initialized');
+    }
+    
+    if (!this.walletConnector.isConnected()) {
+      throw new Error('Wallet not connected');
+    }
+    
+    try {
+      const provider = new this.ethers.providers.Web3Provider(this.walletConnector.provider);
+      const signer = provider.getSigner();
+      const contract = new this.ethers.Contract(address, abi, signer);
+      
+      this.contracts[name] = contract;
+      return contract;
     } catch (error) {
-      console.error('Error fetching balance:', error);
+      console.error(`Error loading contract ${name}:`, error);
       throw error;
     }
   }
 
   /**
-   * Purchase streaming credits with ETH
+   * Get a loaded contract
+   * @param {string} name - Contract name
+   * @returns {Object|null} Contract instance or null if not loaded
    */
-  async purchaseCredits(ethAmount) {
+  getContract(name) {
+    return this.contracts[name] || null;
+  }
+
+  /**
+   * Call a read-only contract method
+   * @param {string} contractName - Contract name
+   * @param {string} method - Method name
+   * @param {Array} args - Method arguments
+   * @returns {Promise<any>} Method result
+   */
+  async callMethod(contractName, method, ...args) {
+    const contract = this.getContract(contractName);
+    if (!contract) {
+      throw new Error(`Contract ${contractName} not loaded`);
+    }
+    
     try {
-      if (!this.contracts.streamingToken) {
-        throw new Error('Streaming token contract not initialized');
-      }
-
-      this.options.onTransactionStart({
-        method: 'Purchase Credits',
-        amount: ethAmount
-      });
-
-      const tx = await this.contracts.streamingToken.purchaseCredits({
-        value: ethers.utils.parseEther(ethAmount)
-      });
-
-      const receipt = await tx.wait();
-
-      this.options.onTransactionSuccess({
-        method: 'Purchase Credits',
-        receipt: receipt
-      });
-
-      return receipt;
+      return await contract[method](...args);
     } catch (error) {
-      this.options.onTransactionError({
-        method: 'Purchase Credits',
-        error: error
-      });
+      console.error(`Error calling method ${method} on contract ${contractName}:`, error);
       throw error;
     }
   }
 
   /**
-   * Start streaming a content by spending tokens
+   * Send a transaction to a contract method
+   * @param {string} contractName - Contract name
+   * @param {string} method - Method name
+   * @param {Array} args - Method arguments
+   * @param {Object} options - Transaction options (gasLimit, value, etc.)
+   * @returns {Promise<Object>} Transaction receipt
    */
-  async startStream(contentId) {
+  async sendTransaction(contractName, method, args = [], options = {}) {
+    const contract = this.getContract(contractName);
+    if (!contract) {
+      throw new Error(`Contract ${contractName} not loaded`);
+    }
+    
     try {
-      if (!this.contracts.streamingToken) {
-        throw new Error('Streaming token contract not initialized');
-      }
-
-      this.options.onTransactionStart({
-        method: 'Start Stream',
-        contentId: contentId
-      });
-
-      const tx = await this.contracts.streamingToken.startStream(contentId);
-      const receipt = await tx.wait();
-
-      this.options.onTransactionSuccess({
-        method: 'Start Stream',
-        receipt: receipt,
-        contentId: contentId
-      });
-
-      return receipt;
+      const tx = await contract[method](...args, options);
+      return await tx.wait();
     } catch (error) {
-      this.options.onTransactionError({
-        method: 'Start Stream',
-        error: error,
-        contentId: contentId
-      });
+      console.error(`Error sending transaction to method ${method} on contract ${contractName}:`, error);
       throw error;
     }
   }
 
   /**
-   * Check if user has access to stream a content
+   * Get current user's balance of a token
+   * @param {string} tokenAddress - Token contract address
+   * @returns {Promise<string>} Token balance as string
    */
-  async checkStreamAccess(contentId) {
-    try {
-      if (!this.contracts.streamingToken) {
-        throw new Error('Streaming token contract not initialized');
+  async getTokenBalance(tokenAddress) {
+    if (!this.ethers) {
+      await this.initializeEthers();
+      if (!this.ethers) {
+        throw new Error('ethers.js not available');
       }
-
-      const address = await this.signer.getAddress();
-      return await this.contracts.streamingToken.canStream(address, contentId);
+    }
+    
+    if (!this.walletConnector.isConnected()) {
+      throw new Error('Wallet not connected');
+    }
+    
+    try {
+      const provider = new this.ethers.providers.Web3Provider(this.walletConnector.provider);
+      const signer = provider.getSigner();
+      const userAddress = await signer.getAddress();
+      
+      // ERC20 minimal ABI for balanceOf
+      const minABI = [
+        {
+          constant: true,
+          inputs: [{ name: "_owner", type: "address" }],
+          name: "balanceOf",
+          outputs: [{ name: "balance", type: "uint256" }],
+          type: "function"
+        }
+      ];
+      
+      const tokenContract = new this.ethers.Contract(tokenAddress, minABI, provider);
+      const balance = await tokenContract.balanceOf(userAddress);
+      
+      return balance.toString();
     } catch (error) {
-      console.error('Error checking stream access:', error);
+      console.error('Error getting token balance:', error);
       throw error;
     }
   }
-
-  /**
-   * Get stream expiry time for a content
-   */
-  async getStreamExpiry(contentId) {
-    try {
-      if (!this.contracts.streamingToken) {
-        throw new Error('Streaming token contract not initialized');
-      }
-
-      const address = await this.signer.getAddress();
-      return await this.contracts.streamingToken.streamExpiry(address, contentId);
-    } catch (error) {
-      console.error('Error getting stream expiry:', error);
-      throw error;
-    }
-  }
-}
-
-// For use in browser environment
-if (typeof window !== 'undefined') {
-  window.ContractManager = ContractManager;
-}
-
-// For use in Node.js environment
-if (typeof module !== 'undefined') {
-  module.exports = ContractManager;
 }

@@ -1,812 +1,272 @@
 /**
- * Web3 Educational Content Library
- * 
- * This module manages the loading, display, and interaction with educational
- * content in the Web3 Education Library. It supports topics, lessons, and
- * token-gated premium content.
+ * ContentLibrary class for managing educational content
+ * @class
  */
-
 class ContentLibrary {
+  /**
+   * Create a content library
+   * @param {Object} options - Configuration options
+   * @param {WalletConnector} options.walletConnector - Wallet connector instance
+   * @param {ContractManager} options.contractManager - Contract manager instance
+   * @param {HTMLElement} options.topicGrid - Topic grid element
+   * @param {HTMLElement} options.contentViewer - Content viewer element
+   * @param {HTMLElement} options.backButton - Back button element
+   * @param {HTMLElement} options.notificationElement - Notification element
+   */
   constructor(options = {}) {
     this.walletConnector = options.walletConnector;
     this.contractManager = options.contractManager;
-    this.interactiveDemos = options.interactiveDemos;
-    this.topicGridElement = options.topicGrid;
-    this.contentViewerElement = options.contentViewer;
-    this.backButtonElement = options.backButton;
+    this.topicGrid = options.topicGrid;
+    this.contentViewer = options.contentViewer;
+    this.backButton = options.backButton;
     this.notificationElement = options.notificationElement;
-    this.apiEndpoint = options.apiEndpoint || 'api/education';
     
-    this.topics = [];
-    this.currentContent = null;
-    this.currentDemo = null;
-    this.contentCache = new Map(); // Cache for fetched content
+    // Track user progress
+    this.userProgress = this.loadUserProgress();
     
-    // Track user progress in localStorage
-    this.userProgress = this._loadUserProgress();
-    
-    // Listen for wallet connection changes
-    if (this.walletConnector) {
-      this.walletConnector.addEventListener('connectionChanged', () => {
-        this._updateContentAccess();
-      });
-    }
-    
-    // Set up offline support
-    this._setupOfflineSupport();
-  }
-  
-  /**
-   * Update content access when wallet connection status changes
-   * Checks current content and updates UI if premium content is being viewed
-   */
-  async _updateContentAccess() {
-    console.debug('Wallet connection changed, updating content access');
-    
-    // If currently viewing premium content, verify access
-    if (this.currentContent && this.currentContent.lesson && this.currentContent.lesson.isPremium) {
-      const hasAccess = await this._checkPremiumAccess();
-      
-      if (hasAccess) {
-        // User now has access, refresh content if in premium content message view
-        const premiumMessage = document.getElementById('premium-content-message');
-        if (premiumMessage) {
-          // Hide premium message and show content
-          this._hideLoadingIndicator();
-          this.showContent(
-            this.currentContent.content, 
-            this.currentContent.lesson, 
-            this.currentContent.topic
-          );
-          this._showNotification('Access granted to premium content!', 'success');
-        }
-      } else {
-        // User lost access, show premium content message
-        this._showPremiumContentMessage(this.currentContent.lesson);
-      }
-    }
-  }
-  
-  /**
-   * Check if user has access to premium content
-   * @returns {Promise<boolean>} True if user has access
-   */
-  async _checkPremiumAccess() {
-    try {
-      // If no wallet connection or contract manager, no access
-      if (!this.walletConnector || !this.contractManager) {
-        console.debug('No wallet or contract manager available');
-        return false;
-      }
-      
-      // Check if wallet is connected
-      if (!this.walletConnector.isConnected()) {
-        console.debug('Wallet not connected');
-        return false;
-      }
-      
-      // Get wallet address
-      const address = await this.walletConnector.getAddress();
-      if (!address) {
-        console.debug('Could not get wallet address');
-        return false;
-      }
-      
-      // Check if user has the required educational content token
-      // This uses the StreamToken contract for checking access
-      try {
-        const hasAccess = await this.contractManager.checkStreamAccess('education_premium');
-        console.debug('Premium access check result:', hasAccess);
-        return hasAccess;
-      } catch (error) {
-        console.error('Error checking token access:', error);
-        return false;
-      }
-    } catch (error) {
-      console.error('Error checking premium access:', error);
-      return false;
-    }
-  }
-  
-  /**
-   * Shows premium content access message with wallet connection options
-   * @param {Object} lesson Lesson that requires premium access
-   */
-  _showPremiumContentMessage(lesson) {
-    if (!this.contentViewerElement) return;
-    
-    // Show the correct UI state
-    if (this.topicGridElement) {
-      this.topicGridElement.style.display = 'none';
-      this.topicGridElement.setAttribute('aria-hidden', 'true');
-    }
-    
-    // Show the content viewer with premium content message
-    this.contentViewerElement.style.display = 'block';
-    this.contentViewerElement.setAttribute('aria-hidden', 'false');
-    
-    // Show back button
-    if (this.backButtonElement) {
-      this.backButtonElement.style.display = 'block';
-      this.backButtonElement.setAttribute('aria-hidden', 'false');
-    }
-    
-    // Build the premium content message UI
-    this.contentViewerElement.innerHTML = `
-      <div id="premium-content-message" class="premium-content-message">
-        <h2>Premium Content: ${lesson.title}</h2>
-        <div class="premium-content-image">
-          <img src="assets/images/premium-content.jpg" alt="Premium content illustration" />
-        </div>
-        <p class="premium-message">
-          This is premium content that requires wallet authentication to access.
-        </p>
-        <div class="premium-content-options">
-          <div class="access-options">
-            <h3>Streaming Access</h3>
-            <div class="access-info">
-              <p><strong>Content ID:</strong> education_premium</p>
-              <p><strong>Your Credits:</strong> <span id="token-balance">0</span> STRM</p>
-              <p><strong>Stream Status:</strong> <span id="stream-status">Not started</span></p>
-              <p><strong>Time Remaining:</strong> <span id="time-remaining">-</span></p>
-            </div>
-          </div>
-          <div class="wallet-actions">
-            ${!this.walletConnector?.isConnected() ? 
-              `<button id="connect-wallet-btn" class="primary-btn">Connect Wallet</button>` : 
-              `<button id="start-stream-btn" class="primary-btn">Start Streaming (1 Credit)</button>`
-            }
-            <button id="purchase-credits-btn" class="secondary-btn">Purchase Credits (0.01 ETH)</button>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    // Set up event listeners for the buttons
-    const connectWalletBtn = document.getElementById('connect-wallet-btn');
-    if (connectWalletBtn) {
-      connectWalletBtn.addEventListener('click', async () => {
-        try {
-          this._showLoadingIndicator('Connecting wallet...');
-          await this.walletConnector.connect();
-          
-          // Check access again
-          const hasAccess = await this._checkPremiumAccess();
-          if (hasAccess) {
-            // User has access, load the premium content
-            this._hideLoadingIndicator();
-            this._loadLesson(this.currentContent.topic.id, lesson.id);
-          } else {
-            // Update UI to show purchase options instead of connect
-            this._hideLoadingIndicator();
-            this._showPremiumContentMessage(lesson);
-            
-            // Update token balance if available
-            this._updateTokenBalance();
-          }
-        } catch (error) {
-          console.error('Error connecting wallet:', error);
-          this._hideLoadingIndicator();
-          this._showNotification('Failed to connect wallet. Please try again.', 'error');
-        }
-      });
-    }
-    
-    const startStreamBtn = document.getElementById('start-stream-btn');
-    if (startStreamBtn) {
-      startStreamBtn.addEventListener('click', async () => {
-        try {
-          this._showLoadingIndicator('Starting stream...');
-          
-          // Request access via contract
-          await this.contractManager.startStreaming('education_premium');
-          
-          // Verify access
-          const hasAccess = await this._checkPremiumAccess();
-          if (hasAccess) {
-            // User has access, load the premium content
-            this._hideLoadingIndicator();
-            const expiry = await this.contractManager.getStreamExpiry('education_premium');
-            this._showNotification(`Stream started! Valid for ${this._formatStreamDuration(expiry)}`, 'success');
-            this._loadLesson(this.currentContent.topic.id, lesson.id);
-          } else {
-            this._hideLoadingIndicator();
-            this._showNotification('Could not start stream. Please check your token balance.', 'error');
-          }
-        } catch (error) {
-          console.error('Error starting stream:', error);
-          this._hideLoadingIndicator();
-          this._showNotification('Failed to start stream. Please try again.', 'error');
-        }
-      });
-    }
-    
-    const purchaseCreditsBtn = document.getElementById('purchase-credits-btn');
-    if (purchaseCreditsBtn) {
-      purchaseCreditsBtn.addEventListener('click', async () => {
-        try {
-          if (!this.walletConnector?.isConnected()) {
-            await this.walletConnector.connect();
-          }
-          
-          this._showLoadingIndicator('Purchasing credits...');
-          await this.contractManager.purchaseCredits();
-          this._hideLoadingIndicator();
-          this._showNotification('Credits purchased successfully!', 'success');
-          
-          // Update token balance
-          await this._updateTokenBalance();
-          
-          // Refresh premium content message
-          this._showPremiumContentMessage(lesson);
-        } catch (error) {
-          console.error('Error purchasing credits:', error);
-          this._hideLoadingIndicator();
-          this._showNotification('Failed to purchase credits. Please try again.', 'error');
-        }
-      });
-    }
-    
-    // Update token balance if wallet is connected
-    if (this.walletConnector?.isConnected()) {
-      this._updateTokenBalance();
-    }
-  }
-  
-  /**
-   * Format stream duration from expiry time
-   * @param {number} expiryTime Expiry timestamp
-   * @returns {string} Formatted duration
-   */
-  _formatStreamDuration(expiryTime) {
-    const now = Math.floor(Date.now() / 1000);
-    const remainingSecs = expiryTime - now;
-    
-    if (remainingSecs <= 0) return 'Expired';
-    
-    const hours = Math.floor(remainingSecs / 3600);
-    const minutes = Math.floor((remainingSecs % 3600) / 60);
-    const seconds = Math.floor(remainingSecs % 60);
-    
-    if (hours > 0) {
-      return `${hours}h ${minutes}m`;
-    } else {
-      return `${minutes}m ${seconds}s`;
-    }
-  }
-  
-  /**
-   * Update token balance display
-   */
-  async _updateTokenBalance() {
-    try {
-      const balanceEl = document.getElementById('token-balance');
-      if (balanceEl && this.contractManager) {
-        const balance = await this.contractManager.getTokenBalance();
-        balanceEl.textContent = balance || '0';
-      }
-    } catch (error) {
-      console.error('Error updating token balance:', error);
-    }
-  }
-  
-  /**
-   * Load all topics and render the topic grid
-   */
-  async loadTopics() {
-    try {
-      // Show loading indicator
-      this._showLoadingIndicator('Loading educational content...');
-      
-      // Try to fetch from API first
-      if (navigator.onLine) {
-        try {
-          const response = await fetch(`${this.apiEndpoint}/topics`);
-          if (response.ok) {
-            this.topics = await response.json();
-            
-            // Set all content to free
-            this.topics.forEach(topic => {
-              if (topic.lessons) {
-                topic.lessons.forEach(lesson => {
-                  lesson.isPremium = false;
-                });
-              }
-            });
-            
-            // Cache the topics in localStorage
-            localStorage.setItem('web3EduTopics', JSON.stringify(this.topics));
-          } else {
-            throw new Error('Failed to fetch topics from API');
-          }
-        } catch (error) {
-          console.warn('Failed to fetch topics from API, falling back to local data:', error);
-          this._loadFallbackTopics();
-        }
-      } else {
-        console.info('Device is offline, loading cached topics');
-        this._loadFallbackTopics();
-      }
-      
-      // Hide loading indicator
-      this._hideLoadingIndicator();
-      
-      // Render the topics
-      this.renderTopicGrid();
-      
-      // Pre-fetch commonly accessed content
-      this._preFetchPopularContent();
-      
-    } catch (error) {
-      console.error('Error loading topics:', error);
-      this._showNotification('Error loading content. Please try again later.', 'error');
-      this._hideLoadingIndicator();
-    }
-  }
-  
-  /**
-   * Load fallback topics from localStorage or hardcoded data
-   */
-  _loadFallbackTopics() {
-    // Try to load from localStorage first
-    const cachedTopics = localStorage.getItem('web3EduTopics');
-    if (cachedTopics) {
-      try {
-        this.topics = JSON.parse(cachedTopics);
-        // Set all content to free
-        this.topics.forEach(topic => {
-          if (topic.lessons) {
-            topic.lessons.forEach(lesson => {
-              lesson.isPremium = false;
-            });
-          }
-        });
-        return;
-      } catch (e) {
-        console.error('Failed to parse cached topics', e);
-      }
-    }
-    
-    // Fallback to hardcoded topics
-    this.topics = [
-      {
-        id: 'web3-basics',
-        title: 'Web3 Basics',
-        description: 'Learn the fundamentals of Web3 and blockchain technology',
-        image: 'assets/images/web3-basics-thumbnail.jpg',
-        lessons: [
-          {
-            id: 'what-is-web3',
-            title: 'What is Web3?',
-            contentPath: 'assets/content/web3-basics/what-is-web3.json',
-            duration: '10 min',
-            isPremium: false
-          },
-          {
-            id: 'blockchain-fundamentals',
-            title: 'Blockchain Fundamentals',
-            contentPath: 'assets/content/web3-basics/blockchain-fundamentals.json',
-            duration: '15 min',
-            isPremium: false
-          },
-          {
-            id: 'wallets-and-keys',
-            title: 'Wallets and Keys',
-            contentPath: 'assets/content/web3-basics/wallets-and-keys.json',
-            duration: '12 min',
-            isPremium: false
-          },
-          {
-            id: 'web3-architecture',
-            title: 'Web3 Architecture Deep Dive',
-            contentPath: 'assets/content/web3-basics/web3-architecture.json',
-            duration: '20 min',
-            isPremium: false
-          }
-        ]
-      },
-      {
-        id: 'smart-contracts',
-        title: 'Smart Contract Development',
-        description: 'Build and deploy smart contracts on blockchain networks',
-        image: 'assets/images/smart-contract-dev-thumbnail.jpg',
-        lessons: [
-          {
-            id: 'solidity-intro',
-            title: 'Introduction to Solidity',
-            contentPath: 'assets/content/smart-contracts/solidity-intro.json',
-            duration: '15 min',
-            isPremium: false
-          },
-          {
-            id: 'first-contract',
-            title: 'Your First Smart Contract',
-            contentPath: 'assets/content/smart-contracts/first-contract.json',
-            duration: '20 min',
-            isPremium: false
-          },
-          {
-            id: 'testing-contracts',
-            title: 'Testing Smart Contracts',
-            contentPath: 'assets/content/smart-contracts/testing-contracts.json',
-            duration: '18 min',
-            isPremium: false
-          },
-          {
-            id: 'security-best-practices',
-            title: 'Security Best Practices',
-            contentPath: 'assets/content/smart-contracts/security-best-practices.json',
-            duration: '25 min',
-            isPremium: false
-          }
-        ]
-      },
-      {
-        id: 'defi',
-        title: 'DeFi Applications',
-        description: 'Learn about decentralized finance applications and protocols',
-        image: 'assets/images/defi-thumbnail.jpg',
-        lessons: [
-          {
-            id: 'defi-overview',
-            title: 'DeFi Overview',
-            contentPath: 'assets/content/defi/defi-overview.json',
-            duration: '12 min',
-            isPremium: false
-          },
-          {
-            id: 'amm-mechanics',
-            title: 'AMM Mechanics',
-            contentPath: 'assets/content/defi/amm-mechanics.json',
-            duration: '18 min',
-            isPremium: false
-          },
-          {
-            id: 'lending-protocols',
-            title: 'Lending Protocols',
-            contentPath: 'assets/content/defi/lending-protocols.json',
-            duration: '15 min',
-            isPremium: false
-          },
-          {
-            id: 'building-defi-app',
-            title: 'Building a DeFi App',
-            contentPath: 'assets/content/defi/building-defi-app.json',
-            duration: '30 min',
-            isPremium: false
-          }
-        ]
-      }
-    ];
-  }
-  
-  /**
-   * Pre-fetch popular content for better user experience
-   */
-  async _preFetchPopularContent() {
-    if (!navigator.onLine) return;
-    
-    try {
-      // Find most popular lessons based on user progress
-      const popularLessons = this._getPopularLessons(3); // Top 3 most accessed
-      
-      // Pre-fetch these lessons in the background
-      for (const lesson of popularLessons) {
-        this._fetchLessonContent(lesson.contentPath)
-          .then(content => {
-            this.contentCache.set(lesson.contentPath, content);
-            console.debug(`Pre-fetched content: ${lesson.title}`);
-          })
-          .catch(error => {
-            console.debug(`Failed to pre-fetch ${lesson.title}:`, error);
-          });
-      }
-    } catch (error) {
-      console.debug('Error pre-fetching content:', error);
-    }
-  }
-  
-  /**
-   * Get most popular lessons based on access patterns
-   */
-  _getPopularLessons(count = 3) {
-    // Look at last accessed lessons from user progress
-    if (!this.userProgress.lessonAccess) {
-      return [];
-    }
-    
-    const lessonData = Object.entries(this.userProgress.lessonAccess)
-      .map(([id, data]) => ({ id, ...data }))
-      .sort((a, b) => b.accessCount - a.accessCount)
-      .slice(0, count);
-    
-    // Find the lesson objects for these IDs
-    return lessonData.map(data => {
-      // Find the lesson with this ID across all topics
-      for (const topic of this.topics) {
-        const lesson = topic.lessons.find(l => l.id === data.id);
-        if (lesson) return lesson;
-      }
-      return null;
-    }).filter(lesson => lesson !== null);
-  }
-  
-  /**
-   * Load and display a specific lesson
-   */
-  async loadLesson(topicId, lessonId) {
-    try {
-      // Show loading indicator
-      this._showLoadingIndicator('Loading lesson...');
-      
-      // Find the topic and lesson
-      const topic = this.topics.find(t => t.id === topicId);
-      if (!topic) throw new Error(`Topic ${topicId} not found`);
-      
-      const lesson = topic.lessons.find(l => l.id === lessonId);
-      if (!lesson) throw new Error(`Lesson ${lessonId} not found in topic ${topicId}`);
-      
-      // Track lesson access
-      this._trackLessonAccess(lessonId);
-      
-      // Check if the user has access to premium content
-      if (lesson.isPremium) {
-        const hasAccess = await this._checkPremiumAccess();
-        if (!hasAccess) {
-          this._hideLoadingIndicator();
-          this._showPremiumContentMessage(lesson);
-          return;
-        }
-      }
-      
-      // Fetch the lesson content - first check cache
-      let lessonContent;
-      if (this.contentCache.has(lesson.contentPath)) {
-        lessonContent = this.contentCache.get(lesson.contentPath);
-        console.debug('Loaded lesson from cache:', lesson.title);
-      } else {
-        lessonContent = await this._fetchLessonContent(lesson.contentPath);
-        // Cache the content for future use
-        this.contentCache.set(lesson.contentPath, lessonContent);
-      }
-      
-      // Hide loading indicator
-      this._hideLoadingIndicator();
-      
-      // Display the lesson content
-      this.showContent(lessonContent, lesson, topic);
-      
-      // Track the lesson view if not already completed
-      if (!this.userProgress.completedLessons.includes(lessonId)) {
-        // Mark as viewed (not completed)
-        if (!this.userProgress.viewedLessons) {
-          this.userProgress.viewedLessons = [];
-        }
-        
-        if (!this.userProgress.viewedLessons.includes(lessonId)) {
-          this.userProgress.viewedLessons.push(lessonId);
-          this._saveUserProgress();
-        }
-      }
-    } catch (error) {
-      console.error('Error loading lesson:', error);
-      this._hideLoadingIndicator();
-      this._showNotification('Failed to load lesson content. Please try again later.', 'error');
-    }
-  }
-  
-  /**
-   * Track lesson access for analytics and optimization
-   */
-  _trackLessonAccess(lessonId) {
-    if (!this.userProgress.lessonAccess) {
-      this.userProgress.lessonAccess = {};
-    }
-    
-    if (!this.userProgress.lessonAccess[lessonId]) {
-      this.userProgress.lessonAccess[lessonId] = {
-        firstAccess: Date.now(),
-        accessCount: 0,
-      };
-    }
-    
-    this.userProgress.lessonAccess[lessonId].lastAccess = Date.now();
-    this.userProgress.lessonAccess[lessonId].accessCount += 1;
-    this._saveUserProgress();
-  }
-  
-  /**
-   * Show the content in the content viewer with enhanced accessibility
-   */
-  showContent(content, lesson, topic) {
-    if (!this.contentViewerElement) return;
-    
-    // Store the current content
-    this.currentContent = { content, lesson, topic };
-    
-    // Show the back button
-    if (this.backButtonElement) {
-      this.backButtonElement.style.display = 'block';
-      this.backButtonElement.setAttribute('aria-hidden', 'false');
-    }
-    
-    // Hide the topic grid and show the content viewer
-    if (this.topicGridElement) {
-      this.topicGridElement.style.display = 'none';
-      this.topicGridElement.setAttribute('aria-hidden', 'true');
-    }
-    this.contentViewerElement.style.display = 'block';
-    this.contentViewerElement.setAttribute('aria-hidden', 'false');
-    
-    // Set the content HTML with enhanced accessibility
-    this.contentViewerElement.innerHTML = `
-      <h2 id="lesson-title">${content.title}</h2>
-      <div class="lesson-meta" aria-labelledby="lesson-title">
-        <span class="topic">${topic.title}</span> • <span class="duration">${lesson.duration}</span>
-      </div>
-      
-      <div class="lesson-content" role="main">
-        ${content.sections.map((section, index) => `
-          <section class="content-section" id="section-${index}">
-            <h3 id="section-heading-${index}">${section.title}</h3>
-            <div class="section-content" aria-labelledby="section-heading-${index}">${section.html}</div>
-            
-            ${section.videoUrl ? `
-              <div class="video-container">
-                <video controls preload="metadata" aria-label="${section.title} video">
-                  <source src="${section.videoUrl}" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            ` : ''}
-            
-            ${section.codeExample ? `
-              <div class="code-example">
-                <h4>Code Example</h4>
-                <pre><code tabindex="0" class="language-javascript">${section.codeExample}</code></pre>
-              </div>
-            ` : ''}
-          </section>
-        `).join('')}
-      </div>
-      
-      ${content.interactive ? `
-        <div class="interactive-demo">
-          <h3 id="interactive-heading">Interactive Demo</h3>
-          <div id="interactive-container" 
-               data-demo-id="${content.interactive.id}" 
-               data-demo-type="${content.interactive.type}"
-               aria-labelledby="interactive-heading"
-               role="application">
-            <p class="loading-message">Loading interactive demo...</p>
-          </div>
-        </div>
-      ` : ''}
-      
-      <div class="lesson-navigation" role="navigation">
-        <button id="mark-complete-btn" class="mark-complete" aria-label="Mark lesson as complete">
-          ${this.userProgress.completedLessons.includes(lesson.id) ? 'Completed' : 'Mark as Complete'}
-        </button>
-        <button id="next-lesson-btn" class="next-lesson">Next Lesson</button>
-      </div>
-    `;
-    
-    // Add event listeners for the lesson navigation
-    const markCompleteBtn = document.getElementById('mark-complete-btn');
-    if (markCompleteBtn) {
-      if (this.userProgress.completedLessons.includes(lesson.id)) {
-        markCompleteBtn.disabled = true;
-      }
-      
-      markCompleteBtn.addEventListener('click', () => {
-        if (!this.userProgress.completedLessons.includes(lesson.id)) {
-          this.userProgress.completedLessons.push(lesson.id);
-          this._saveUserProgress();
-          this._showNotification('Lesson marked as complete!', 'success');
-        }
-        markCompleteBtn.textContent = 'Completed';
-        markCompleteBtn.disabled = true;
-      });
-    }
-    
-    // Set up next lesson button
-    const nextLessonBtn = document.getElementById('next-lesson-btn');
-    if (nextLessonBtn) {
-      // Find the index of the current lesson
-      const currentIndex = topic.lessons.findIndex(l => l.id === lesson.id);
-      if (currentIndex >= 0 && currentIndex < topic.lessons.length - 1) {
-        // There is a next lesson in this topic
-        const nextLesson = topic.lessons[currentIndex + 1];
-        nextLessonBtn.addEventListener('click', () => {
-          this.loadLesson(topic.id, nextLesson.id);
-        });
-      } else {
-        // This is the last lesson in the topic
-        nextLessonBtn.textContent = 'Back to Topics';
-        nextLessonBtn.addEventListener('click', () => {
-          this.showTopics();
-        });
-      }
-    }
-    
-    // Initialize interactive demo if present
-    if (content.interactive && this.interactiveDemos) {
-      this._initializeInteractiveDemo(content.interactive);
-    }
-    
-    // Initialize syntax highlighting if available
-    this._initializeSyntaxHighlighting();
-    
-    // Scroll to the top
-    window.scrollTo(0, 0);
-    
-    // Announce to screen readers
-    this._announceToScreenReader(`Loaded lesson: ${content.title}`);
-  }
-  
-  /**
-   * Show the topic grid and hide the content viewer
-   */
-  showTopics() {
-    // Hide the content viewer
-    if (this.contentViewerElement) {
-      this.contentViewerElement.style.display = 'none';
-      this.contentViewerElement.setAttribute('aria-hidden', 'true');
-    }
-    
-    // Show the topic grid
-    if (this.topicGridElement) {
-      this.topicGridElement.style.display = 'grid';
-      this.topicGridElement.setAttribute('aria-hidden', 'false');
-    }
-    
-    // Hide back button
-    if (this.backButtonElement) {
-      this.backButtonElement.style.display = 'none';
-      this.backButtonElement.setAttribute('aria-hidden', 'true');
-    }
-    
-    // Reset current content
-    this.currentContent = null;
-    
-    // Scroll to the top
-    window.scrollTo(0, 0);
-    
-    // Announce to screen readers
-    this._announceToScreenReader('Showing topic list');
+    // Content loading state
+    this.isLoading = false;
   }
 
   /**
-   * Render the topic grid with all available topics
+   * Load user progress from local storage
+   * @private
+   * @returns {Object} User progress object
    */
-  renderTopicGrid() {
-    if (!this.topicGridElement || !this.topics || this.topics.length === 0) return;
-    
-    // Clear existing content
-    this.topicGridElement.innerHTML = '';
-    
-    // Create topic cards
-    this.topics.forEach(topic => {
-      const topicElement = document.createElement('div');
-      topicElement.className = 'topic-card';
-      topicElement.setAttribute('data-topic-id', topic.id);
+  loadUserProgress() {
+    try {
+      const progress = localStorage.getItem('web3_education_progress');
+      return progress ? JSON.parse(progress) : { completedLessons: [] };
+    } catch (error) {
+      console.error('Error loading user progress:', error);
+      return { completedLessons: [] };
+    }
+  }
+
+  /**
+   * Save user progress to local storage
+   * @private
+   */
+  saveUserProgress() {
+    try {
+      localStorage.setItem('web3_education_progress', JSON.stringify(this.userProgress));
+    } catch (error) {
+      console.error('Error saving user progress:', error);
+    }
+  }
+
+  /**
+   * Mark a lesson as complete
+   * @param {string} lessonId - Lesson ID
+   */
+  markLessonComplete(lessonId) {
+    if (!this.userProgress.completedLessons.includes(lessonId)) {
+      this.userProgress.completedLessons.push(lessonId);
+      this.saveUserProgress();
+    }
+  }
+
+  /**
+   * Check if a lesson is complete
+   * @param {string} lessonId - Lesson ID
+   * @returns {boolean} True if lesson is complete, false otherwise
+   */
+  isLessonComplete(lessonId) {
+    return this.userProgress.completedLessons.includes(lessonId);
+  }
+
+  /**
+   * Load topics from data source
+   */
+  async loadTopics() {
+    try {
+      this.showLoading();
       
-      // Create topic content
-      topicElement.innerHTML = `
-        <div class="topic-image" style="background-image: url('${topic.image || 'assets/images/default-topic.jpg'}')"></div>
+      // In a real application, this would fetch data from an API or blockchain
+      // For this example, we'll use static data
+      const topics = [
+        {
+          id: 'blockchain-basics',
+          title: 'Blockchain Basics',
+          description: 'Understand the fundamental concepts of blockchain technology.',
+          image: 'assets/images/education/blockchain-basics.jpg',
+          lessons: [
+            { id: 'what-is-blockchain', title: 'What is Blockchain?', duration: '10 min' },
+            { id: 'how-blockchain-works', title: 'How Blockchain Works', duration: '15 min' },
+            { id: 'consensus-mechanisms', title: 'Consensus Mechanisms', duration: '12 min' },
+            { id: 'blockchain-use-cases', title: 'Blockchain Use Cases', duration: '8 min' }
+          ]
+        },
+        {
+          id: 'web3-introduction',
+          title: 'Web3 Introduction',
+          description: 'Learn about Web3, the decentralized internet, and its core principles.',
+          image: 'assets/images/education/web3-intro.jpg',
+          lessons: [
+            { id: 'web3-vs-web2', title: 'Web3 vs Web2', duration: '10 min' },
+            { id: 'decentralization', title: 'Understanding Decentralization', duration: '12 min' },
+            { id: 'web3-architecture', title: 'Web3 Architecture', duration: '15 min' },
+            { id: 'web3-applications', title: 'Web3 Applications', duration: '10 min' }
+          ]
+        },
+        {
+          id: 'crypto-wallets',
+          title: 'Crypto Wallets',
+          description: 'Explore different types of cryptocurrency wallets and how to use them.',
+          image: 'assets/images/education/crypto-wallets.jpg',
+          lessons: [
+            { id: 'wallet-types', title: 'Types of Wallets', duration: '10 min' },
+            { id: 'wallet-security', title: 'Wallet Security Best Practices', duration: '15 min' },
+            { id: 'using-metamask', title: 'Using MetaMask', duration: '20 min', interactive: true },
+            { id: 'hardware-wallets', title: 'Hardware Wallets Explained', duration: '12 min' }
+          ]
+        },
+        {
+          id: 'smart-contracts',
+          title: 'Smart Contracts',
+          description: 'Dive into smart contracts, their development, and use cases.',
+          image: 'assets/images/education/smart-contracts.jpg',
+          lessons: [
+            { id: 'what-are-smart-contracts', title: 'What Are Smart Contracts?', duration: '10 min' },
+            { id: 'solidity-basics', title: 'Solidity Basics', duration: '25 min' },
+            { id: 'contract-security', title: 'Smart Contract Security', duration: '20 min' },
+            { id: 'build-simple-contract', title: 'Build Your First Smart Contract', duration: '30 min', interactive: true }
+          ]
+        },
+        {
+          id: 'defi-fundamentals',
+          title: 'DeFi Fundamentals',
+          description: 'Understand the key concepts of Decentralized Finance.',
+          image: 'assets/images/education/defi-basics.jpg',
+          lessons: [
+            { id: 'defi-introduction', title: 'Introduction to DeFi', duration: '15 min' },
+            { id: 'lending-borrowing', title: 'Lending and Borrowing', duration: '12 min' },
+            { id: 'defi-protocols', title: 'Popular DeFi Protocols', duration: '20 min' },
+            { id: 'yield-farming', title: 'Yield Farming Explained', duration: '18 min' }
+          ]
+        },
+        {
+          id: 'nfts',
+          title: 'NFTs',
+          description: 'Explore non-fungible tokens and their applications.',
+          image: 'assets/images/education/nfts.jpg',
+          lessons: [
+            { id: 'nft-basics', title: 'NFT Basics', duration: '10 min' },
+            { id: 'nft-marketplaces', title: 'NFT Marketplaces', duration: '15 min' },
+            { id: 'nft-creation', title: 'Creating Your First NFT', duration: '25 min', interactive: true },
+            { id: 'nft-use-cases', title: 'NFT Use Cases Beyond Art', duration: '12 min' }
+          ]
+        }
+      ];
+      
+      this.renderTopics(topics);
+    } catch (error) {
+      console.error('Error loading topics:', error);
+      this.showNotification('Failed to load educational topics.', 'error');
+    } finally {
+      this.hideLoading();
+    }
+  }
+
+  /**
+   * Render topics in the topic grid
+   * @param {Array} topics - Array of topic objects
+   * @private
+   */
+  renderTopics(topics) {
+    this.topicGrid.innerHTML = '';
+    
+    topics.forEach(topic => {
+      const completedLessons = topic.lessons.filter(lesson => 
+        this.isLessonComplete(lesson.id)
+      ).length;
+      
+      const progressPercentage = topic.lessons.length > 0 
+        ? Math.round((completedLessons / topic.lessons.length) * 100) 
+        : 0;
+      
+      const cardElement = document.createElement('div');
+      cardElement.className = 'topic-card';
+      cardElement.innerHTML = `
+        <div class="topic-image" style="background-image: url('${topic.image || 'assets/images/education/default.jpg'}')"></div>
         <div class="topic-details">
           <h3>${topic.title}</h3>
-          <p>${topic.description || ''}</p>
-          <ul class="lesson-list" aria-label="Lessons for ${topic.title}">
-            ${topic.lessons.map(lesson => `
+          <p>${topic.description}</p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+            <span class="progress-text">${progressPercentage}% Complete</span>
+          </div>
+          <ul class="lesson-list">
+            ${topic.lessons.slice(0, 3).map(lesson => `
               <li class="lesson-item">
-                <span class="lesson-title" 
-                      data-topic-id="${topic.id}" 
-                      data-lesson-id="${lesson.id}" 
-                      tabindex="0" 
-                      role="button">
-                  ${lesson.title}
-                </span>
+                <span class="lesson-title">${lesson.title}</span>
+                <span class="lesson-duration">${lesson.duration}</span>
+              </li>
+            `).join('')}
+            ${topic.lessons.length > 3 ? `<li class="lesson-item">
+              <span class="lesson-title">And ${topic.lessons.length - 3} more lessons...</span>
+            </li>` : ''}
+          </ul>
+          <button class="btn primary view-topic-btn" data-topic-id="${topic.id}">View Topic</button>
+        </div>
+      `;
+      
+      const viewButton = cardElement.querySelector('.view-topic-btn');
+      viewButton.addEventListener('click', () => this.viewTopic(topic));
+      
+      this.topicGrid.appendChild(cardElement);
+    });
+  }
+
+  /**
+   * View a topic and its lessons
+   * @param {Object} topic - Topic object
+   */
+  async viewTopic(topic) {
+    try {
+      this.showLoading();
+      
+      // Update UI
+      this.topicGrid.style.display = 'none';
+      this.backButton.style.display = 'flex';
+      this.contentViewer.style.display = 'block';
+      
+      const completedLessons = topic.lessons.filter(lesson => 
+        this.isLessonComplete(lesson.id)
+      ).length;
+      
+      const progressPercentage = topic.lessons.length > 0 
+        ? Math.round((completedLessons / topic.lessons.length) * 100) 
+        : 0;
+      
+      // Render topic content
+      this.contentViewer.innerHTML = `
+        <div class="topic-header">
+          <h2>${topic.title}</h2>
+          <p>${topic.description}</p>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+              <span class="progress-text">${completedLessons} of ${topic.lessons.length} lessons completed</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="lessons-container">
+          <h3>Lessons</h3>
+          <ul class="full-lesson-list">
+            ${topic.lessons.map(lesson => `
+              <li class="lesson-item ${this.isLessonComplete(lesson.id) ? 'completed' : ''}" 
+                  data-lesson-id="${lesson.id}"
+                  data-interactive="${lesson.interactive || false}">
+                <div class="lesson-info">
+                  <span class="lesson-status-icon">${this.isLessonComplete(lesson.id) ? 
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="#28a745"/></svg>' : 
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8-8-3.59 8-8 8z" fill="#999"/></svg>'
+                  }</span>
+                  <span class="lesson-title">${lesson.title}</span>
+                  ${lesson.interactive ? '<span class="interactive-badge">Interactive</span>' : ''}
+                </div>
                 <span class="lesson-duration">${lesson.duration}</span>
               </li>
             `).join('')}
@@ -814,333 +274,412 @@ class ContentLibrary {
         </div>
       `;
       
-      // Add to grid
-      this.topicGridElement.appendChild(topicElement);
-      
-      // Add event listeners for lessons
-      const lessonTitles = topicElement.querySelectorAll('.lesson-title');
-      lessonTitles.forEach(lessonTitle => {
-        lessonTitle.addEventListener('click', () => {
-          const topicId = lessonTitle.getAttribute('data-topic-id');
-          const lessonId = lessonTitle.getAttribute('data-lesson-id');
-          this.loadLesson(topicId, lessonId);
-        });
-        
-        // Keyboard accessibility
-        lessonTitle.addEventListener('keydown', (event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            const topicId = lessonTitle.getAttribute('data-topic-id');
-            const lessonId = lessonTitle.getAttribute('data-lesson-id');
-            this.loadLesson(topicId, lessonId);
+      // Add event listeners to lessons
+      const lessonItems = this.contentViewer.querySelectorAll('.lesson-item');
+      lessonItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const lessonId = item.getAttribute('data-lesson-id');
+          const isInteractive = item.getAttribute('data-interactive') === 'true';
+          
+          // Find the lesson object
+          const lesson = topic.lessons.find(l => l.id === lessonId);
+          if (lesson) {
+            this.viewLesson(lesson, topic.id, isInteractive);
           }
         });
       });
-    });
-    
-    // Show the topic grid
-    this.topicGridElement.style.display = 'grid';
-    this.topicGridElement.setAttribute('aria-hidden', 'false');
-  }
-  
-  /**
-   * Initialize syntax highlighting for code examples
-   */
-  _initializeSyntaxHighlighting() {
-    // Check if Prism or Highlight.js is available
-    if (typeof Prism !== 'undefined') {
-      Prism.highlightAll();
-    } else if (typeof hljs !== 'undefined') {
-      document.querySelectorAll('pre code').forEach((block) => {
-        hljs.highlightBlock(block);
-      });
+    } catch (error) {
+      console.error('Error viewing topic:', error);
+      this.showNotification('Failed to load topic content.', 'error');
+    } finally {
+      this.hideLoading();
     }
   }
-  
+
   /**
-   * Announce message to screen readers
+   * View a lesson
+   * @param {Object} lesson - Lesson object
+   * @param {string} topicId - Parent topic ID
+   * @param {boolean} isInteractive - Whether the lesson is interactive
    */
-  _announceToScreenReader(message) {
-    const announcer = document.getElementById('sr-announcer');
-    
-    if (!announcer) {
-      // Create an announcer if it doesn't exist
-      const newAnnouncer = document.createElement('div');
-      newAnnouncer.id = 'sr-announcer';
-      newAnnouncer.className = 'sr-only';
-      newAnnouncer.setAttribute('aria-live', 'polite');
-      document.body.appendChild(newAnnouncer);
+  async viewLesson(lesson, topicId, isInteractive) {
+    try {
+      this.showLoading();
       
-      setTimeout(() => {
-        newAnnouncer.textContent = message;
-      }, 100);
-    } else {
-      announcer.textContent = '';
-      setTimeout(() => {
-        announcer.textContent = message;
-      }, 100);
+      // In a real application, lesson content would be fetched from an API or blockchain
+      // For this example, we'll use placeholder content
+      let lessonContent = await this.fetchLessonContent(lesson.id, topicId);
+      
+      // Render lesson content
+      this.contentViewer.innerHTML = `
+        <div class="lesson-header">
+          <h2>${lesson.title}</h2>
+          <div class="lesson-meta">
+            <span class="lesson-duration">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8-8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" fill="#999"/>
+              </svg>
+              ${lesson.duration}
+            </span>
+            ${isInteractive ? `
+              <span class="interactive-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z" fill="#0066cc"/>
+                </svg>
+                Interactive Lesson
+              </span>
+            ` : ''}
+          </div>
+        </div>
+        
+        <div class="lesson-content">
+          ${lessonContent}
+        </div>
+        
+        <div class="lesson-actions">
+          <button id="back-to-topic" class="btn secondary">Back to Topic</button>
+          <button id="mark-complete" class="btn primary ${this.isLessonComplete(lesson.id) ? 'completed' : ''}">
+            ${this.isLessonComplete(lesson.id) ? 'Completed' : 'Mark as Complete'}
+          </button>
+        </div>
+      `;
+      
+      // Set up event listeners
+      document.getElementById('back-to-topic').addEventListener('click', () => {
+        this.viewTopicById(topicId);
+      });
+      
+      document.getElementById('mark-complete').addEventListener('click', () => {
+        this.markLessonComplete(lesson.id);
+        document.getElementById('mark-complete').textContent = 'Completed';
+        document.getElementById('mark-complete').classList.add('completed');
+        this.showNotification('Lesson marked as complete!', 'success');
+      });
+      
+      // Initialize interactive elements if needed
+      if (isInteractive) {
+        await this.initializeInteractiveLesson(lesson.id);
+      }
+      
+      // Apply syntax highlighting if available
+      if (window.hljs) {
+        document.querySelectorAll('pre code').forEach((block) => {
+          window.hljs.highlightBlock(block);
+        });
+      }
+    } catch (error) {
+      console.error('Error viewing lesson:', error);
+      this.showNotification('Failed to load lesson content.', 'error');
+    } finally {
+      this.hideLoading();
     }
   }
-  
+
+  /**
+   * Fetch lesson content
+   * @param {string} lessonId - Lesson ID
+   * @param {string} topicId - Topic ID
+   * @returns {Promise<string>} Lesson content HTML
+   * @private
+   */
+  async fetchLessonContent(lessonId, topicId) {
+    // In a real application, this would fetch from an API or blockchain
+    // For this example, we'll return placeholder content based on lesson ID
+    
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const contentMap = {
+      'what-is-blockchain': `
+        <h3>What is Blockchain?</h3>
+        <p>A blockchain is a distributed database or ledger shared among computer network nodes. They store information in digital format and are best known for their crucial role in cryptocurrency systems for maintaining a secure and decentralized record of transactions.</p>
+        
+        <p>The innovation of a blockchain is that it guarantees the fidelity and security of a record of data and generates trust without the need for a trusted third party.</p>
+        
+        <h4>Key Characteristics:</h4>
+        <ul>
+          <li><strong>Decentralized:</strong> No single entity controls the network</li>
+          <li><strong>Distributed:</strong> Data is stored across multiple nodes</li>
+          <li><strong>Immutable:</strong> Data cannot be changed once recorded</li>
+          <li><strong>Transparent:</strong> Transactions are visible to all participants</li>
+        </ul>
+        
+        <div class="image-container">
+          <img src="assets/images/education/blockchain-structure.png" alt="Blockchain Structure Diagram" width="600">
+          <p class="caption">The structure of a blockchain with blocks containing transactions</p>
+        </div>
+        
+        <h4>How Information is Organized</h4>
+        <p>Data on a blockchain is collected together in groups known as blocks. Each block has:</p>
+        <ul>
+          <li>A certain storage capacity</li>
+          <li>A timestamp when it was added to the chain</li>
+          <li>A cryptographic hash of the previous block (creating the "chain")</li>
+          <li>The actual transaction data</li>
+        </ul>
+      `,
+      'what-are-smart-contracts': `
+        <h3>Understanding Smart Contracts</h3>
+        <p>Smart contracts are self-executing contracts with the terms of the agreement directly written into code. They run on blockchain networks and automatically execute when predetermined conditions are met.</p>
+        
+        <p>Nick Szabo, a computer scientist and cryptographer, first proposed the concept of smart contracts in the 1990s, long before blockchain technology existed. However, it wasn't until the creation of Ethereum in 2015 that smart contracts gained widespread practical applications.</p>
+        
+        <h4>Key Features of Smart Contracts:</h4>
+        <ul>
+          <li><strong>Automation:</strong> Execute automatically when conditions are met</li>
+          <li><strong>Trustless:</strong> Don't require intermediaries or trusted third parties</li>
+          <li><strong>Immutable:</strong> Cannot be changed once deployed (without specific upgrade patterns)</li>
+          <li><strong>Transparent:</strong> Code is visible and verifiable by all network participants</li>
+        </ul>
+        
+        <div class="code-example">
+          <h4>Simple Smart Contract Example (Solidity):</h4>
+          <pre><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract SimpleStorage {
+    // State variable to store a number
+    uint public storedData;
+
+    // Function to set the number
+    function set(uint x) public {
+        storedData = x;
+    }
+
+    // Function to get the number
+    function get() public view returns (uint) {
+        return storedData;
+    }
+}</code></pre>
+        </div>
+        
+        <h4>Real-World Applications:</h4>
+        <ul>
+          <li>Decentralized Finance (DeFi) protocols</li>
+          <li>Non-Fungible Token (NFT) marketplaces</li>
+          <li>Decentralized Autonomous Organizations (DAOs)</li>
+          <li>Supply chain tracking and verification</li>
+          <li>Automated insurance claims processing</li>
+          <li>Digital identity verification systems</li>
+        </ul>
+      `,
+      'using-metamask': `
+        <h3>Using MetaMask: A Step-by-Step Guide</h3>
+        <p>MetaMask is a cryptocurrency wallet and gateway to blockchain applications. This guide will walk you through setting up and using MetaMask.</p>
+        
+        <div class="note-box">
+          <strong>Note:</strong> This is an interactive lesson. You'll need to have MetaMask installed to complete some parts of this tutorial.
+        </div>
+        
+        <h4>Installing MetaMask</h4>
+        <ol>
+          <li>Visit <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">metamask.io</a></li>
+          <li>Click "Download" and select your browser (Chrome, Firefox, Brave, or Edge)</li>
+          <li>Follow the browser extension installation prompts</li>
+          <li>Once installed, click the MetaMask icon in your browser extensions</li>
+        </ol>
+        
+        <h4>Creating a New Wallet</h4>
+        <ol>
+          <li>Click "Create a Wallet"</li>
+          <li>Set a strong password</li>
+          <li>MetaMask will show you a 12-word Secret Recovery Phrase</li>
+          <li><strong>IMPORTANT:</strong> Write this phrase down and store it in a secure location. Never share it with anyone!</li>
+          <li>Verify your Secret Recovery Phrase by selecting the words in the correct order</li>
+        </ol>
+        
+        <div class="interactive-demo" id="metamask-connection-demo">
+          <h4>Check Your MetaMask Connection</h4>
+          <p>Click the button below to check if MetaMask is installed and connected:</p>
+          <button id="check-metamask-btn" class="btn primary">Check MetaMask</button>
+          <div id="metamask-status" class="status-message"></div>
+        </div>
+        
+        <h4>Connecting to Different Networks</h4>
+        <p>MetaMask supports multiple blockchain networks:</p>
+        <ul>
+          <li>Ethereum Mainnet</li>
+          <li>Test networks (Goerli, Sepolia)</li>
+          <li>Custom networks (BSC, Polygon, etc.)</li>
+        </ul>
+        
+        <p>To add a custom network:</p>
+        <ol>
+          <li>Click the network dropdown at the top of MetaMask</li>
+          <li>Select "Add Network"</li>
+          <li>Enter the network details (Name, RPC URL, Chain ID, Symbol, Block Explorer URL)</li>
+          <li>Click "Save"</li>
+        </ol>
+      `
+      // Add more lessons as needed
+    };
+    
+    return contentMap[lessonId] || `<p>Content for "${lessonId}" is not available yet. Please check back later.</p>`;
+  }
+
+  /**
+   * Initialize interactive elements for interactive lessons
+   * @param {string} lessonId - Lesson ID
+   * @private
+   */
+  async initializeInteractiveLesson(lessonId) {
+    // In a real application, this would initialize interactive demos based on the lesson
+    // For this example, we'll handle a few specific cases
+    
+    if (lessonId === 'using-metamask') {
+      const checkButton = document.getElementById('check-metamask-btn');
+      const statusElement = document.getElementById('metamask-status');
+      
+      if (checkButton && statusElement) {
+        checkButton.addEventListener('click', async () => {
+          try {
+            if (!window.ethereum) {
+              statusElement.innerHTML = '<span class="error">MetaMask is not installed. Please <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">install MetaMask</a> to continue.</span>';
+              return;
+            }
+            
+            statusElement.innerHTML = '<span class="info">Checking MetaMask connection...</span>';
+            
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            if (accounts.length > 0) {
+              const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+              const networkName = this.getNetworkName(parseInt(chainId, 16));
+              
+              statusElement.innerHTML = `
+                <span class="success">MetaMask is connected!</span>
+                <div class="details">
+                  <p><strong>Account:</strong> ${accounts[0]}</p>
+                  <p><strong>Network:</strong> ${networkName}</p>
+                </div>
+              `;
+            } else {
+              statusElement.innerHTML = '<span class="warning">MetaMask is installed but not connected. Please unlock your wallet and try again.</span>';
+            }
+          } catch (error) {
+            console.error('Error checking MetaMask:', error);
+            statusElement.innerHTML = `<span class="error">Error: ${error.message || 'Unknown error'}</span>`;
+          }
+        });
+      }
+    }
+    
+    // Add more interactive initializations as needed for other lessons
+  }
+
+  /**
+   * Get network name from chain ID
+   * @param {number} chainId - Chain ID
+   * @returns {string} Network name
+   * @private
+   */
+  getNetworkName(chainId) {
+    const networks = {
+      1: 'Ethereum Mainnet',
+      5: 'Goerli Testnet',
+      56: 'Binance Smart Chain',
+      97: 'BSC Testnet',
+      137: 'Polygon Mainnet',
+      80001: 'Mumbai Testnet',
+      43114: 'Avalanche C-Chain',
+      43113: 'Avalanche Fuji Testnet'
+    };
+    
+    return networks[chainId] || `Chain ID ${chainId}`;
+  }
+
+  /**
+   * View a topic by ID
+   * @param {string} topicId - Topic ID
+   */
+  async viewTopicById(topicId) {
+    try {
+      this.showLoading();
+      
+      // In a real application, this would fetch the topic by ID from an API
+      // For this example, we'll use static data
+      const topics = [
+        {
+          id: 'blockchain-basics',
+          title: 'Blockchain Basics',
+          description: 'Understand the fundamental concepts of blockchain technology.',
+          image: 'assets/images/education/blockchain-basics.jpg',
+          lessons: [
+            { id: 'what-is-blockchain', title: 'What is Blockchain?', duration: '10 min' },
+            { id: 'how-blockchain-works', title: 'How Blockchain Works', duration: '15 min' },
+            { id: 'consensus-mechanisms', title: 'Consensus Mechanisms', duration: '12 min' },
+            { id: 'blockchain-use-cases', title: 'Blockchain Use Cases', duration: '8 min' }
+          ]
+        },
+        // Add other topics as needed
+      ];
+      
+      const topic = topics.find(t => t.id === topicId);
+      if (topic) {
+        await this.viewTopic(topic);
+      } else {
+        throw new Error(`Topic ${topicId} not found`);
+      }
+    } catch (error) {
+      console.error('Error viewing topic by ID:', error);
+      this.showNotification('Failed to load topic.', 'error');
+    } finally {
+      this.hideLoading();
+    }
+  }
+
+  /**
+   * Show topics grid and hide content viewer
+   */
+  showTopics() {
+    this.topicGrid.style.display = 'grid';
+    this.contentViewer.style.display = 'none';
+    this.backButton.style.display = 'none';
+  }
+
   /**
    * Show loading indicator
+   * @private
    */
-  _showLoadingIndicator(message = 'Loading...') {
-    // Create loading indicator if it doesn't exist
-    let loadingEl = document.getElementById('content-loader');
+  showLoading() {
+    if (this.isLoading) return;
+    this.isLoading = true;
     
-    if (!loadingEl) {
-      loadingEl = document.createElement('div');
-      loadingEl.id = 'content-loader';
-      loadingEl.className = 'content-loader';
-      loadingEl.setAttribute('aria-live', 'polite');
-      loadingEl.innerHTML = `
-        <div class="loader-spinner"></div>
-        <div class="loader-message">${message}</div>
-      `;
-      document.body.appendChild(loadingEl);
-    } else {
-      loadingEl.querySelector('.loader-message').textContent = message;
-      loadingEl.style.display = 'flex';
-    }
+    const loader = document.createElement('div');
+    loader.className = 'content-loader';
+    loader.innerHTML = `
+      <div class="loader-spinner"></div>
+      <p>Loading content...</p>
+    `;
+    
+    document.body.appendChild(loader);
   }
-  
+
   /**
    * Hide loading indicator
+   * @private
    */
-  _hideLoadingIndicator() {
-    const loadingEl = document.getElementById('content-loader');
-    if (loadingEl) {
-      loadingEl.style.display = 'none';
+  hideLoading() {
+    this.isLoading = false;
+    const loader = document.querySelector('.content-loader');
+    if (loader) {
+      document.body.removeChild(loader);
     }
   }
-  
+
   /**
-   * Show notification to the user
+   * Show notification
+   * @param {string} message - Notification message
+   * @param {string} type - Notification type (info, success, error, warning)
    */
-  _showNotification(message, type = 'info') {
-    if (this.notificationElement) {
-      this.notificationElement.textContent = message;
-      this.notificationElement.className = `notification ${type}`;
-      this.notificationElement.style.display = 'block';
-      
-      setTimeout(() => {
-        this.notificationElement.style.display = 'none';
-      }, 5000);
-    } else {
-      // Create a temporary notification element
-      const notification = document.createElement('div');
-      notification.className = `floating-notification ${type}`;
-      notification.textContent = message;
-      
-      document.body.appendChild(notification);
-      
-      // Animate in
-      setTimeout(() => {
-        notification.style.transform = 'translateY(0)';
-        notification.style.opacity = '1';
-      }, 10);
-      
-      // Remove after timeout
-      setTimeout(() => {
-        notification.style.transform = 'translateY(-20px)';
-        notification.style.opacity = '0';
-        setTimeout(() => {
-          notification.remove();
-        }, 300);
-      }, 5000);
-    }
-  }
-  
-  /**
-   * Set up offline support
-   */
-  _setupOfflineSupport() {
-    // Listen for online/offline events
-    window.addEventListener('online', () => {
-      this._showNotification('You are back online. Full functionality restored.', 'success');
-      // Refresh data if needed
-      if (this.topics.length === 0) {
-        this.loadTopics();
-      }
-    });
+  showNotification(message, type = 'info') {
+    if (!this.notificationElement) return;
     
-    window.addEventListener('offline', () => {
-      this._showNotification('You are offline. Limited functionality available.', 'warning');
-    });
+    this.notificationElement.textContent = message;
+    this.notificationElement.className = `notification ${type}`;
+    this.notificationElement.style.display = 'block';
     
-    // If using service workers, register here
-    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(registration => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch(error => {
-          console.error('Service Worker registration failed:', error);
-        });
-    }
-  }
-  
-  /**
-   * Fetch lesson content with better error handling and offline support
-   */
-  async _fetchLessonContent(contentPath) {
-    try {
-      if (navigator.onLine) {
-        try {
-          // Try to fetch from API first
-          const response = await fetch(contentPath);
-          if (response.ok) {
-            const content = await response.json();
-            // Cache the content
-            localStorage.setItem(`web3Edu_content_${contentPath}`, JSON.stringify(content));
-            return content;
-          } else {
-            throw new Error(`Failed to fetch content: ${response.status}`);
-          }
-        } catch (error) {
-          console.warn(`API fetch failed for ${contentPath}, trying localStorage`);
-          // Try to get from localStorage
-          const cachedContent = localStorage.getItem(`web3Edu_content_${contentPath}`);
-          if (cachedContent) {
-            return JSON.parse(cachedContent);
-          }
-          // If not in localStorage, throw to try fallback
-          throw error;
-        }
-      } else {
-        // Offline - try to get from localStorage
-        const cachedContent = localStorage.getItem(`web3Edu_content_${contentPath}`);
-        if (cachedContent) {
-          return JSON.parse(cachedContent);
-        }
-      }
-      
-      // If we get here, we need to use hardcoded fallbacks
-      throw new Error('Content not available offline');
-    } catch (error) {
-      console.error(`Error fetching content: ${error.message}`);
-      throw error;
-    }
-  }
-  
-  /**
-   * Load user progress from localStorage with improved error handling
-   */
-  _loadUserProgress() {
-    const storedProgress = localStorage.getItem('web3EduProgress');
-    if (storedProgress) {
-      try {
-        const parsedProgress = JSON.parse(storedProgress);
-        
-        // Validate structure and provide defaults for missing properties
-        if (!parsedProgress.completedLessons) parsedProgress.completedLessons = [];
-        if (!parsedProgress.viewedLessons) parsedProgress.viewedLessons = [];
-        if (!parsedProgress.interactiveUsage) parsedProgress.interactiveUsage = {};
-        if (!parsedProgress.lastAccessed) parsedProgress.lastAccessed = Date.now();
-        
-        return parsedProgress;
-      } catch (e) {
-        console.error('Failed to parse stored progress', e);
-        this._showNotification('There was a problem loading your progress data.', 'error');
-      }
-    }
-    
-    // Default progress object
-    return {
-      completedLessons: [],
-      viewedLessons: [],
-      interactiveUsage: {},
-      lessonAccess: {},
-      lastAccessed: Date.now()
-    };
-  }
-  
-  /**
-   * Save user progress to localStorage with error handling and data cleanup
-   */
-  _saveUserProgress() {
-    try {
-      this.userProgress.lastAccessed = Date.now();
-      
-      // Clean up progress data to avoid localStorage bloat
-      this._cleanupProgressData();
-      
-      localStorage.setItem('web3EduProgress', JSON.stringify(this.userProgress));
-    } catch (e) {
-      console.error('Failed to save progress', e);
-      // If localStorage is full, try to clear some space
-      if (e.code === 22 || e.name === 'QuotaExceededError') {
-        this._handleStorageQuotaExceeded();
-      }
-    }
-  }
-  
-  /**
-   * Clean up progress data to prevent localStorage bloat
-   */
-  _cleanupProgressData() {
-    // Limit the size of interactive usage history
-    if (this.userProgress.interactiveUsage) {
-      // Only keep the last 20 demo interactions
-      const demos = Object.keys(this.userProgress.interactiveUsage);
-      if (demos.length > 20) {
-        const sortedDemos = demos
-          .map(key => ({ 
-            key, 
-            lastUsed: this.userProgress.interactiveUsage[key].lastUsed || 0 
-          }))
-          .sort((a, b) => b.lastUsed - a.lastUsed);
-        
-        // Keep only the 20 most recent
-        const demosToKeep = sortedDemos.slice(0, 20).map(item => item.key);
-        
-        // Create a new object with just the demos to keep
-        const cleanedDemos = {};
-        demosToKeep.forEach(key => {
-          cleanedDemos[key] = this.userProgress.interactiveUsage[key];
-        });
-        
-        this.userProgress.interactiveUsage = cleanedDemos;
-      }
-    }
-  }
-  
-  /**
-   * Handle localStorage quota exceeded error
-   */
-  _handleStorageQuotaExceeded() {
-    console.warn('localStorage quota exceeded, clearing some space');
-    
-    try {
-      // Clear old content caches
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('web3Edu_content_')) {
-          localStorage.removeItem(key);
-        }
-      }
-      
-      // Try saving again with minimal data
-      const minimalProgress = {
-        completedLessons: this.userProgress.completedLessons,
-        viewedLessons: this.userProgress.viewedLessons,
-        lastAccessed: Date.now()
-      };
-      
-      localStorage.setItem('web3EduProgress', JSON.stringify(minimalProgress));
-    } catch (e) {
-      console.error('Failed to recover from storage quota exceeded', e);
-      this._showNotification('Unable to save your progress. Please clear your browser cache.', 'error');
-    }
+    setTimeout(() => {
+      this.notificationElement.style.display = 'none';
+    }, 5000);
   }
 }
-
-// For use in browser environment
-if (typeof window !== 'undefined') {
-  window.ContentLibrary = ContentLibrary;
-}
-
-// For use in Node.js environment
-if (typeof module !== 'undefined') {
-  module.exports = ContentLibrary;

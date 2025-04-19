@@ -994,3 +994,913 @@ if (typeof window !== 'undefined') {
 if (typeof module !== 'undefined') {
   module.exports = InteractiveDemos;
 }
+
+/**
+ * Interactive Demos for Web3 Education
+ * This file contains interactive components for blockchain education
+ */
+
+/**
+ * Initialize interactive demos when the page loads
+ */
+document.addEventListener('DOMContentLoaded', function() {
+  // We'll detect and initialize demos based on their presence in the DOM
+  initializeAvailableDemos();
+});
+
+/**
+ * Initialize all available demos
+ */
+function initializeAvailableDemos() {
+  // Check for specific demo containers and initialize as needed
+  if (document.getElementById('blockchain-demo')) {
+    initializeBlockchainDemo();
+  }
+  
+  if (document.getElementById('signing-demo')) {
+    initializeSigningDemo();
+  }
+  
+  if (document.getElementById('smart-contract-demo')) {
+    initializeSmartContractDemo();
+  }
+}
+
+/**
+ * Initialize blockchain visualization demo
+ */
+function initializeBlockchainDemo() {
+  const demoContainer = document.getElementById('blockchain-demo');
+  if (!demoContainer) return;
+  
+  // Create a simple blockchain visualization
+  const blockCount = 5;
+  let blocks = [];
+  
+  // Create initial UI
+  demoContainer.innerHTML = `
+    <h4>Interactive Blockchain Demo</h4>
+    <p>See how changing data affects the entire blockchain:</p>
+    
+    <div class="blockchain-container">
+      <div id="blocks-container" class="blocks-container"></div>
+    </div>
+    
+    <div class="demo-controls">
+      <button id="add-block-btn" class="btn secondary">Add Block</button>
+      <button id="reset-chain-btn" class="btn secondary">Reset Chain</button>
+    </div>
+  `;
+  
+  // Generate initial blockchain
+  generateBlocks(blockCount);
+  
+  // Set up event listeners
+  document.getElementById('add-block-btn').addEventListener('click', addNewBlock);
+  document.getElementById('reset-chain-btn').addEventListener('click', () => {
+    blocks = [];
+    generateBlocks(blockCount);
+  });
+  
+  /**
+   * Generate blockchain blocks
+   * @param {number} count - Number of blocks to generate
+   */
+  function generateBlocks(count) {
+    const blocksContainer = document.getElementById('blocks-container');
+    blocksContainer.innerHTML = '';
+    
+    for (let i = 0; i < count; i++) {
+      // For the first block, previous hash is "0"
+      const previousHash = i === 0 ? "0000000000000000" : blocks[i-1].hash;
+      
+      // Create a new block with some data
+      const block = {
+        index: i,
+        timestamp: new Date().toISOString(),
+        data: `Transaction data ${i}`,
+        previousHash: previousHash,
+        nonce: Math.floor(Math.random() * 100000)
+      };
+      
+      // Calculate hash
+      block.hash = calculateHash(block);
+      blocks[i] = block;
+      
+      // Create block element
+      const blockElement = document.createElement('div');
+      blockElement.className = 'block';
+      blockElement.innerHTML = `
+        <div class="block-header">Block #${i}</div>
+        <div class="block-content">
+          <div class="block-field">
+            <label>Data:</label>
+            <input type="text" class="block-data" value="${block.data}" data-index="${i}">
+          </div>
+          <div class="block-field">
+            <label>Previous Hash:</label>
+            <div class="hash">${block.previousHash.substring(0, 8)}...</div>
+          </div>
+          <div class="block-field">
+            <label>Hash:</label>
+            <div class="hash">${block.hash.substring(0, 8)}...</div>
+          </div>
+        </div>
+      `;
+      
+      blocksContainer.appendChild(blockElement);
+    }
+    
+    // Add event listeners to data inputs
+    document.querySelectorAll('.block-data').forEach(input => {
+      input.addEventListener('input', updateBlockData);
+    });
+  }
+  
+  /**
+   * Update block data when input changes
+   * @param {Event} event - Input event
+   */
+  function updateBlockData(event) {
+    const index = parseInt(event.target.getAttribute('data-index'));
+    
+    // Update block data
+    blocks[index].data = event.target.value;
+    blocks[index].hash = calculateHash(blocks[index]);
+    
+    // Update UI for this block's hash
+    const blockElements = document.querySelectorAll('.block');
+    const hashDisplay = blockElements[index].querySelector('.hash:last-child');
+    hashDisplay.textContent = blocks[index].hash.substring(0, 8) + '...';
+    
+    // Update all subsequent blocks (they're now invalid)
+    for (let i = index + 1; i < blocks.length; i++) {
+      blocks[i].previousHash = blocks[i-1].hash;
+      blocks[i].hash = calculateHash(blocks[i]);
+      
+      // Update UI
+      const prevHashDisplay = blockElements[i].querySelector('.hash:first-of-type');
+      const hashDisplay = blockElements[i].querySelector('.hash:last-child');
+      
+      prevHashDisplay.textContent = blocks[i].previousHash.substring(0, 8) + '...';
+      hashDisplay.textContent = blocks[i].hash.substring(0, 8) + '...';
+      
+      // Mark block as invalid
+      blockElements[i].classList.add('invalid');
+    }
+    
+    // Mark the changed block as changed
+    blockElements[index].classList.add('changed');
+    
+    // Remove changed class after animation
+    setTimeout(() => {
+      blockElements[index].classList.remove('changed');
+    }, 1000);
+  }
+  
+  /**
+   * Add a new block to the chain
+   */
+  function addNewBlock() {
+    const index = blocks.length;
+    const previousHash = blocks[index-1].hash;
+    
+    // Create a new block
+    const block = {
+      index: index,
+      timestamp: new Date().toISOString(),
+      data: `Transaction data ${index}`,
+      previousHash: previousHash,
+      nonce: Math.floor(Math.random() * 100000)
+    };
+    
+    // Calculate hash
+    block.hash = calculateHash(block);
+    blocks.push(block);
+    
+    // Create block element
+    const blockElement = document.createElement('div');
+    blockElement.className = 'block new-block';
+    blockElement.innerHTML = `
+      <div class="block-header">Block #${index}</div>
+      <div class="block-content">
+        <div class="block-field">
+          <label>Data:</label>
+          <input type="text" class="block-data" value="${block.data}" data-index="${index}">
+        </div>
+        <div class="block-field">
+          <label>Previous Hash:</label>
+          <div class="hash">${block.previousHash.substring(0, 8)}...</div>
+        </div>
+        <div class="block-field">
+          <label>Hash:</label>
+          <div class="hash">${block.hash.substring(0, 8)}...</div>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('blocks-container').appendChild(blockElement);
+    
+    // Add event listener
+    blockElement.querySelector('.block-data').addEventListener('input', updateBlockData);
+    
+    // Remove the new-block class after animation
+    setTimeout(() => {
+      blockElement.classList.remove('new-block');
+    }, 1000);
+  }
+  
+  /**
+   * Calculate a simple hash for a block
+   * @param {Object} block - Block to hash
+   * @returns {string} Block hash
+   */
+  function calculateHash(block) {
+    // In a real blockchain, this would be a cryptographic hash function
+    // For this demo, we'll use a simple string-based approach
+    const blockString = block.index + block.previousHash + block.timestamp + block.data + block.nonce;
+    
+    // Simple hash function that returns a hex string
+    let hash = 0;
+    for (let i = 0; i < blockString.length; i++) {
+      const char = blockString.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    
+    // Convert to hex string and ensure it's 16 characters
+    return Math.abs(hash).toString(16).padStart(16, '0');
+  }
+}
+
+/**
+ * Initialize signing demo
+ */
+function initializeSigningDemo() {
+  const demoContainer = document.getElementById('signing-demo');
+  if (!demoContainer) return;
+  
+  // Create UI
+  demoContainer.innerHTML = `
+    <h4>Digital Signature Demo</h4>
+    <p>See how digital signatures work in blockchain:</p>
+    
+    <div class="signing-container">
+      <div class="input-group">
+        <label for="message-input">Message:</label>
+        <textarea id="message-input" rows="3">Hello, blockchain world!</textarea>
+      </div>
+      
+      <div class="key-container">
+        <div class="key private-key">
+          <h5>Private Key (Keep Secret!)</h5>
+          <div class="key-value" id="private-key">...</div>
+          <button id="generate-keys-btn" class="btn secondary">Generate New Keys</button>
+        </div>
+        
+        <div class="key public-key">
+          <h5>Public Key (Share Freely)</h5>
+          <div class="key-value" id="public-key">...</div>
+        </div>
+      </div>
+      
+      <div class="signature-container">
+        <button id="sign-btn" class="btn primary">Sign Message</button>
+        <div class="signature-output">
+          <h5>Signature:</h5>
+          <div class="signature-value" id="signature">No signature yet</div>
+        </div>
+        <div class="verification">
+          <button id="verify-btn" class="btn secondary" disabled>Verify Signature</button>
+          <div class="verification-result" id="verification-result"></div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Mock key pair
+  let keyPair = null;
+  
+  // Set up event listeners
+  document.getElementById('generate-keys-btn').addEventListener('click', generateKeyPair);
+  document.getElementById('sign-btn').addEventListener('click', signMessage);
+  document.getElementById('verify-btn').addEventListener('click', verifySignature);
+  document.getElementById('message-input').addEventListener('input', clearSignature);
+  
+  // Generate initial keys
+  generateKeyPair();
+  
+  /**
+   * Generate a new key pair
+   */
+  function generateKeyPair() {
+    // In a real application, this would use proper cryptographic functions
+    // For this demo, we'll just create mock keys
+    const privateKey = Array.from({length: 32}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+    const publicKey = Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+    
+    keyPair = { privateKey, publicKey };
+    
+    document.getElementById('private-key').textContent = `${privateKey.substring(0, 6)}...${privateKey.substring(privateKey.length - 4)}`;
+    document.getElementById('public-key').textContent = `${publicKey.substring(0, 6)}...${publicKey.substring(publicKey.length - 4)}`;
+    
+    clearSignature();
+  }
+  
+  /**
+   * Sign a message
+   */
+  function signMessage() {
+    const message = document.getElementById('message-input').value;
+    if (!message || !keyPair) return;
+    
+    const signatureElement = document.getElementById('signature');
+    signatureElement.textContent = 'Signing...';
+    
+    // Simulate processing time
+    setTimeout(() => {
+      // In a real application, this would use proper cryptographic functions
+      // For this demo, we'll create a mock signature based on the message and private key
+      const mockSignature = createMockSignature(message, keyPair.privateKey);
+      
+      signatureElement.textContent = `${mockSignature.substring(0, 12)}...${mockSignature.substring(mockSignature.length - 8)}`;
+      signatureElement.setAttribute('data-full-signature', mockSignature);
+      
+      // Enable verify button
+      document.getElementById('verify-btn').disabled = false;
+      document.getElementById('verification-result').textContent = '';
+    }, 800);
+  }
+  
+  /**
+   * Verify a signature
+   */
+  function verifySignature() {
+    const message = document.getElementById('message-input').value;
+    const signature = document.getElementById('signature').getAttribute('data-full-signature');
+    
+    if (!message || !signature || !keyPair) return;
+    
+    const verificationResult = document.getElementById('verification-result');
+    verificationResult.textContent = 'Verifying...';
+    verificationResult.className = 'verification-result';
+    
+    // Simulate processing time
+    setTimeout(() => {
+      // In a real application, this would use proper cryptographic functions
+      // For this demo, we'll verify by recreating the mock signature
+      const expectedSignature = createMockSignature(message, keyPair.privateKey);
+      const isValid = (expectedSignature === signature);
+      
+      verificationResult.textContent = isValid ? 'Valid signature ✓' : 'Invalid signature ✗';
+      verificationResult.className = `verification-result ${isValid ? 'valid' : 'invalid'}`;
+    }, 1000);
+  }
+  
+  /**
+   * Clear signature when message changes
+   */
+  function clearSignature() {
+    document.getElementById('signature').textContent = 'No signature yet';
+    document.getElementById('signature').removeAttribute('data-full-signature');
+    document.getElementById('verify-btn').disabled = true;
+    document.getElementById('verification-result').textContent = '';
+    document.getElementById('verification-result').className = 'verification-result';
+  }
+  
+  /**
+   * Create a mock signature
+   * @param {string} message - Message to sign
+   * @param {string} privateKey - Private key
+   * @returns {string} Signature
+   */
+  function createMockSignature(message, privateKey) {
+    // In a real application, this would use proper cryptographic functions
+    // For this demo, we'll create a mock signature based on the message and private key
+    let hash = 0;
+    const combinedString = message + privateKey;
+    
+    for (let i = 0; i < combinedString.length; i++) {
+      const char = combinedString.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    
+    // Convert to hex string
+    const mockSignature = Array.from({length: 64}, (_, i) => {
+      const shift = (hash >> (i % 32)) & 15;
+      return (shift + Math.floor(Math.random() * 16) % 16).toString(16);
+    }).join('');
+    
+    return mockSignature;
+  }
+}
+
+/**
+ * Initialize smart contract demo
+ */
+function initializeSmartContractDemo() {
+  const demoContainer = document.getElementById('smart-contract-demo');
+  if (!demoContainer) return;
+  
+  // Create UI
+  demoContainer.innerHTML = `
+    <h4>Smart Contract Interaction Demo</h4>
+    <p>Experience how smart contracts work by interacting with a simple token contract:</p>
+    
+    <div class="contract-container">
+      <div class="contract-code">
+        <h5>Sample Token Contract Code:</h5>
+        <pre><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract SimpleToken {
+    string public name;
+    string public symbol;
+    uint8 public decimals;
+    uint256 public totalSupply;
+    
+    mapping(address => uint256) public balanceOf;
+    mapping(address => mapping(address => uint256)) public allowance;
+    
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+    
+    constructor(string memory _name, string memory _symbol, uint8 _decimals, uint256 _initialSupply) {
+        name = _name;
+        symbol = _symbol;
+        decimals = _decimals;
+        totalSupply = _initialSupply * 10**uint256(decimals);
+        balanceOf[msg.sender] = totalSupply;
+        emit Transfer(address(0), msg.sender, totalSupply);
+    }
+    
+    function transfer(address _to, uint256 _value) public returns (bool success) {
+        require(balanceOf[msg.sender] >= _value);
+        balanceOf[msg.sender] -= _value;
+        balanceOf[_to] += _value;
+        emit Transfer(msg.sender, _to, _value);
+        return true;
+    }
+    
+    function approve(address _spender, uint256 _value) public returns (bool success) {
+        allowance[msg.sender][_spender] = _value;
+        emit Approval(msg.sender, _spender, _value);
+        return true;
+    }
+    
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
+        require(balanceOf[_from] >= _value);
+        require(allowance[_from][msg.sender] >= _value);
+        balanceOf[_from] -= _value;
+        balanceOf[_to] += _value;
+        allowance[_from][msg.sender] -= _value;
+        emit Transfer(_from, _to, _value);
+        return true;
+    }
+}</code></pre>
+      </div>
+      
+      <div class="contract-interaction">
+        <div class="contract-state">
+          <h5>Contract State:</h5>
+          <div class="state-item">
+            <span>Name:</span>
+            <span id="token-name">Education Token</span>
+          </div>
+          <div class="state-item">
+            <span>Symbol:</span>
+            <span id="token-symbol">EDU</span>
+          </div>
+          <div class="state-item">
+            <span>Total Supply:</span>
+            <span id="token-supply">1,000,000</span>
+          </div>
+          <div class="state-item">
+            <span>Your Balance:</span>
+            <span id="token-balance">0</span>
+          </div>
+        </div>
+        
+        <div class="contract-actions">
+          <h5>Interact with Contract:</h5>
+          <div class="action-item">
+            <label for="transfer-amount">Transfer Amount:</label>
+            <input type="number" id="transfer-amount" min="1" max="1000" value="100">
+          </div>
+          <div class="action-item">
+            <label for="transfer-address">To Address:</label>
+            <input type="text" id="transfer-address" placeholder="0x..." value="0xdAC17F958D2ee523a2206206994597C13D831ec7">
+          </div>
+          <button id="transfer-btn" class="btn primary">Transfer Tokens</button>
+          <div id="transfer-result" class="action-result"></div>
+          
+          <div class="action-divider"></div>
+          
+          <div class="action-item">
+            <label for="mint-amount">Request Test Tokens:</label>
+            <input type="number" id="mint-amount" min="100" max="1000" value="100">
+          </div>
+          <button id="mint-btn" class="btn secondary">Request Tokens</button>
+          <div id="mint-result" class="action-result"></div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Mock contract state
+  let tokenState = {
+    name: 'Education Token',
+    symbol: 'EDU',
+    totalSupply: 1000000,
+    userBalance: 0,
+    transactions: []
+  };
+  
+  // Set up event listeners
+  const transferBtn = document.getElementById('transfer-btn');
+  const mintBtn = document.getElementById('mint-btn');
+  
+  if (transferBtn) {
+    transferBtn.addEventListener('click', handleTransfer);
+  }
+  
+  if (mintBtn) {
+    mintBtn.addEventListener('click', handleMint);
+  }
+  
+  // Apply syntax highlighting if available
+  if (window.hljs) {
+    document.querySelectorAll('pre code').forEach((block) => {
+      window.hljs.highlightBlock(block);
+    });
+  }
+  
+  /**
+   * Handle token transfer
+   */
+  async function handleTransfer() {
+    const amount = parseInt(document.getElementById('transfer-amount').value);
+    const toAddress = document.getElementById('transfer-address').value;
+    const resultElement = document.getElementById('transfer-result');
+    
+    if (!amount || !toAddress || toAddress.length < 10) {
+      resultElement.innerHTML = '<span class="error">Please enter a valid amount and address</span>';
+      return;
+    }
+    
+    if (tokenState.userBalance < amount) {
+      resultElement.innerHTML = '<span class="error">Insufficient balance</span>';
+      return;
+    }
+    
+    resultElement.innerHTML = '<span class="pending">Processing transaction...</span>';
+    
+    // Simulate transaction delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Update balances
+    tokenState.userBalance -= amount;
+    
+    // Add transaction to history
+    const txHash = '0x' + Array.from({length: 64}, () => 
+      Math.floor(Math.random() * 16).toString(16)
+    ).join('');
+    
+    tokenState.transactions.push({
+      hash: txHash,
+      from: 'Your Address',
+      to: toAddress,
+      amount: amount,
+      timestamp: new Date()
+    });
+    
+    // Update UI
+    document.getElementById('token-balance').textContent = tokenState.userBalance;
+    
+    resultElement.innerHTML = `
+      <span class="success">Transfer successful!</span>
+      <div class="tx-details">
+        <span>Transaction Hash:</span>
+        <a href="#" class="tx-hash">${txHash.substring(0, 8)}...${txHash.substring(60)}</a>
+      </div>
+    `;
+  }
+  
+  /**
+   * Handle token mint (request tokens)
+   */
+  async function handleMint() {
+    const amount = parseInt(document.getElementById('mint-amount').value);
+    const resultElement = document.getElementById('mint-result');
+    
+    if (!amount || amount < 100 || amount > 1000) {
+      resultElement.innerHTML = '<span class="error">Please enter a valid amount (100-1000)</span>';
+      return;
+    }
+    
+    resultElement.innerHTML = '<span class="pending">Requesting tokens...</span>';
+    
+    // Simulate transaction delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Check if user has requested tokens in the last minute
+    const lastMint = tokenState.transactions.find(tx => 
+      tx.type === 'mint' && (new Date() - tx.timestamp) < 60000
+    );
+    
+    if (lastMint) {
+      resultElement.innerHTML = '<span class="error">Please wait before requesting more tokens</span>';
+      return;
+    }
+    
+    // Update balance
+    tokenState.userBalance += amount;
+    
+    // Add transaction to history
+    const txHash = '0x' + Array.from({length: 64}, () => 
+      Math.floor(Math.random() * 16).toString(16)
+    ).join('');
+    
+    tokenState.transactions.push({
+      hash: txHash,
+      type: 'mint',
+      amount: amount,
+      timestamp: new Date()
+    });
+    
+    // Update UI
+    document.getElementById('token-balance').textContent = tokenState.userBalance;
+    
+    resultElement.innerHTML = `
+      <span class="success">Received ${amount} EDU tokens!</span>
+      <div class="tx-details">
+        <span>Transaction Hash:</span>
+        <a href="#" class="tx-hash">${txHash.substring(0, 8)}...${txHash.substring(60)}</a>
+      </div>
+    `;
+  }
+}
+
+/**
+ * Add stylesheet for interactive demos
+ */
+function addDemoStyles() {
+  const style = document.createElement('style');
+  style.textContent = `
+    .blockchain-container {
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+    
+    .blocks-container {
+      display: flex;
+      gap: 15px;
+      padding: 10px 0;
+    }
+    
+    .block {
+      min-width: 200px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .block.invalid {
+      background-color: #ffecec;
+      border-left: 3px solid #f44336;
+    }
+    
+    .block.changed {
+      animation: pulse 1s;
+    }
+    
+    .block.new-block {
+      animation: slide-in 0.5s;
+    }
+    
+    @keyframes pulse {
+      0% { background-color: #fff; }
+      50% { background-color: #e3f2fd; }
+      100% { background-color: #fff; }
+    }
+    
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateX(50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    .block-header {
+      padding: 10px;
+      background: #0066cc;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .block-content {
+      padding: 15px;
+    }
+    
+    .block-field {
+      margin-bottom: 10px;
+    }
+    
+    .block-field label {
+      display: block;
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    
+    .block-data {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .hash {
+      font-family: monospace;
+      background: #f5f5f5;
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      word-break: break-all;
+    }
+    
+    .demo-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    /* Signing demo styles */
+    .signing-container {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    .key-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .key {
+      flex: 1;
+      min-width: 250px;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    
+    .private-key {
+      background: #fff3e0;
+      border: 1px solid #ffcc80;
+    }
+    
+    .public-key {
+      background: #e8f5e9;
+      border: 1px solid #a5d6a7;
+    }
+    
+    .key h5 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    
+    .key-value {
+      font-family: monospace;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+    
+    .signature-container {
+      margin-top: 20px;
+    }
+    
+    .signature-output {
+      margin: 15px 0;
+    }
+    
+    .signature-value {
+      font-family: monospace;
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 4px;
+      word-break: break-all;
+    }
+    
+    .verification {
+      margin-top: 15px;
+    }
+    
+    .verification-result {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    
+    .verification-result.valid {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .verification-result.invalid {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    /* Smart contract demo styles */
+    .contract-container {
+      margin: 20px 0;
+    }
+    
+    .contract-code {
+      margin-bottom: 20px;
+    }
+    
+    .contract-interaction {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+    
+    .contract-state, .contract-actions {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    .state-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .action-item {
+      margin-bottom: 15px;
+    }
+    
+    .action-item label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    .action-item input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .action-divider {
+      height: 1px;
+      background: #eee;
+      margin: 20px 0;
+    }
+    
+    .action-result {
+      margin-top: 10px;
+      min-height: 24px;
+    }
+    
+    .action-result .error {
+      color: #dc3545;
+    }
+    
+    .action-result .success {
+      color: #28a745;
+    }
+    
+    .action-result .pending {
+      color: #ffc107;
+    }
+    
+    .tx-details {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      display: flex;
+      gap: 8px;
+    }
+    
+    .tx-hash {
+      font-family: monospace;
+      color: #0066cc;
+    }
+  `;
+  
+  document.head.appendChild(style);
+}
+
+// Add styles when the page loads
+document.addEventListener('DOMContentLoaded', addDemoStyles);
