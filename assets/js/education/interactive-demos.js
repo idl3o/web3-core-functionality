@@ -17,7 +17,8 @@ class InteractiveDemos {
     this.demoInitializers = {
       'block-explorer': this._initBlockExplorerDemo.bind(this),
       'code-editor': this._initCodeEditorDemo.bind(this),
-      'defi-simulator': this._initDefiSimulatorDemo.bind(this)
+      'defi-simulator': this._initDefiSimulatorDemo.bind(this),
+      'game-theory': this._initGameTheoryDemo.bind(this) // Add new demo type
     };
   }
   
@@ -774,6 +775,1073 @@ contract SimpleStorage {
       state: defiState,
       cleanup: () => {
         clearInterval(rewardsInterval);
+      }
+    };
+  }
+  
+  /**
+   * Initialize a Game Theory demo
+   */
+  _initGameTheoryDemo(container, demoId) {
+    // Create the demo container
+    container.className = 'demo-container game-theory-demo';
+    
+    // Create the header
+    const header = document.createElement('div');
+    header.className = 'demo-header';
+    header.innerHTML = `
+      <h3>Game Theory in Blockchain Consensus</h3>
+      <div class="demo-controls">
+        <button id="${demoId}-reset">Reset Simulation</button>
+      </div>
+    `;
+    container.appendChild(header);
+    
+    // Create the explanation section
+    const explanationSection = document.createElement('div');
+    explanationSection.className = 'explanation-section';
+    explanationSection.innerHTML = `
+      <div class="theory-intro">
+        <h4>Game Theory and Blockchain Consensus</h4>
+        <p>
+          Game theory is essential to understanding blockchain incentive structures. 
+          This demo explores how different actors (rational bots vs. emotional humans) 
+          respond to coordination problems in consensus mechanisms.
+        </p>
+      </div>
+    `;
+    container.appendChild(explanationSection);
+    
+    // Create the game simulation container
+    const simulationContainer = document.createElement('div');
+    simulationContainer.className = 'simulation-container';
+    
+    // Create tabs for different game theory models
+    const tabsContainer = document.createElement('div');
+    tabsContainer.className = 'tabs-container';
+    tabsContainer.innerHTML = `
+      <div class="tabs">
+        <div class="tab active" data-tab="prisoners-dilemma">Prisoner's Dilemma</div>
+        <div class="tab" data-tab="coordination-game">Coordination Game</div>
+        <div class="tab" data-tab="consensus-mechanism">Consensus Mechanism</div>
+      </div>
+    `;
+    simulationContainer.appendChild(tabsContainer);
+    
+    // Create tab content container
+    const tabContentContainer = document.createElement('div');
+    tabContentContainer.className = 'tab-content-container';
+    
+    // Prisoner's Dilemma Content
+    const prisonersDilemmaContent = document.createElement('div');
+    prisonersDilemmaContent.className = 'tab-content active';
+    prisonersDilemmaContent.dataset.tabContent = 'prisoners-dilemma';
+    prisonersDilemmaContent.innerHTML = `
+      <h4>Blockchain Prisoner's Dilemma</h4>
+      <p>This classic game theory scenario illustrates why rational actors may choose not to cooperate even when it's in their best interest.</p>
+      
+      <div class="game-board">
+        <div class="game-scenario">
+          <h5>Scenario: Block Validation</h5>
+          <p>Two validators must independently decide whether to validate a block honestly or try to cheat for short-term gain.</p>
+          <p>If both validate honestly, the network runs efficiently and both earn stable rewards.</p>
+          <p>If one cheats while the other is honest, the cheater gets a temporary advantage before likely being caught.</p>
+          <p>If both cheat, the network integrity suffers and both lose significantly in the long run.</p>
+        </div>
+        
+        <div class="payoff-matrix">
+          <h5>Payoff Matrix</h5>
+          <table>
+            <tr>
+              <td></td>
+              <td></td>
+              <td colspan="2" class="matrix-header">Validator B</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td class="matrix-header">Validate Honestly</td>
+              <td class="matrix-header">Cheat</td>
+            </tr>
+            <tr>
+              <td rowspan="2" class="matrix-header vertical">Validator A</td>
+              <td class="matrix-header">Validate Honestly</td>
+              <td class="matrix-cell good">A: +3<br>B: +3</td>
+              <td class="matrix-cell bad">A: -1<br>B: +5</td>
+            </tr>
+            <tr>
+              <td class="matrix-header">Cheat</td>
+              <td class="matrix-cell bad">A: +5<br>B: -1</td>
+              <td class="matrix-cell danger">A: -2<br>B: -2</td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="game-controls">
+          <h5>Simulation</h5>
+          <div class="control-group">
+            <label for="${demoId}-actor-type">Actor Type:</label>
+            <select id="${demoId}-actor-type">
+              <option value="rational">Rational Actors (Bots)</option>
+              <option value="human">Human Actors</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label for="${demoId}-rounds">Simulation Rounds:</label>
+            <input type="number" id="${demoId}-rounds" min="1" max="1000" value="100">
+          </div>
+          <button id="${demoId}-run-sim" class="btn primary">Run Simulation</button>
+        </div>
+      </div>
+      
+      <div class="simulation-results" id="${demoId}-pd-results">
+        <h5>Simulation Results</h5>
+        <div class="results-placeholder">Run a simulation to see results</div>
+      </div>
+    `;
+    
+    // Coordination Game Content
+    const coordinationGameContent = document.createElement('div');
+    coordinationGameContent.className = 'tab-content';
+    coordinationGameContent.dataset.tabContent = 'coordination-game';
+    coordinationGameContent.innerHTML = `
+      <h4>Blockchain Coordination Problem</h4>
+      <p>Coordination games demonstrate how actors in a decentralized system can achieve optimal outcomes through coordination.</p>
+      
+      <div class="game-board">
+        <div class="game-scenario">
+          <h5>Scenario: Fork Choice</h5>
+          <p>Miners must choose which chain to mine on. If they coordinate on the same chain, they all benefit.</p>
+          <p>If they split effort across chains, the network security suffers and everyone earns less.</p>
+          <p>This explains why proof-of-work chains tend to converge on a single canonical chain.</p>
+        </div>
+        
+        <div class="solution-comparison">
+          <h5>Solution Comparison from Analysis</h5>
+          <table>
+            <tr>
+              <th></th>
+              <th>Standard Numbering</th>
+              <th>Pairing/Watcher Solution</th>
+            </tr>
+            <tr>
+              <td>Effectiveness for Rational Bots</td>
+              <td>High (P=0)</td>
+              <td>High (dominant strategy)</td>
+            </tr>
+            <tr>
+              <td>Effectiveness for Human Actors</td>
+              <td>Medium (risk of mass escapes)</td>
+              <td>Very High (P=0.001)</td>
+            </tr>
+            <tr>
+              <td>Handles Mass Escapes</td>
+              <td>Fails (99 survive)</td>
+              <td>Prevents mass escapes</td>
+            </tr>
+            <tr>
+              <td>Complexity</td>
+              <td>Low</td>
+              <td>Medium</td>
+            </tr>
+            <tr>
+              <td>Relies on Bluffing</td>
+              <td>No</td>
+              <td>Yes</td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="simulation-controls">
+          <h5>Choose Your Strategy</h5>
+          <div class="control-group">
+            <label for="${demoId}-strategy">Select Coordination Strategy:</label>
+            <select id="${demoId}-strategy">
+              <option value="standard">Standard Numbering</option>
+              <option value="pairing">Pairing/Watcher Solution</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label for="${demoId}-actor-mix">Actor Mix:</label>
+            <input type="range" id="${demoId}-actor-mix" min="0" max="100" value="50">
+            <div class="range-labels">
+              <span>All Rational</span>
+              <span>Mixed</span>
+              <span>All Human</span>
+            </div>
+          </div>
+          <button id="${demoId}-analyze" class="btn primary">Analyze Outcome</button>
+        </div>
+      </div>
+      
+      <div class="analysis-results" id="${demoId}-cg-results">
+        <h5>Analysis Results</h5>
+        <div class="results-placeholder">Run an analysis to see results</div>
+      </div>
+    `;
+    
+    // Consensus Mechanism Content
+    const consensusMechanismContent = document.createElement('div');
+    consensusMechanismContent.className = 'tab-content';
+    consensusMechanismContent.dataset.tabContent = 'consensus-mechanism';
+    consensusMechanismContent.innerHTML = `
+      <h4>Blockchain Consensus Mechanisms</h4>
+      <p>Different consensus mechanisms leverage game theory to secure their networks. This simulator compares them.</p>
+      
+      <div class="mechanism-selector">
+        <h5>Select Mechanism</h5>
+        <div class="mechanism-options">
+          <div class="mechanism-option selected" data-mechanism="pow">
+            <h6>Proof of Work</h6>
+            <p>Economic cost creates security through energy expenditure</p>
+          </div>
+          <div class="mechanism-option" data-mechanism="pos">
+            <h6>Proof of Stake</h6>
+            <p>Economic security through capital lockup</p>
+          </div>
+          <div class="mechanism-option" data-mechanism="dpos">
+            <h6>Delegated Proof of Stake</h6>
+            <p>Elected validators with reputation at stake</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mechanism-simulation">
+        <h5>Attack Simulation</h5>
+        <div class="simulation-parameters">
+          <div class="parameter">
+            <label for="${demoId}-attack-budget">Attacker Budget (% of network):</label>
+            <input type="range" id="${demoId}-attack-budget" min="1" max="99" value="30">
+            <span class="parameter-value">30%</span>
+          </div>
+          <div class="parameter">
+            <label for="${demoId}-honest-nodes">Honest Nodes:</label>
+            <input type="range" id="${demoId}-honest-nodes" min="10" max="1000" value="100">
+            <span class="parameter-value">100</span>
+          </div>
+          <div class="parameter">
+            <label for="${demoId}-attack-type">Attack Type:</label>
+            <select id="${demoId}-attack-type">
+              <option value="51">51% Attack</option>
+              <option value="selfish">Selfish Mining</option>
+              <option value="sybil">Sybil Attack</option>
+            </select>
+          </div>
+          <button id="${demoId}-simulate-attack" class="btn primary">Simulate Attack</button>
+        </div>
+        
+        <div class="attack-results" id="${demoId}-attack-results">
+          <h5>Attack Results</h5>
+          <div class="results-placeholder">Run a simulation to see results</div>
+        </div>
+      </div>
+    `;
+    
+    // Append tab contents to container
+    tabContentContainer.appendChild(prisonersDilemmaContent);
+    tabContentContainer.appendChild(coordinationGameContent);
+    tabContentContainer.appendChild(consensusMechanismContent);
+    
+    // Append tab content container to simulation container
+    simulationContainer.appendChild(tabContentContainer);
+    
+    // Append simulation container to main container
+    container.appendChild(simulationContainer);
+    
+    // Add conclusion section
+    const conclusionSection = document.createElement('div');
+    conclusionSection.className = 'conclusion-section';
+    conclusionSection.innerHTML = `
+      <h4>Key Insights from Game Theory for Blockchain</h4>
+      <div class="insights-grid">
+        <div class="insight-card">
+          <h5>Nash Equilibrium</h5>
+          <p>In blockchain consensus, validators reach a Nash equilibrium when no single participant can gain by changing their strategy while others maintain theirs.</p>
+        </div>
+        <div class="insight-card">
+          <h5>Schelling Points</h5>
+          <p>Focal points that participants naturally gravitate toward without communication - like choosing the longest valid chain in PoW systems.</p>
+        </div>
+        <div class="insight-card">
+          <h5>Rational vs. Human Actors</h5>
+          <p>Optimal protocol design must account for both mathematical rationality and human emotional/psychological factors.</p>
+        </div>
+        <div class="insight-card">
+          <h5>Byzantine Generals Problem</h5>
+          <p>Game theory helps solve this fundamental coordination problem in distributed systems through economic incentives.</p>
+        </div>
+      </div>
+    `;
+    container.appendChild(conclusionSection);
+    
+    // Initialize the demo state
+    const gameTheoryState = {
+      currentTab: 'prisoners-dilemma',
+      prisonersDilemma: {
+        actorType: 'rational',
+        rounds: 100,
+        results: null
+      },
+      coordinationGame: {
+        strategy: 'standard',
+        actorMix: 50,
+        results: null
+      },
+      consensusMechanism: {
+        selected: 'pow',
+        attackBudget: 30,
+        honestNodes: 100,
+        attackType: '51',
+        results: null
+      }
+    };
+    
+    // Tab switching functionality
+    const tabs = tabsContainer.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Update active tab
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        // Update active content
+        const tabContents = tabContentContainer.querySelectorAll('.tab-content');
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        const activeTabName = tab.dataset.tab;
+        const activeContent = tabContentContainer.querySelector(`.tab-content[data-tab-content="${activeTabName}"]`);
+        activeContent.classList.add('active');
+        
+        gameTheoryState.currentTab = activeTabName;
+      });
+    });
+    
+    // Prisoners Dilemma Simulation
+    document.getElementById(`${demoId}-run-sim`).addEventListener('click', () => {
+      const actorType = document.getElementById(`${demoId}-actor-type`).value;
+      const rounds = parseInt(document.getElementById(`${demoId}-rounds`).value);
+      
+      // Update state
+      gameTheoryState.prisonersDilemma.actorType = actorType;
+      gameTheoryState.prisonersDilemma.rounds = rounds;
+      
+      // Run simulation
+      const results = simulatePrisonersDilemma(actorType, rounds);
+      gameTheoryState.prisonersDilemma.results = results;
+      
+      // Display results
+      const resultsContainer = document.getElementById(`${demoId}-pd-results`);
+      resultsContainer.innerHTML = `
+        <h5>Simulation Results (${rounds} rounds)</h5>
+        <div class="results-summary">
+          <div class="result-item">
+            <span class="result-label">Mutual Cooperation:</span>
+            <span class="result-value">${results.mutualCooperation} rounds (${Math.round(results.mutualCooperation / rounds * 100)}%)</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Mutual Defection:</span>
+            <span class="result-value">${results.mutualDefection} rounds (${Math.round(results.mutualDefection / rounds * 100)}%)</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Mixed Outcomes:</span>
+            <span class="result-value">${results.mixedOutcomes} rounds (${Math.round(results.mixedOutcomes / rounds * 100)}%)</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Network Security Score:</span>
+            <span class="result-value ${results.securityScore > 70 ? 'good' : results.securityScore > 40 ? 'medium' : 'bad'}">${results.securityScore}/100</span>
+          </div>
+        </div>
+        
+        <div class="results-chart">
+          <div class="chart-bar cooperation" style="width: ${Math.round(results.mutualCooperation / rounds * 100)}%">
+            <span>Cooperation</span>
+          </div>
+          <div class="chart-bar mixed" style="width: ${Math.round(results.mixedOutcomes / rounds * 100)}%">
+            <span>Mixed</span>
+          </div>
+          <div class="chart-bar defection" style="width: ${Math.round(results.mutualDefection / rounds * 100)}%">
+            <span>Defection</span>
+          </div>
+        </div>
+        
+        <div class="results-conclusion">
+          <strong>Conclusion:</strong> ${results.conclusion}
+        </div>
+      `;
+    });
+    
+    // Coordination Game Analysis
+    document.getElementById(`${demoId}-analyze`).addEventListener('click', () => {
+      const strategy = document.getElementById(`${demoId}-strategy`).value;
+      const actorMix = parseInt(document.getElementById(`${demoId}-actor-mix`).value);
+      
+      // Update state
+      gameTheoryState.coordinationGame.strategy = strategy;
+      gameTheoryState.coordinationGame.actorMix = actorMix;
+      
+      // Run analysis
+      const results = analyzeCoordinationGame(strategy, actorMix);
+      gameTheoryState.coordinationGame.results = results;
+      
+      // Display results
+      const resultsContainer = document.getElementById(`${demoId}-cg-results`);
+      resultsContainer.innerHTML = `
+        <h5>Analysis Results</h5>
+        <div class="results-summary">
+          <div class="result-item">
+            <span class="result-label">Strategy:</span>
+            <span class="result-value">${strategy === 'standard' ? 'Standard Numbering' : 'Pairing/Watcher Solution'}</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Actor Composition:</span>
+            <span class="result-value">${actorMix}% Human / ${100-actorMix}% Rational</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Success Probability:</span>
+            <span class="result-value ${results.successProbability > 0.9 ? 'good' : results.successProbability > 0.5 ? 'medium' : 'bad'}">${(results.successProbability * 100).toFixed(1)}%</span>
+          </div>
+        </div>
+        
+        <div class="results-visual">
+          <div class="strategy-effectiveness" style="--effectiveness: ${results.successProbability * 100}%">
+            <div class="effectiveness-bar"></div>
+            <div class="effectiveness-marker"></div>
+          </div>
+          <div class="effectiveness-scale">
+            <span>0%</span>
+            <span>50%</span>
+            <span>100%</span>
+          </div>
+        </div>
+        
+        <div class="results-conclusion">
+          <strong>Analysis:</strong> ${results.conclusion}
+        </div>
+      `;
+    });
+    
+    // Consensus Mechanism Simulation
+    document.getElementById(`${demoId}-simulate-attack`).addEventListener('click', () => {
+      const mechanism = document.querySelector(`.mechanism-option.selected`).dataset.mechanism;
+      const attackBudget = parseInt(document.getElementById(`${demoId}-attack-budget`).value);
+      const honestNodes = parseInt(document.getElementById(`${demoId}-honest-nodes`).value);
+      const attackType = document.getElementById(`${demoId}-attack-type`).value;
+      
+      // Update state
+      gameTheoryState.consensusMechanism.selected = mechanism;
+      gameTheoryState.consensusMechanism.attackBudget = attackBudget;
+      gameTheoryState.consensusMechanism.honestNodes = honestNodes;
+      gameTheoryState.consensusMechanism.attackType = attackType;
+      
+      // Run simulation
+      const results = simulateConsensusAttack(mechanism, attackBudget, honestNodes, attackType);
+      gameTheoryState.consensusMechanism.results = results;
+      
+      // Display results
+      const resultsContainer = document.getElementById(`${demoId}-attack-results`);
+      resultsContainer.innerHTML = `
+        <h5>Attack Simulation Results</h5>
+        <div class="attack-outcome ${results.attackSuccess ? 'attack-success' : 'attack-failed'}">
+          <span class="outcome-label">Outcome:</span>
+          <span class="outcome-value">${results.attackSuccess ? 'Attack Successful' : 'Attack Failed'}</span>
+        </div>
+        
+        <div class="attack-details">
+          <div class="detail-item">
+            <span class="detail-label">Attack Cost:</span>
+            <span class="detail-value">${results.attackCost} ETH</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Economic Security:</span>
+            <span class="detail-value ${results.economicSecurity > 70 ? 'good' : results.economicSecurity > 40 ? 'medium' : 'bad'}">${results.economicSecurity}/100</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Block Reversal Depth:</span>
+            <span class="detail-value">${results.blockReversalDepth} blocks</span>
+          </div>
+        </div>
+        
+        <div class="results-conclusion">
+          <strong>Security Analysis:</strong> ${results.securityAnalysis}
+        </div>
+      `;
+    });
+    
+    // Mechanism option selection
+    const mechanismOptions = document.querySelectorAll(`.mechanism-option`);
+    mechanismOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        mechanismOptions.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+        gameTheoryState.consensusMechanism.selected = option.dataset.mechanism;
+      });
+    });
+    
+    // Update parameter values display
+    const attackBudgetInput = document.getElementById(`${demoId}-attack-budget`);
+    attackBudgetInput?.addEventListener('input', () => {
+      const valueDisplay = attackBudgetInput.nextElementSibling;
+      if (valueDisplay) {
+        valueDisplay.textContent = `${attackBudgetInput.value}%`;
+      }
+    });
+    
+    const honestNodesInput = document.getElementById(`${demoId}-honest-nodes`);
+    honestNodesInput?.addEventListener('input', () => {
+      const valueDisplay = honestNodesInput.nextElementSibling;
+      if (valueDisplay) {
+        valueDisplay.textContent = `${honestNodesInput.value}`;
+      }
+    });
+    
+    // Game theory simulation functions
+    function simulatePrisonersDilemma(actorType, rounds) {
+      // Simulation logic based on actor type
+      let mutualCooperation, mutualDefection, mixedOutcomes, securityScore, conclusion;
+      
+      if (actorType === 'rational') {
+        // Rational actors tend toward Nash equilibrium (mutual defection)
+        mutualCooperation = Math.floor(rounds * 0.05); // 5%
+        mixedOutcomes = Math.floor(rounds * 0.15); // 15%
+        mutualDefection = rounds - mutualCooperation - mixedOutcomes; // 80%
+        securityScore = 25;
+        conclusion = "Rational actors tend toward mutual defection as it's the Nash equilibrium, resulting in poor network security. This is the classic prisoner's dilemma.";
+      } else {
+        // Human actors show more cooperation due to trust, reputation, and repeated games
+        mutualCooperation = Math.floor(rounds * 0.60); // 60%
+        mixedOutcomes = Math.floor(rounds * 0.25); // 25%
+        mutualDefection = rounds - mutualCooperation - mixedOutcomes; // 15%
+        securityScore = 75;
+        conclusion = "Human actors show higher rates of cooperation due to trust building, reputation effects, and understanding of long-term benefits, resulting in better network security.";
+      }
+      
+      return {
+        mutualCooperation,
+        mutualDefection,
+        mixedOutcomes,
+        securityScore,
+        conclusion
+      };
+    }
+    
+    function analyzeCoordinationGame(strategy, actorMix) {
+      let successProbability, conclusion;
+      
+      // Calculate base probability based on strategy
+      const baseRationalProb = strategy === 'standard' ? 0.98 : 0.99;
+      const baseHumanProb = strategy === 'standard' ? 0.70 : 0.95;
+      
+      // Adjust based on actor mix
+      const rationalPct = (100 - actorMix) / 100;
+      const humanPct = actorMix / 100;
+      
+      // Combined probability
+      successProbability = (baseRationalProb * rationalPct) + (baseHumanProb * humanPct);
+      
+      // Generate conclusion
+      if (strategy === 'standard') {
+        if (actorMix > 70) {
+          conclusion = "Standard numbering is less effective with primarily human actors. The risk of mass coordination failure is significant.";
+        } else if (actorMix < 30) {
+          conclusion = "Standard numbering works well with primarily rational actors who can recursively compute optimal strategies.";
+        } else {
+          conclusion = "Mixed actor populations create uncertainty in standard numbering models, as human unpredictability can disrupt mathematical equilibria.";
+        }
+      } else { // pairing strategy
+        if (actorMix > 70) {
+          conclusion = "The Pairing/Watcher solution is highly effective for human actors, as direct accountability and fear of consequences drive cooperation.";
+        } else if (actorMix < 30) {
+          conclusion = "The Pairing/Watcher solution works well even with rational actors, as it creates a dominant strategy through multi-layered incentives.";
+        } else {
+          conclusion = "This solution is robust across mixed actor populations, combining mathematical incentives for rational actors with psychological incentives for humans.";
+        }
+      }
+      
+      return {
+        successProbability,
+        conclusion
+      };
+    }
+    
+    function simulateConsensusAttack(mechanism, attackBudget, honestNodes, attackType) {
+      let attackSuccess, attackCost, economicSecurity, blockReversalDepth, securityAnalysis;
+      
+      // Baseline variables
+      const networkValue = 100000; // 100k ETH
+      const attackSuccessThreshold = mechanism === 'pow' ? 51 : mechanism === 'pos' ? 67 : 34;
+      
+      // Check if attack succeeds based on budget and mechanism
+      attackSuccess = attackBudget >= attackSuccessThreshold;
+      
+      // Calculate attack cost based on mechanism
+      if (mechanism === 'pow') {
+        // PoW: Cost is proportional to hash power needed
+        attackCost = (networkValue * attackBudget / 100) * 0.02 * (attackType === '51' ? 1 : attackType === 'selfish' ? 0.7 : 0.5);
+        economicSecurity = attackBudget < 51 ? 85 : 30;
+        blockReversalDepth = attackSuccess ? Math.floor(attackBudget / 10) : 0;
+        securityAnalysis = attackSuccess 
+          ? "The 51% attack succeeded because the attacker controlled enough hash power. PoW security is directly proportional to the energy expended by honest miners."
+          : "The attack failed because it didn't reach the 51% threshold needed for PoW. The economic cost of attacking PoW networks scales with overall hash power.";
+      } 
+      else if (mechanism === 'pos') {
+        // PoS: Cost is capital locked + slashing risk
+        attackCost = (networkValue * attackBudget / 100) + (attackSuccess ? (networkValue * attackBudget / 100) * 0.3 : 0);
+        economicSecurity = attackBudget < 67 ? 90 : 40;
+        blockReversalDepth = attackSuccess ? Math.floor((attackBudget-60) / 5) : 0;
+        securityAnalysis = attackSuccess 
+          ? "The attack succeeded but at great cost due to capital requirements and slashing penalties. The attacker needed 67% of staked tokens."
+          : "The attack failed because PoS systems require a supermajority (67%) to compromise. Additionally, the attacker would lose their stake through slashing mechanisms.";
+      } 
+      else { // DPoS
+        // DPoS: Less capital required but more social coordination
+        attackCost = (networkValue * attackBudget / 100) * 0.5;
+        economicSecurity = attackBudget < 34 ? 75 : 35;
+        blockReversalDepth = attackSuccess ? Math.floor(attackBudget / 8) : 0;
+        securityAnalysis = attackSuccess 
+          ? "The attack succeeded because DPoS relies on fewer validators, making it easier to compromise if enough block producers collude."
+          : "The attack failed because attacking a DPoS system requires controlling enough delegate votes, which has both economic and social costs.";
+      }
+      
+      return {
+        attackSuccess,
+        attackCost: Math.round(attackCost),
+        economicSecurity,
+        blockReversalDepth,
+        securityAnalysis
+      };
+    }
+    
+    // Add styles for game theory demo
+    const style = document.createElement('style');
+    style.textContent = `
+      .game-theory-demo {
+        margin-bottom: 40px;
+      }
+      
+      .explanation-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+      
+      .tabs-container {
+        margin-bottom: 20px;
+      }
+      
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid #dee2e6;
+      }
+      
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        font-weight: 500;
+        border-bottom: 2px solid transparent;
+      }
+      
+      .tab.active {
+        border-bottom: 2px solid #0066cc;
+        color: #0066cc;
+      }
+      
+      .tab-content {
+        display: none;
+        padding: 20px 0;
+      }
+      
+      .tab-content.active {
+        display: block;
+      }
+      
+      .game-board {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 25px;
+      }
+      
+      .game-scenario {
+        flex: 1;
+        min-width: 250px;
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+      
+      .payoff-matrix {
+        flex: 1;
+        min-width: 300px;
+      }
+      
+      .payoff-matrix table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #dee2e6;
+      }
+      
+      .payoff-matrix td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+      }
+      
+      .matrix-header {
+        background: #f1f3f5;
+        font-weight: bold;
+      }
+      
+      .matrix-header.vertical {
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+        padding: 15px 5px;
+      }
+      
+      .matrix-cell {
+        padding: 15px !important;
+      }
+      
+      .matrix-cell.good {
+        background-color: rgba(40, 167, 69, 0.15);
+      }
+      
+      .matrix-cell.bad {
+        background-color: rgba(255, 193, 7, 0.15);
+      }
+      
+      .matrix-cell.danger {
+        background-color: rgba(220, 53, 69, 0.15);
+      }
+      
+      .game-controls {
+        flex: 1;
+        min-width: 250px;
+      }
+      
+      .control-group {
+        margin-bottom: 15px;
+      }
+      
+      .control-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      
+      .control-group select,
+      .control-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+      }
+      
+      .simulation-results,
+      .analysis-results,
+      .attack-results {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+      
+      .results-placeholder {
+        color: #6c757d;
+        font-style: italic;
+        padding: 15px 0;
+      }
+      
+      .results-summary {
+        margin-bottom: 20px;
+      }
+      
+      .result-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #dee2e6;
+      }
+      
+      .result-value.good {
+        color: #28a745;
+        font-weight: bold;
+      }
+      
+      .result-value.medium {
+        color: #fd7e14;
+        font-weight: bold;
+      }
+      
+      .result-value.bad {
+        color: #dc3545;
+        font-weight: bold;
+      }
+      
+      .results-chart {
+        height: 30px;
+        display: flex;
+        margin: 20px 0;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      
+      .chart-bar {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+        transition: width 0.5s ease;
+      }
+      
+      .chart-bar.cooperation {
+        background-color: #28a745;
+      }
+      
+      .chart-bar.mixed {
+        background-color: #fd7e14;
+      }
+      
+      .chart-bar.defection {
+        background-color: #dc3545;
+      }
+      
+      .results-conclusion {
+        padding: 15px;
+        background: #e9ecef;
+        border-left: 3px solid #6c757d;
+        margin-top: 15px;
+      }
+      
+      .solution-comparison table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+      }
+      
+      .solution-comparison th,
+      .solution-comparison td {
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+        text-align: left;
+      }
+      
+      .solution-comparison th {
+        background-color: #f1f3f5;
+      }
+      
+      .range-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 12px;
+        color: #6c757d;
+      }
+      
+      .strategy-effectiveness {
+        height: 40px;
+        background-color: #e9ecef;
+        border-radius: 20px;
+        position: relative;
+        margin: 20px 0;
+      }
+      
+      .effectiveness-bar {
+        height: 100%;
+        width: var(--effectiveness);
+        background-color: #0066cc;
+        border-radius: 20px;
+        transition: width 0.5s ease;
+      }
+      
+      .effectiveness-marker {
+        position: absolute;
+        top: -10px;
+        left: var(--effectiveness);
+        transform: translateX(-50%);
+        width: 20px;
+        height: 20px;
+        background-color: #0066cc;
+        border: 3px solid white;
+        border-radius: 50%;
+      }
+      
+      .effectiveness-scale {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 12px;
+        color: #6c757d;
+      }
+      
+      .mechanism-selector {
+        margin-bottom: 20px;
+      }
+      
+      .mechanism-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 10px;
+      }
+      
+      .mechanism-option {
+        flex: 1;
+        min-width: 200px;
+        padding: 15px;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .mechanism-option.selected {
+        background: #e8f4ff;
+        border-color: #0066cc;
+        box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.25);
+      }
+      
+      .mechanism-option h6 {
+        margin-top: 0;
+        margin-bottom: 8px;
+      }
+      
+      .mechanism-option p {
+        margin: 0;
+        font-size: 14px;
+        color: #6c757d;
+      }
+      
+      .parameter {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      
+      .parameter label {
+        width: 180px;
+      }
+      
+      .parameter input[type="range"] {
+        flex: 1;
+      }
+      
+      .attack-outcome {
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .attack-outcome.attack-success {
+        background-color: rgba(220, 53, 69, 0.15);
+      }
+      
+      .attack-outcome.attack-failed {
+        background-color: rgba(40, 167, 69, 0.15);
+      }
+      
+      .attack-details {
+        margin-bottom: 15px;
+      }
+      
+      .detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        border-bottom: 1px solid #dee2e6;
+      }
+      
+      .conclusion-section {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+      
+      .insights-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+      }
+      
+      .insight-card {
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+      
+      .insight-card h5 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #0066cc;
+      }
+      
+      .insight-card p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+    `;
+    
+    document.head.appendChild(style);
+    
+    // Reset button
+    document.getElementById(`${demoId}-reset`).addEventListener('click', () => {
+      // Reset prisoners dilemma
+      document.getElementById(`${demoId}-actor-type`).value = 'rational';
+      document.getElementById(`${demoId}-rounds`).value = '100';
+      document.getElementById(`${demoId}-pd-results`).innerHTML = '<div class="results-placeholder">Run a simulation to see results</div>';
+      
+      // Reset coordination game
+      document.getElementById(`${demoId}-strategy`).value = 'standard';
+      document.getElementById(`${demoId}-actor-mix`).value = '50';
+      document.getElementById(`${demoId}-cg-results`).innerHTML = '<div class="results-placeholder">Run an analysis to see results</div>';
+      
+      // Reset consensus mechanism
+      mechanismOptions.forEach(opt => opt.classList.remove('selected'));
+      document.querySelector(`.mechanism-option[data-mechanism="pow"]`).classList.add('selected');
+      document.getElementById(`${demoId}-attack-budget`).value = '30';
+      document.getElementById(`${demoId}-honest-nodes`).value = '100';
+      document.getElementById(`${demoId}-attack-type`).value = '51';
+      document.getElementById(`${demoId}-attack-results`).innerHTML = '<div class="results-placeholder">Run a simulation to see results</div>';
+      
+      // Reset state
+      gameTheoryState.prisonersDilemma = {
+        actorType: 'rational',
+        rounds: 100,
+        results: null
+      };
+      
+      gameTheoryState.coordinationGame = {
+        strategy: 'standard',
+        actorMix: 50,
+        results: null
+      };
+      
+      gameTheoryState.consensusMechanism = {
+        selected: 'pow',
+        attackBudget: 30,
+        honestNodes: 100,
+        attackType: '51',
+        results: null
+      };
+    });
+    
+    // Return the demo instance
+    return {
+      state: gameTheoryState,
+      cleanup: () => {
+        // Remove event listeners if needed
       }
     };
   }

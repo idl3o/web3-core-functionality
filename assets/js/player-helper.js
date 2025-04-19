@@ -244,6 +244,69 @@ class PlayerHelper {
   }
   
   /**
+   * Enable auto-commit for streaming transactions
+   * @param {number} durationHours - Duration in hours to auto-commit (default: 1 hour)
+   * @returns {Object} Result with expiry info
+   */
+  enableAutoCommit(durationHours = 1) {
+    if (!this.contractManager) {
+      throw new Error('Contract manager not initialized');
+    }
+    
+    const durationSeconds = durationHours * 3600;
+    const expiryTimestamp = this.contractManager.enableAutoCommit(durationSeconds);
+    const expiryDate = new Date(expiryTimestamp * 1000);
+    
+    this.log(`Auto-commit enabled for ${durationHours} hour(s) until ${expiryDate.toLocaleString()}`);
+    
+    return {
+      enabled: true,
+      expiryTimestamp,
+      expiryDate,
+      durationHours
+    };
+  }
+  
+  /**
+   * Disable auto-commit for streaming transactions
+   */
+  disableAutoCommit() {
+    if (!this.contractManager) {
+      throw new Error('Contract manager not initialized');
+    }
+    
+    this.contractManager.disableAutoCommit();
+    this.log('Auto-commit disabled');
+    
+    return {
+      enabled: false
+    };
+  }
+  
+  /**
+   * Check auto-commit status
+   * @returns {Object} Auto-commit status info
+   */
+  getAutoCommitStatus() {
+    if (!this.contractManager) {
+      return { enabled: false, error: 'Contract manager not initialized' };
+    }
+    
+    const isEnabled = this.contractManager.isAutoCommitEnabled();
+    const remainingSeconds = this.contractManager.getAutoCommitTimeRemaining();
+    const remainingMinutes = Math.floor(remainingSeconds / 60);
+    const remainingHours = Math.floor(remainingMinutes / 60);
+    
+    return {
+      enabled: isEnabled,
+      remainingSeconds,
+      remainingMinutes,
+      remainingHours,
+      expiryDate: isEnabled ? new Date((Math.floor(Date.now() / 1000) + remainingSeconds) * 1000) : null
+    };
+  }
+  
+  /**
    * Log message if debug mode is enabled
    * @private
    */
