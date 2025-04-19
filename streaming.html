@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web3 Streaming Player Demo</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="icon" href="assets/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">Web3 Streaming</a>
+      <div class="navbar-menu">
+        <a href="index.html">Home</a>
+        <a href="education.html">Education</a>
+        <a href="library.html">Content Library</a>
+        <a href="streaming.html" class="active">Demo Player</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="streaming-container">
+    <h1>Web3 Streaming Demo Player</h1>
+    <p>Experience decentralized content streaming with crypto-based payment channels.</p>
+    
+    <!-- Player Section -->
+    <section class="player-section">
+      <div class="video-container">
+        <video id="video-player" controls style="display: none;"></video>
+        <div id="player-placeholder">
+          <p>Connect your wallet and start streaming to watch videos</p>
+        </div>
+      </div>
+      
+      <div class="content-info">
+        <h2>Currently Selected: <span id="content-title">Blockchain Basics</span></h2>
+        <p id="content-description">An introduction to blockchain technology fundamentals.</p>
+        <p><strong>Creator:</strong> <span id="content-creator">Team MODSIAS</span></p>
+        <div id="content-id" style="display: none;">content_001</div>
+        
+        <div class="stream-status inactive" id="stream-status">
+          <h3>Stream Status: <span id="status-text">Inactive</span></h3>
+          <p id="status-info">Purchase access to start streaming</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Control Section -->
+    <section class="player-section">
+      <h2>Stream Controls</h2>
+      
+      <div class="control-section">
+        <!-- Wallet Connection -->
+        <div class="control-group">
+          <h3>Wallet Connection</h3>
+          <p>Wallet Status: <span class="wallet-status disconnected" id="wallet-status">Disconnected</span></p>
+          <p id="wallet-address">No wallet connected</p>
+          <p>Network: <span id="network-name">Unknown</span></p>
+          <button id="connect-wallet" class="btn btn-primary">Connect Wallet</button>
+          <button id="disconnect-wallet" class="btn btn-secondary" style="display: none;">Disconnect</button>
+        </div>
+        
+        <!-- Content Selection -->
+        <div class="control-group">
+          <h3>Content Selection</h3>
+          <p>Choose content to stream:</p>
+          <select id="content-selector" class="form-control">
+            <option value="content_001">Blockchain Basics</option>
+            <option value="content_002">Smart Contract Development</option>
+            <option value="content_003">Web3 Integration Guide</option>
+          </select>
+          <button id="check-access" class="btn btn-secondary">Check Access</button>
+        </div>
+      </div>
+      
+      <div class="control-section">
+        <!-- Purchase Credits -->
+        <div class="control-group">
+          <h3>Purchase Credits</h3>
+          <p>Buy STRM tokens to access content</p>
+          <input type="text" id="purchase-amount" value="0.01" class="form-control" placeholder="ETH Amount">
+          <button id="purchase-credits" class="btn btn-primary">Purchase</button>
+        </div>
+        
+        <!-- Stream Control -->
+        <div class="control-group">
+          <h3>Stream Control</h3>
+          <p>Current Balance: <span id="token-balance">0 STRM</span></p>
+          <button id="start-stream" class="btn btn-success">Start Streaming</button>
+          <button id="stop-stream" class="btn btn-secondary" style="display: none;">Stop Streaming</button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Advanced Settings -->
+    <section class="player-section">
+      <h2>Advanced Settings</h2>
+      <div class="control-section">
+        <div class="control-group">
+          <h3>Auto-Commit</h3>
+          <p>Enable automatic payment commitments</p>
+          <div class="form-group">
+            <label for="auto-commit-duration">Duration (hours):</label>
+            <input type="number" id="auto-commit-duration" value="1" min="0.5" max="24" step="0.5" class="form-control">
+          </div>
+          <button id="enable-auto-commit" class="btn btn-secondary">Enable</button>
+          <button id="disable-auto-commit" class="btn btn-secondary" style="display: none;">Disable</button>
+        </div>
+        
+        <div class="control-group">
+          <h3>Debug Tools</h3>
+          <button id="toggle-debug" class="btn btn-secondary">Enable Debug Mode</button>
+          <button id="get-status" class="btn btn-secondary">Status Report</button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Activity Log -->
+    <section class="player-section">
+      <h2>Activity Log</h2>
+      <div class="log-container" id="activity-log">
+        <div>Player initialized. Ready for wallet connection...</div>
+      </div>
+      <button id="clear-log" class="btn btn-secondary" style="margin-top: 10px;">Clear Log</button>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Web3 Streaming</h3>
+          <p>Decentralized content streaming platform built on blockchain technology.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="education.html">Education</a></li>
+            <li><a href="library.html">Content Library</a></li>
+            <li><a href="#">About</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Resources</h3>
+          <ul>
+            <li><a href="whitepaper/web3-streaming-service-whitepaper.html">Whitepaper</a></li>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="https://github.com/" target="_blank">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Connect</h3>
+          <ul>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">Telegram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Web3 Streaming Platform. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="assets/js/network-config.js"></script>
+  <script src="assets/js/wallet-connector.js"></script>
+  <script src="assets/js/contract-manager.js"></script>
+  <script src="assets/js/video-loader.js"></script>
+  <script src="assets/js/player-helper.js"></script>
+  
+  <script>
+    // Initialize components
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set up log function
+      const log = function(message) {
+        const logContainer = document.getElementById('activity-log');
+        const logEntry = document.createElement('div');
+        logEntry.textContent = message;
+        logContainer.appendChild(logEntry);
+        logContainer.scrollTop = logContainer.scrollHeight;
+      };
+      
+      // Initialize objects
+      const networkConfig = new NetworkConfig();
+      const walletConnector = new WalletConnector({
+        supportedNetworks: [1, 5, 56, 97, 1337, 31337], // Added local networks
+        preferredNetwork: 5 // Goerli as preferred
+      });
+      const contractManager = new ContractManager({
+        walletConnector: walletConnector
+      });
+      const videoLoader = new VideoLoader();
+      const playerHelper = new PlayerHelper({
+        walletConnector: walletConnector,
+        contractManager: contractManager,
+        videoLoader: videoLoader,
+        networkConfig: networkConfig
+      });
+      
+      // UI Elements
+      const walletStatus = document.getElementById('wallet-status');
+      const walletAddress = document.getElementById('wallet-address');
+      const networkName = document.getElementById('network-name');
+      const connectBtn = document.getElementById('connect-wallet');
+      const disconnectBtn = document.getElementById('disconnect-wallet');
+      const contentSelector = document.getElementById('content-selector');
+      const contentTitle = document.getElementById('content-title');
+      const contentDescription = document.getElementById('content-description');
+      const contentCreator = document.getElementById('content-creator');
+      const contentId = document.getElementById('content-id');
+      const streamStatus = document.getElementById('stream-status');
+      const statusText = document.getElementById('status-text');
+      const statusInfo = document.getElementById('status-info');
+      const checkAccessBtn = document.getElementById('check-access');
+      const purchaseAmount = document.getElementById('purchase-amount');
+      const purchaseBtn = document.getElementById('purchase-credits');
+      const tokenBalance = document.getElementById('token-balance');
+      const startStreamBtn = document.getElementById('start-stream');
+      const stopStreamBtn = document.getElementById('stop-stream');
+      const autoCommitDuration = document.getElementById('auto-commit-duration');
+      const enableAutoCommitBtn = document.getElementById('enable-auto-commit');
+      const disableAutoCommitBtn = document.getElementById('disable-auto-commit');
+      const toggleDebugBtn = document.getElementById('toggle-debug');
+      const getStatusBtn = document.getElementById('get-status');
+      const clearLogBtn = document.getElementById('clear-log');
+      const videoPlayer = document.getElementById('video-player');
+      const playerPlaceholder = document.getElementById('player-placeholder');
+      
+      // Event Listeners
+      connectBtn.addEventListener('click', async () => {
+        try {
+          log('Connecting to wallet...');
+          await walletConnector.connect();
+          log('Wallet connected successfully');
+        } catch (error) {
+          log(`Error connecting to wallet: ${error.message}`);
+        }
+      });
+      
+      disconnectBtn.addEventListener('click', async () => {
+        try {
+          log('Disconnecting wallet...');
+          await walletConnector.disconnect();
+          log('Wallet disconnected');
+        } catch (error) {
+          log(`Error disconnecting: ${error.message}`);
+        }
+      });
+      
+      contentSelector.addEventListener('change', () => {
+        const selectedContent = videoLoader.getDemoContent(contentSelector.value);
+        if (selectedContent) {
+          contentTitle.textContent = selectedContent.title;
+          contentDescription.textContent = selectedContent.description;
+          contentCreator.textContent = selectedContent.creator;
+          contentId.textContent = contentSelector.value;
+          log(`Content selected: ${selectedContent.title}`);
+          
+          // Reset stream status
+          streamStatus.className = 'stream-status inactive';
+          statusText.textContent = 'Inactive';
+          statusInfo.textContent = 'Purchase access to start streaming';
+          
+          // Hide video player
+          videoPlayer.style.display = 'none';
+          playerPlaceholder.style.display = 'flex';
+          playerPlaceholder.innerHTML = '<p>Select content and start streaming to watch</p>';
+        }
+      });
+      
+      checkAccessBtn.addEventListener('click', async () => {
+        if (!walletConnector.isConnected()) {
+          log('Please connect your wallet first');
+          return;
+        }
+        
+        try {
+          const hasAccess = await playerHelper.checkContentAccess(contentSelector.value);
+          if (hasAccess) {
+            streamStatus.className = 'stream-status active';
+            statusText.textContent = 'Active';
+            statusInfo.textContent = 'You have access to this content';
+            log('Content access check: Access granted');
+          } else {
+            streamStatus.className = 'stream-status inactive';
+            statusText.textContent = 'Inactive';
+            statusInfo.textContent = 'No active access. Purchase streaming credits.';
+            log('Content access check: No access');
+          }
+        } catch (error) {
+          log(`Error checking access: ${error.message}`);
+        }
+      });
+      
+      purchaseBtn.addEventListener('click', async () => {
+        if (!walletConnector.isConnected()) {
+          log('Please connect your wallet first');
+          return;
+        }
+        
+        try {
+          const amount = purchaseAmount.value.trim();
+          log(`Purchasing credits with ${amount} ETH...`);
+          
+          // For demo, we'll simulate a successful purchase
+          log('Credits purchased successfully!');
+          tokenBalance.textContent = '10 STRM';
+        } catch (error) {
+          log(`Error purchasing credits: ${error.message}`);
+        }
+      });
+      
+      startStreamBtn.addEventListener('click', async () => {
+        if (!walletConnector.isConnected()) {
+          log('Please connect your wallet first');
+          return;
+        }
+        
+        try {
+          log(`Starting stream for ${contentTitle.textContent}...`);
+          
+          // For demo purposes
+          const selectedContent = videoLoader.getDemoContent(contentSelector.value);
+          
+          streamStatus.className = 'stream-status active';
+          statusText.textContent = 'Active';
+          statusInfo.textContent = 'Stream active. Enjoy your content!';
+          
+          // Replace this with actual contract calls in production
+          videoLoader.loadVideo(selectedContent.ipfsCid, (videoUrl, error) => {
+            if (error) {
+              log(`Error loading video: ${error}`);
+              playerPlaceholder.innerHTML = '<p>Error loading video content</p>';
+            } else {
+              log('Video loaded successfully');
+              videoPlayer.src = videoUrl;
+              videoPlayer.style.display = 'block';
+              playerPlaceholder.style.display = 'none';
+              
+              // Show stop button
+              startStreamBtn.style.display = 'none';
+              stopStreamBtn.style.display = 'inline-block';
+              
+              videoPlayer.play().catch(e => log(`Autoplay prevented: ${e.message}`));
+            }
+          });
+        } catch (error) {
+          log(`Error starting stream: ${error.message}`);
+        }
+      });
+      
+      stopStreamBtn.addEventListener('click', () => {
+        videoPlayer.pause();
+        videoPlayer.style.display = 'none';
+        playerPlaceholder.style.display = 'flex';
+        playerPlaceholder.innerHTML = '<p>Stream stopped</p>';
+        
+        streamStatus.className = 'stream-status inactive';
+        statusText.textContent = 'Inactive';
+        statusInfo.textContent = 'Stream ended.';
+        
+        startStreamBtn.style.display = 'inline-block';
+        stopStreamBtn.style.display = 'none';
+        
+        log('Stream stopped');
+      });
+      
+      enableAutoCommitBtn.addEventListener('click', () => {
+        const hours = parseFloat(autoCommitDuration.value);
+        log(`Enabling auto-commit for ${hours} hours`);
+        
+        // Show disable button
+        enableAutoCommitBtn.style.display = 'none';
+        disableAutoCommitBtn.style.display = 'inline-block';
+      });
+      
+      disableAutoCommitBtn.addEventListener('click', () => {
+        log('Disabled auto-commit');
+        
+        // Show enable button
+        enableAutoCommitBtn.style.display = 'inline-block';
+        disableAutoCommitBtn.style.display = 'none';
+      });
+      
+      toggleDebugBtn.addEventListener('click', () => {
+        if (toggleDebugBtn.textContent === 'Enable Debug Mode') {
+          playerHelper.enableDebug();
+          toggleDebugBtn.textContent = 'Disable Debug Mode';
+          log('Debug mode enabled');
+        } else {
+          playerHelper.disableDebug();
+          toggleDebugBtn.textContent = 'Enable Debug Mode';
+          log('Debug mode disabled');
+        }
+      });
+      
+      getStatusBtn.addEventListener('click', async () => {
+        try {
+          const statusReport = await playerHelper.getStatusReport();
+          log('Status Report:');
+          log(`Wallet Connected: ${statusReport.wallet.isConnected}`);
+          log(`Network: ${statusReport.wallet.network || 'Unknown'}`);
+          log(`Contracts Initialized: ${statusReport.contracts.isInitialized}`);
+        } catch (error) {
+          log(`Error getting status: ${error.message}`);
+        }
+      });
+      
+      clearLogBtn.addEventListener('click', () => {
+        const logContainer = document.getElementById('activity-log');
+        logContainer.innerHTML = '<div>Log cleared</div>';
+      });
+      
+      // Wallet Event Listeners
+      walletConnector.addEventListener('connectionChanged', (state) => {
+        if (state.connected) {
+          walletStatus.textContent = 'Connected';
+          walletStatus.className = 'wallet-status connected';
+          walletAddress.textContent = `Address: ${state.address}`;
+          connectBtn.style.display = 'none';
+          disconnectBtn.style.display = 'inline-block';
+          
+          // Update network info
+          walletConnector.getNetworkId().then(networkId => {
+            const networkName = networkConfig.getNetworkName(networkId);
+            document.getElementById('network-name').textContent = networkName;
+            log(`Connected to ${networkName}`);
+          });
+        } else {
+          walletStatus.textContent = 'Disconnected';
+          walletStatus.className = 'wallet-status disconnected';
+          walletAddress.textContent = 'No wallet connected';
+          networkName.textContent = 'Unknown';
+          connectBtn.style.display = 'inline-block';
+          disconnectBtn.style.display = 'none';
+        }
+      });
+      
+      // Check if wallet is already connected
+      if (walletConnector.isConnected()) {
+        walletConnector.getAddress().then(address => {
+          if (address) {
+            walletStatus.textContent = 'Connected';
+            walletStatus.className = 'wallet-status connected';
+            walletAddress.textContent = `Address: ${address}`;
+            connectBtn.style.display = 'none';
+            disconnectBtn.style.display = 'inline-block';
+            
+            walletConnector.getNetworkId().then(networkId => {
+              const networkName = networkConfig.getNetworkName(networkId);
+              document.getElementById('network-name').textContent = networkName;
+            });
+          }
+        });
+      }
+      
+      // Add fallback for video playback
+      videoPlayer.addEventListener('error', (e) => {
+        console.error('Video playback error:', e);
+        log('Error playing video, trying local fallback...');
+        
+        // Use local video as fallback
+        videoPlayer.src = 'assets/videos/consensus-mechanisms.mp4';
+        videoPlayer.load();
+        videoPlayer.play().catch(err => {
+          log(`Fallback playback failed: ${err.message}`);
+        });
+      });
+      
+      log('Player initialized successfully');
+    });
+  </script>
+</body>
+</html>
