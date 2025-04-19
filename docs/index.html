@@ -30,7 +30,7 @@
 
       .docs-header p {
         font-size: 1.2rem;
-        color: #666;
+        color: #444;
         max-width: 800px;
         margin: 0 auto;
       }
@@ -72,10 +72,11 @@
       .sidebar-nav a {
         display: block;
         padding: 8px 15px;
-        color: #333;
+        color: #222;
         text-decoration: none;
         border-radius: 4px;
         transition: all 0.2s ease;
+        font-weight: 500;
       }
 
       .sidebar-nav a:hover,
@@ -91,9 +92,9 @@
       .sidebar-section-title {
         font-weight: bold;
         margin-bottom: 10px;
-        color: #666;
+        color: #444;
         text-transform: uppercase;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         letter-spacing: 0.5px;
       }
 
@@ -140,8 +141,9 @@
       }
 
       .doc-card-body p {
-        color: #666;
+        color: #444;
         margin-bottom: 15px;
+        line-height: 1.5;
       }
 
       .doc-card-footer {
@@ -195,21 +197,25 @@
         background-color: #f8f9fa;
         border-radius: 8px;
         border-left: 4px solid #0066cc;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
 
       .api-method h3 {
         margin-top: 0;
-        color: #0066cc;
+        color: #0055aa;
+        font-weight: 600;
       }
 
       .api-method-signature {
         font-family: monospace;
         padding: 10px 15px;
         background-color: #272822;
-        color: #f8f8f2;
+        color: #ffffff;
         border-radius: 4px;
         overflow-x: auto;
         margin: 15px 0;
+        font-size: 1rem;
+        font-weight: 500;
       }
 
       .api-params table {
@@ -218,15 +224,16 @@
         margin: 15px 0;
       }
 
-      .api-params th,
-      .api-params td {
+      .api-params th {
+        background-color: #e5e5e5;
+        color: #222;
+        font-weight: 600;
+      }
+      
+      .api-params td, .api-params th {
         text-align: left;
         padding: 12px 15px;
-        border-bottom: 1px solid #ddd;
-      }
-
-      .api-params th {
-        background-color: #f1f1f1;
+        border-bottom: 1px solid #ccc;
       }
 
       .api-response {
@@ -253,24 +260,32 @@
 
       code {
         font-family: monospace;
-        background: #f5f5f5;
+        background: #eaeaea;
         padding: 2px 5px;
         border-radius: 3px;
-        font-size: 0.9em;
+        font-size: 0.95em;
+        color: #222;
+        border: 1px solid #ddd;
       }
 
       pre {
         background: #272822;
-        color: #f8f8f2;
+        color: #ffffff;
         padding: 15px;
         border-radius: 5px;
         overflow-x: auto;
+        line-height: 1.5;
       }
 
       .button-row {
         display: flex;
         gap: 10px;
         margin-top: 20px;
+      }
+
+      p, li {
+        color: #222;
+        line-height: 1.6;
       }
 
       @media (max-width: 768px) {
@@ -282,6 +297,30 @@
           position: static;
           margin-bottom: 20px;
         }
+      }
+
+      @media (prefers-contrast: high) {
+        body {
+          background-color: white;
+        }
+        
+        p, li, td, th, .sidebar-section-title, .doc-card-body p {
+          color: black;
+        }
+        
+        .sidebar-nav a {
+          color: black;
+        }
+        
+        code {
+          background: #ddd;
+          color: black;
+        }
+      }
+      
+      a:focus, button:focus {
+        outline: 2px solid #0066cc;
+        outline-offset: 2px;
       }
     </style>
   </head>
@@ -357,6 +396,16 @@
             </div>
             
             <div class="sidebar-section">
+              <div class="sidebar-section-title">CI/CD</div>
+              <ul>
+                <li><a href="ci-cd/github-workflows.html">GitHub Actions</a></li>
+                <li><a href="ci-cd/deployment.html">Deployment</a></li>
+                <li><a href="ci-cd/testing.html">Automated Testing</a></li>
+                <li><a href="ci-cd/security.html">Security Scanning</a></li>
+              </ul>
+            </div>
+            
+            <div class="sidebar-section">
               <div class="sidebar-section-title">SDK Integration</div>
               <ul>
                 <li><a href="sdk/javascript.html">JavaScript/TypeScript</a></li>
@@ -389,7 +438,6 @@
               will guide you through integrating with our platform, whether you're a creator, developer,
               or platform partner.
             </p>
-            
             <div class="table-of-contents">
               <h3>On This Page</h3>
               <ul>
@@ -397,6 +445,7 @@
                 <li><a href="#getting-started">Getting Started</a></li>
                 <li><a href="#sdks">SDK Integrations</a></li>
                 <li><a href="#api-access">API Access</a></li>
+                <li><a href="#ci-cd">CI/CD & GitHub Actions</a></li>
                 <li><a href="#smart-contracts">Smart Contracts</a></li>
               </ul>
             </div>
@@ -408,7 +457,6 @@
               The Web3 Crypto Streaming Platform combines the best of blockchain technology with high-quality
               streaming capabilities. Key components include:
             </p>
-            
             <ul>
               <li>
                 <strong>Decentralized Access Control</strong> - Content access rights stored on the blockchain
@@ -429,7 +477,6 @@
                 <strong>Creator Dashboard</strong> - Analytics and monetization tools for content creators
               </li>
             </ul>
-            
             <div class="cards-container">
               <div class="doc-card">
                 <div class="doc-card-header">
@@ -670,7 +717,7 @@ contract StreamAccess {
     {
         return streamExpiry[user][contentId] > block.timestamp;
     }
-    
+
     // Additional contract functions...
 }</code></pre>
             
@@ -681,7 +728,7 @@ contract StreamAccess {
           </section>
         </main>
       </div>
-    </div>
+    </div>    
 
     <!-- Footer -->
     <footer class="footer">
@@ -743,6 +790,155 @@ contract StreamAccess {
             link.parentElement.style.display = 'none';
           }
         });
+      });
+      
+      // Document structure validation script
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('Running document structure validation...');
+        
+        // Check for common HTML problems
+        function validateDocumentStructure() {
+          const problems = [];
+          
+          // Check for unclosed tags by comparing element counts
+          const openTags = document.body.innerHTML.match(/<[a-z][a-z0-9]*(?=\s|>)/gi) || [];
+          const closeTags = document.body.innerHTML.match(/<\/[a-z][a-z0-9]*>/gi) || [];
+          
+          if (openTags.length !== closeTags.length) {
+            problems.push(`Warning: Potential unclosed tags. ${openTags.length} opening tags vs ${closeTags.length} closing tags.`);
+          }
+          
+          // Check for broken links
+          const links = document.querySelectorAll('a[href]');
+          links.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === '#' || href === '' || href === null) {
+              problems.push(`Warning: Empty or placeholder link found: ${link.textContent}`);
+            }
+          });
+          
+          // Check for missing alt text on images
+          const images = document.querySelectorAll('img');
+          images.forEach(img => {
+            if (!img.hasAttribute('alt') || img.getAttribute('alt') === '') {
+              problems.push(`Warning: Image missing alt text: ${img.src}`);
+            }
+          });
+          
+          // Check for duplicate IDs
+          const ids = {};
+          const elementsWithIds = document.querySelectorAll('[id]');
+          elementsWithIds.forEach(el => {
+            const id = el.getAttribute('id');
+            if (ids[id]) {
+              problems.push(`Error: Duplicate ID found: "${id}"`);
+            }
+            ids[id] = true;
+          });
+          
+          // Check for malformed structure in key sections
+          const mainContent = document.querySelector('.main-content');
+          if (mainContent) {
+            const sections = mainContent.querySelectorAll('section');
+            sections.forEach(section => {
+              if (!section.querySelector('h2') && !section.querySelector('h3')) {
+                problems.push(`Warning: Section without heading found in main content`);
+              }
+            });
+          }
+          
+          // Output problems to console with clear formatting
+          if (problems.length > 0) {
+            console.group('Document Structure Issues');
+            problems.forEach(problem => console.warn(problem));
+            console.groupEnd();
+            
+            // Create UI indicator for the issues
+            const indicator = document.createElement('div');
+            indicator.style.position = 'fixed';
+            indicator.style.bottom = '20px';
+            indicator.style.left = '20px';
+            indicator.style.backgroundColor = '#ffeb3b';
+            indicator.style.color = '#000';
+            indicator.style.padding = '10px 15px';
+            indicator.style.borderRadius = '4px';
+            indicator.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+            indicator.style.zIndex = '9999';
+            indicator.style.cursor = 'pointer';
+            indicator.textContent = `⚠️ ${problems.length} document issues found`;
+            
+            indicator.addEventListener('click', () => {
+              alert(`The following issues were found in the document:\n\n${problems.join('\n\n')}`);
+            });
+            
+            document.body.appendChild(indicator);
+          } else {
+            console.log('No document structure issues found.');
+          }
+          
+          return problems;
+        }
+        
+        // Run validation
+        validateDocumentStructure();
+        
+        // Git error detection
+        function checkGitErrors() {
+          console.log('Checking for potential Git issues...');
+          
+          // Check for problematic filenames that could cause Git errors
+          const problematicPatterns = [
+            'hell -Command',
+            '\\\\',
+            '"',
+            '\\t',
+            '\\n',
+            '\\r',
+            '\\b',
+            '\\f'
+          ];
+          
+          let hasProblems = false;
+          const warnings = [];
+          
+          // Check page for elements that might create problematic files
+          document.querySelectorAll('a[download]').forEach(link => {
+            const filename = link.getAttribute('download');
+            problematicPatterns.forEach(pattern => {
+              if (filename && filename.includes(pattern)) {
+                hasProblems = true;
+                warnings.push(`Problematic download filename detected: "${filename}"`);
+              }
+            });
+          });
+          
+          if (hasProblems) {
+            console.warn('⚠️ Potential Git issues detected:');
+            warnings.forEach(w => console.warn(w));
+            
+            const gitHelper = document.createElement('div');
+            gitHelper.style.position = 'fixed';
+            gitHelper.style.bottom = '70px';
+            gitHelper.style.left = '20px';
+            gitHelper.style.backgroundColor = '#ff5252';
+            gitHelper.style.color = 'white';
+            gitHelper.style.padding = '10px 15px';
+            gitHelper.style.borderRadius = '4px';
+            gitHelper.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+            gitHelper.style.zIndex = '9999';
+            gitHelper.style.cursor = 'pointer';
+            gitHelper.textContent = '⚠️ Git issues detected';
+            
+            gitHelper.addEventListener('click', () => {
+              alert(`Potential Git issues were found:\n\n${warnings.join('\n\n')}\n\nConsider running:\n\ngit rm -f --cached "hell -Command"\n\nto fix the problematic reference.`);
+            });
+            
+            document.body.appendChild(gitHelper);
+          }
+        }
+        
+        // Run git checks
+        checkGitErrors();
       });
     </script>
   </body>

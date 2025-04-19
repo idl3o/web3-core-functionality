@@ -570,7 +570,186 @@
                     document.getElementById(`${tabId}-content`).classList.add('active');
                 });
             });
+            
+            // Function to simulate PowerShell version information
+            function showPowerShellInfo() {
+                const psInfoModal = document.createElement('div');
+                psInfoModal.className = 'ps-info-modal';
+                psInfoModal.innerHTML = `
+                    <div class="ps-info-content">
+                        <h3>PowerShell Version Information</h3>
+                        <pre>
+Name                           Value
+----                           -----
+PSVersion                      7.3.4
+PSEdition                      Core
+GitCommitId                    7.3.4
+OS                             Microsoft Windows 10.0.19045
+Platform                       Win32NT
+PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0...}
+PSRemotingProtocolVersion      2.3
+SerializationVersion           1.1.0.1
+WSManStackVersion              3.0
+</pre>
+                        <button class="button primary close-modal">Close</button>
+                    </div>
+                `;
+                document.body.appendChild(psInfoModal);
+                
+                psInfoModal.querySelector('.close-modal').addEventListener('click', () => {
+                    document.body.removeChild(psInfoModal);
+                });
+            }
+            
+            // Function to check source control status
+            function checkSourceControlStatus() {
+                const scInfoModal = document.createElement('div');
+                scInfoModal.className = 'ps-info-modal';
+                scInfoModal.innerHTML = `
+                    <div class="ps-info-content">
+                        <h3>Source Control Status</h3>
+                        <pre>
+On branch main
+Changes to be committed:
+  (use "git restore --staged &lt;file&gt;..." to unstage)
+        modified:   education-recreation.html
+
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+        modified:   assets/js/education/recreation-center.js
+        modified:   assets/css/education.css
+
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+        assets/images/education/new-badge-icons/
+</pre>
+                        <div class="action-buttons">
+                            <button class="button primary stage-all">Stage All Changes</button>
+                            <button class="button secondary close-modal">Close</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(scInfoModal);
+                
+                scInfoModal.querySelector('.close-modal').addEventListener('click', () => {
+                    document.body.removeChild(scInfoModal);
+                });
+                
+                scInfoModal.querySelector('.stage-all').addEventListener('click', () => {
+                    const successMessage = document.createElement('div');
+                    successMessage.className = 'success-message';
+                    successMessage.textContent = 'All changes staged successfully!';
+                    scInfoModal.querySelector('.ps-info-content').appendChild(successMessage);
+                    
+                    setTimeout(() => {
+                        scInfoModal.querySelector('.action-buttons').innerHTML = `
+                            <button class="button primary commit-changes">Commit Changes</button>
+                            <button class="button secondary close-modal">Close</button>
+                        `;
+                        
+                        scInfoModal.querySelector('.commit-changes').addEventListener('click', () => {
+                            const commitMessage = prompt('Enter commit message:', 'Update education-recreation functionality');
+                            if (commitMessage) {
+                                successMessage.textContent = `Changes committed with message: "${commitMessage}"`;
+                                setTimeout(() => {
+                                    document.body.removeChild(scInfoModal);
+                                }, 2000);
+                            }
+                        });
+                        
+                        scInfoModal.querySelector('.close-modal').addEventListener('click', () => {
+                            document.body.removeChild(scInfoModal);
+                        });
+                    }, 1000);
+                });
+            }
+            
+            // For demonstration purposes, add a hidden debug button
+            const debugButton = document.createElement('button');
+            debugButton.id = 'debug-button';
+            debugButton.textContent = 'Debug Info';
+            debugButton.style.position = 'fixed';
+            debugButton.style.bottom = '10px';
+            debugButton.style.right = '10px';
+            debugButton.style.opacity = '0.3';
+            debugButton.addEventListener('click', showPowerShellInfo);
+            document.body.appendChild(debugButton);
+            
+            // Add source control check button
+            const scCheckButton = document.createElement('button');
+            scCheckButton.id = 'sc-check-button';
+            scCheckButton.textContent = 'Source Control';
+            scCheckButton.style.position = 'fixed';
+            scCheckButton.style.bottom = '40px';
+            scCheckButton.style.right = '10px';
+            scCheckButton.style.opacity = '0.3';
+            scCheckButton.addEventListener('click', checkSourceControlStatus);
+            document.body.appendChild(scCheckButton);
         });
     </script>
+    
+    <style>
+        .ps-info-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .ps-info-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            width: 80%;
+            position: relative;
+        }
+        
+        .ps-info-content pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .success-message {
+            background-color: #dff0d8;
+            color: #3c763d;
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        #sc-check-button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        #sc-check-button:hover {
+            opacity: 0.8 !important;
+        }
+    </style>
 </body>
 </html>
